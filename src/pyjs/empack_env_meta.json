@@ -1,0 +1,89 @@
+{
+    "prefix": "/",
+    "packages": [
+        {
+            "name": "packaging",
+            "version": "23.1",
+            "build": "pyhd8ed1ab_0",
+            "filename_stem": "packaging-23.1-pyhd8ed1ab_0",
+            "filename": "packaging-23.1-pyhd8ed1ab_0.tar.gz"
+        },
+        {
+            "name": "clapack",
+            "version": "3.2.1",
+            "build": "h29e2456_4",
+            "filename_stem": "clapack-3.2.1-h29e2456_4",
+            "filename": "clapack-3.2.1-h29e2456_4.tar.gz"
+        },
+        {
+            "name": "setuptools",
+            "version": "63.4.2",
+            "build": "py310h8bed8af_0",
+            "filename_stem": "setuptools-63.4.2-py310h8bed8af_0",
+            "filename": "setuptools-63.4.2-py310h8bed8af_0.tar.gz"
+        },
+        {
+            "name": "scipy",
+            "version": "1.8.1",
+            "build": "py310h74ff0a5_4",
+            "filename_stem": "scipy-1.8.1-py310h74ff0a5_4",
+            "filename": "scipy-1.8.1-py310h74ff0a5_4.tar.gz"
+        },
+        {
+            "name": "wheel",
+            "version": "0.40.0",
+            "build": "pyhd8ed1ab_0",
+            "filename_stem": "wheel-0.40.0-pyhd8ed1ab_0",
+            "filename": "wheel-0.40.0-pyhd8ed1ab_0.tar.gz"
+        },
+        {
+            "name": "numpy",
+            "version": "1.24.2",
+            "build": "py310h6d2fff6_0",
+            "filename_stem": "numpy-1.24.2-py310h6d2fff6_0",
+            "filename": "numpy-1.24.2-py310h6d2fff6_0.tar.gz"
+        },
+        {
+            "name": "pyjs",
+            "version": "1.0.0",
+            "build": "hc96583f_0",
+            "filename_stem": "pyjs-1.0.0-hc96583f_0",
+            "filename": "pyjs-1.0.0-hc96583f_0.tar.gz"
+        },
+        {
+            "name": "emscripten-abi",
+            "version": "3.1.27",
+            "build": "hb0f4dca_6",
+            "filename_stem": "emscripten-abi-3.1.27-hb0f4dca_6",
+            "filename": "emscripten-abi-3.1.27-hb0f4dca_6.tar.gz"
+        },
+        {
+            "name": "pyparsing",
+            "version": "3.0.9",
+            "build": "pyhd8ed1ab_0",
+            "filename_stem": "pyparsing-3.0.9-pyhd8ed1ab_0",
+            "filename": "pyparsing-3.0.9-pyhd8ed1ab_0.tar.gz"
+        },
+        {
+            "name": "pip",
+            "version": "23.1.2",
+            "build": "pyhd8ed1ab_0",
+            "filename_stem": "pip-23.1.2-pyhd8ed1ab_0",
+            "filename": "pip-23.1.2-pyhd8ed1ab_0.tar.gz"
+        },
+        {
+            "name": "python",
+            "version": "3.10.2",
+            "build": "h_hash_26_cpython",
+            "filename_stem": "python-3.10.2-h_hash_26_cpython",
+            "filename": "python-3.10.2-h_hash_26_cpython.tar.gz"
+        },
+        {
+            "name": "qutip",
+            "version": "4.7.0",
+            "build": "py310h5ec3be7_1",
+            "filename_stem": "qutip-4.7.0-py310h5ec3be7_1",
+            "filename": "qutip-4.7.0-py310h5ec3be7_1.tar.gz"
+        }
+    ]
+}
