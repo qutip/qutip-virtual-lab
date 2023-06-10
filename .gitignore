@@ -24,4 +24,10 @@ dist-ssr
 *.sw?
 /wasm/**
 
+# build artifacts
 .parcel-cache
+*.tar.gz
+build/**
+*.wasm
+**/empack/**
+**/pyjs/**
