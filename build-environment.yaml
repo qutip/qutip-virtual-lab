@@ -1,4 +1,4 @@
-name: build
+name: base
 channels:
   - conda-forge
   - https://repo.mamba.pm/emscripten-forge

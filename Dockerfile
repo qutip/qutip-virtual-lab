@@ -5,19 +5,24 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER build-environment.yaml /tmp/build-environme
 COPY --chown=$MAMBA_USER:$MAMBA_USER web-environment.yaml /tmp/web-environment.yaml
 COPY --chown=$MAMBA_USER:$MAMBA_USER empack_config.yaml /tmp/empack_config.yaml
 
-# create build and web conda envs
-RUN micromamba create --yes --file /tmp/build-environment.yaml
-RUN eval "$(micromamba shell hook --shell=bash)" && \
-    micromamba activate build && \
-    micromamba create --yes --platform=emscripten-32 --file /tmp/web-environment.yaml && \
+# create base and web conda envs
+RUN micromamba install -n base \
+    --yes --file /tmp/build-environment.yaml \
+    && \
+    micromamba create \
+    --yes \
+    --platform=emscripten-32 \
+    --file /tmp/web-environment.yaml && \
     micromamba clean --all --yes
+
+# activate env
+ARG ENV_NAME=base
+ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
 # pack pyjs dependencies
 RUN mkdir -p /tmp/build
-RUN eval "$(micromamba shell hook --shell=bash)" && \
-    micromamba activate build && \
-     empack pack env \
-    --env-prefix=web \
+RUN empack pack env \
+    --env-prefix=$MAMBA_ROOT_PREFIX/envs/web \
     --relocate-prefix=/ \
     --no-use-cache \
     --outdir=/tmp/build \
