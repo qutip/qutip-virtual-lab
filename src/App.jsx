@@ -7,38 +7,40 @@ import React, {
 
 import { hot } from 'react-hot-loader/root';
 
-import reactLogo from './assets/react.svg';
+import Details from './Details';
+import Footer from './Footer';
+import Laboratory from './Laboratory';
 import loadWasm from './loadWasm';
+import Results from './Results';
 
 function App() {
-  const [qutipVersion, setQutipVersion] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [qutipVersion, setQutipVersion] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const init = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       const pyjs = await loadWasm(setQutipVersion)
       const main_scope = pyjs.main_scope()
-      await pyjs.exec("import qutip;  print(qutip.__version__);", main_scope)
-      setIsLoading(false)
-    }
-    init()
-  }, [])
+      const version = await pyjs.exec("import qutip;  print(qutip.__version__);", main_scope)
+      console.log(version)
+      setIsLoading(false);
+    };
+    // init();
+  }, []);
   return (
     <>
-      <div>
-        <div>QuTip Virtual Lab</div>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="main">
+        <div className="panel--lab">
+          <Laboratory />
+          <Details />
+        </div>
+        <div className="panel--lab">
+        <Results />
+        </div>
       </div>
-      <div className="card">
-        <p>
-          {isLoading ? 'Loading...' : `Running QuTiP version ${qutipVersion}`}
-        </p>
-      </div>
-
+      <Footer isLoading={isLoading} qutipVersion={qutipVersion}/>
     </>
-  )
+  );
 }
 
-export default hot(App)
+export default hot(App);
