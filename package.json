@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "qutip-virtual-lab",
   "private": true,
   "version": "0.0.0",
   "main": "main.jsx",
@@ -7,12 +7,24 @@
     "clean": "rm dist/bundle.js",
     "build-dev": "webpack --mode development",
     "build-prod": "webpack --mode production",
-    "start": "webpack serve --hot --mode development"
+    "start": "webpack serve --hot --mode development",
+    "build:dockerimage": "sudo docker build -t qutip-virtual-lab .",
+    "copy_runtime": "sudo docker run --user=root --mount type=bind,source=${PWD}/src/pyjs,target=/runtime qutip-virtual-lab cp -a /tmp/build/. /runtime",
+    "build:runtime": "npm run build:dockerimage && npm run copy_runtime",
+    "build:with_docker": "npm run build:runtime && npm run build-dev",
+    "start:with_docker": "npm run build:with_docker && npm run start"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@react-three/fiber": "^8.13.3",
+    "@types/three": "^0.152.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "request": "2.79.0"
+    "react-katex": "^3.0.1",
+    "request": "2.79.0",
+    "three": "^0.153.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.1",
