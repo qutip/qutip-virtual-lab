@@ -1,74 +1,67 @@
-const webpack = require('webpack');
-const path = require('path');
-const CopyPlugin = require('copy-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
-// TODO: edit to copy over wasm and js assets
-// will be fixed when we can load createModule 
-// without an error
+const webpack = require("webpack");
+const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const config = {
-  entry: [
-    'react-hot-loader/patch',
-    './src/main.jsx'
-  ],
+  entry: ["react-hot-loader/patch", "./src/main.jsx"],
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
+  },
+  resolve: {
+    extensions: ['', '.js', '.jsx']
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        use: 'babel-loader',
-        exclude: /node_modules/
+        use: "babel-loader",
+        exclude: /node_modules/,
       },
       {
         test: /\.scss$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader'
-        ]
+        use: ["style-loader", "css-loader", "sass-loader"],
       },
       {
         test: /\.svg$/,
-        use: 'file-loader'
+        use: "file-loader",
       },
       {
         test: /\.png$/,
         use: [
           {
-            loader: 'url-loader',
+            loader: "url-loader",
             options: {
-              mimetype: 'image/png'
-            }
-          }
-        ]
+              mimetype: "image/png",
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
+        use: ["style-loader", "css-loader"],
       },
-    ]
+    ],
   },
   devServer: {
-    'static': {
-      directory: './dist'
-    }
+    static: {
+      directory: "./dist",
+    },
   },
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: 'src/index.html' }, { from: 'src/pyjs' }],
+      patterns: [
+        { from: "src/index.html" },
+        { from: 'src/pyjs' }
+      ],
     }),
     new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
+      analyzerMode: "static",
       openAnalyzer: false,
-    })
-  ]
+    }),
+  ],
 };
 
 module.exports = config;
