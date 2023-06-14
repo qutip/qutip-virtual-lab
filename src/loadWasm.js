@@ -1,10 +1,7 @@
 import createModule from './pyjs/pyjs_runtime_browser';
 
-console.log(createModule)
-
 const Module = {}
 const makePyJS = async (callback) => {
-    // eslint-disable-next-line no-undef
     const pyjs = await createModule({ print: callback, error: console.error })
     await pyjs.bootstrap_from_empack_packed_environment(
         'empack_env_meta.json',
