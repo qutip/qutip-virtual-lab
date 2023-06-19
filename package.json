@@ -10,7 +10,8 @@
     "start": "webpack serve --hot --mode development",
     "build:dockerimage": "sudo docker build -t qutip-virtual-lab .",
     "copy_runtime": "sudo docker run --user=root --mount type=bind,source=${PWD}/src/pyjs,target=/runtime qutip-virtual-lab cp -a /tmp/build/. /runtime",
-    "build:runtime": "npm run build:dockerimage && npm run copy_runtime",
+    "patch_runtime": "node ./patch_pyjs.js",
+    "build:runtime": "npm run build:dockerimage && npm run copy_runtime && npm run patch_runtime",
     "build:with_docker": "npm run build:runtime && npm run build-dev",
     "start:with_docker": "npm run build:with_docker && npm run start"
   },
