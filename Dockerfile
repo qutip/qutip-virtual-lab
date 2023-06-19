@@ -20,12 +20,12 @@ ARG ENV_NAME=base
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
 # pack pyjs dependencies
-RUN mkdir -p /tmp/build
+RUN mkdir -p /tmp/build/empack
 RUN empack pack env \
     --env-prefix=$MAMBA_ROOT_PREFIX/envs/web \
     --relocate-prefix=/ \
     --no-use-cache \
-    --outdir=/tmp/build \
+    --outdir=/tmp/build/empack \
     --config=empack_config.yaml && \
     cp -r $MAMBA_ROOT_PREFIX/envs/web/lib_js/pyjs/. /tmp/build
 
