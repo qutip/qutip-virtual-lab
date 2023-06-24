@@ -1,0 +1,17 @@
+.label-container {
+    display: inline-block;
+    line-height: 0.9em;
+    color: #efefef;
+    background: #000000;
+    font-size: 18px;
+    font-family: arial;
+    padding: 10px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    margin: 5px 5px;
+    vertical-align: bottom;
+}
+
+.label-container .katex {
+    font-size: 14px;
+}
