@@ -1,5 +1,6 @@
 #!/usr/bin/node
 const fs = require("fs");
+const os = require("os")
 const path = "./src/pyjs/pyjs_runtime_browser.js";
 fs.readFile(path, { encoding: 'utf-8'}, (err, data) => {
   const str = 'package'
@@ -15,6 +16,8 @@ fs.readFile(path, { encoding: 'utf-8'}, (err, data) => {
     patched = patched.replace(new RegExp(reg, 'g'), toReplace)
   })
   patched = patched.replace("import(import_str)", ";");
+  patched += os.EOL
+  patched += "export default createModule"
   fs.writeFileSync(path, patched, {encoding: 'utf-8'})
   console.log("patched");
 });
