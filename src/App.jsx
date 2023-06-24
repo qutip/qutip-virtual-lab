@@ -5,8 +5,6 @@ import React, {
   useState,
 } from 'react';
 
-import { hot } from 'react-hot-loader/root';
-
 import Details from './Details';
 import Footer from './Footer';
 import Laboratory from './Laboratory';
@@ -43,4 +41,4 @@ function App() {
   );
 }
 
-export default hot(App);
+export default App;
