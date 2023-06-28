@@ -1,0 +1,15 @@
+.result-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.result-container > * {
+    flex: none;
+}
+
+.result-container .katex {
+    font-size: 15px;
+}
