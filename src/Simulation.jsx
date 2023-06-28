@@ -59,7 +59,6 @@ export default function Simulation({ children }) {
   };
 
   const loadResults = (results) => {
-    console.log(results, typeof results);
     setResultsBuffer((state) => [...state, JSON.parse(results)]);
   };
 
