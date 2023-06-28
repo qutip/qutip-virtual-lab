@@ -9,6 +9,7 @@ import {
   AxisLeft,
 } from '@visx/axis';
 import { curveMonotoneX } from '@visx/curve';
+import { localPoint } from '@visx/event';
 import {
   LegendItem,
   LegendLabel,
@@ -18,36 +19,68 @@ import {
   scaleLinear,
   scaleOrdinal,
 } from '@visx/scale';
-import { LinePath } from '@visx/shape';
+import {
+  Bar,
+  Line,
+  LinePath,
+} from '@visx/shape';
 
-function zip (...arrays) {
-  return arrays?.[0].map((_,i) => {
-    return arrays.map((array) => array[i])
-  }) 
+function zip(...arrays) {
+  return arrays?.[0].map((_, i) => {
+    return arrays.map((array) => array[i]);
+  });
 }
 
-export default function LineGraph({ data = [] }) {
-  let dataSeq = data.length ? zip(...data, Array.from({length: data[0].length}, (x,i) => i)) : []
-  
-  const getSx = d => d[0]
-  const getSy = d => d[1]
-  const getSz = d => d[2]
-  const getTime = d => d[3]
+const width = 360;
+const height = 80;
+const margin = {
+  top: 10,
+  right: 30,
+  bottom: 10,
+  left: 20,
+};
+
+const axisLeft = 15
+
+export default function LineGraph({ data = [], time, onHover, onBlur }) {
+  let dataSeq = data.length
+    ? zip(
+        ...data,
+        Array.from({ length: data[0].length }, (x, i) => i)
+      )
+    : [];
+
+  const getSx = (d) => d[0];
+  const getSy = (d) => d[1];
+  const getSz = (d) => d[2];
+  const getTime = (d) => d[3];
 
   const xScale = scaleLinear({
     domain: [0, Math.max(...dataSeq.map(getTime))],
-    range: [20, 380],
+    range: [margin.left+axisLeft, axisLeft + margin.left + width],
     nice: true,
   });
   const yScale = scaleLinear({
     domain: [1, -1],
-    range: [10, 90],
+    range: [margin.top, margin.top + height],
     nice: true,
   });
   const colorScale = scaleOrdinal({
-    domain: ["S_x", "S_y", "S_z"],
+    domain: [
+      "\\langle S_x \\rangle",
+      "\\langle S_y \\rangle",
+      "\\langle S_z \\rangle",
+    ],
     range: ["hotpink", "darkviolet", "mediumblue"],
   });
+
+  const lineX = xScale(time)
+
+  const handleHover = (e) => {
+    const { x } = localPoint(e);
+    const time = xScale.invert(x);
+    onHover(Number.isFinite(time) ? time : 0);
+  };
 
   return (
     <div>
@@ -57,7 +90,7 @@ export default function LineGraph({ data = [] }) {
           data={dataSeq}
           x={(d) => xScale(getTime(d))}
           y={(d) => yScale(getSx(d))}
-          stroke={"darkviolet"}
+          stroke={"hotpink"}
           strokeWidth={2}
         />
         <LinePath
@@ -65,7 +98,7 @@ export default function LineGraph({ data = [] }) {
           data={dataSeq}
           x={(d) => xScale(getTime(d))}
           y={(d) => yScale(getSy(d))}
-          stroke={"hotpink"}
+          stroke={"darkviolet"}
           strokeWidth={2}
         />
         <LinePath
@@ -76,11 +109,35 @@ export default function LineGraph({ data = [] }) {
           stroke={"mediumblue"}
           strokeWidth={2}
         />
-
-        <AxisBottom scale={xScale} top={100 / 2} left={15} />
-        <AxisLeft scale={yScale} left={35} numTicks={2} />
+        <AxisBottom scale={xScale} top={100 / 2} />
+        <AxisLeft
+          scale={yScale}
+          left={35}
+          numTicks={2}
+          tickFormat={(v) => v.toFixed(0)}
+        />
+        {data.length && (
+          <>
+              {(time !== null) && <Line
+                from={{ x: lineX, y: margin.top }}
+                to={{ x: lineX, y: height + margin.top }}
+                stroke="black"
+                strokeWidth={2}
+              />}
+            <Bar
+              x={margin.left+axisLeft}
+              y={margin.right}
+              width={width}
+              height={height}
+              fill="transparent"
+              onMouseEnter={handleHover}
+              onMouseMove={handleHover}
+              onMouseLeave={onBlur}
+            />
+          </>
+        )}
       </svg>
-      <div className='label-container'>
+      <div className="label-container">
         <LegendOrdinal scale={colorScale}>
           {(labels) => (
             <div>
@@ -101,5 +158,3 @@ export default function LineGraph({ data = [] }) {
     </div>
   );
 }
-
-
