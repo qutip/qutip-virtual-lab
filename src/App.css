@@ -22,8 +22,15 @@
 
 .panel--lab > * {
     flex: 1 0 auto;
+    border: 1px solid black;
+    padding: 10px;
 }
 
 h2 {
     margin: 0;
+    font-family: monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: normal;
+    color: #252525;
 }
