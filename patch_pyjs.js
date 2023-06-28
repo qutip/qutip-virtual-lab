@@ -1,6 +1,7 @@
 #!/usr/bin/node
-const fs = require("fs");
-const os = require("os")
+import fs from 'fs';
+import os from 'os';
+
 const path = "./src/pyjs/pyjs_runtime_browser.js";
 fs.readFile(path, { encoding: 'utf-8'}, (err, data) => {
   const str = 'package'
