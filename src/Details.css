@@ -20,3 +20,27 @@ button:disabled {
     color: #efefff;
     cursor: wait;
 }
+
+.details-tabs {
+    list-style: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 10px 0 0;
+}
+
+.details-tab {
+    display: inline-block;
+    border-top: 1px solid grey;
+    padding: 5px 10px;
+    font-family: monospace;
+}
+
+.details-tab.active {
+    border-top: 1px solid black;
+    background-color: lightgrey;
+    cursor: initial;
+}
+
+.details-tab--content {
+    border: 1px solid black;
+}
