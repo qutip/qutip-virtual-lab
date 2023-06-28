@@ -1,10 +1,9 @@
 import createModule from './pyjs/pyjs_runtime_browser';
 
-const Module = {}
 const makePyJS = async (callback) => {
     const pyjs = await createModule({ print: callback, error: console.error })
     await pyjs.bootstrap_from_empack_packed_environment(
-        'empack_env_meta.json',
+        './empack/empack_env_meta.json',
         './empack',
         false
     )
