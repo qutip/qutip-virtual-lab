@@ -17,28 +17,49 @@ export const states = {
 export const SimulationContext = createContext({
   state: states.INIT,
   config: {},
-  results: {},
+  results: [],
   setConfig: () => {},
   submit: () => {},
   setResults: () => {},
+  reset: () => {}
 });
 
-const demo = () => {
+const larmorDemo = () => {
   let str = "from qutip import *; import numpy as np; import json;";
   str += "H = sigmax();";
   str += "psi0 = basis(2, 0);";
   str += "tlist = np.linspace(0, 10, 100);";
-  str +=
-    "result = mesolve(H, psi0, tlist, [], [sigmax(), sigmay(), sigmaz()]);";
+  str += "result = mesolve(H, psi0, tlist, [], [sigmax(), sigmay(), sigmaz()]);";
   str += "print(json.dumps(result.expect[0].tolist()));";
   str += "print(json.dumps(result.expect[1].tolist()));";
   str += "print(json.dumps(result.expect[2].tolist()));";
   return str;
 };
 
+const dephasingDemo = () => {
+  let str = "from qutip import *; import numpy as np; import json;";
+  str += 'theta = 0.2 * np.pi;'
+  str += 'delta = np.pi;'
+  str += 'psi0 = basis(2, 0);'
+  str += 'H = delta * (np.cos(theta) * sigmaz() + np.sin(theta) * sigmax());'
+  str += 'gamma_phase = 0.5;'
+  str += 'c_ops = [np.sqrt(gamma_phase) * sigmaz()];'
+  str += 'tlist = np.linspace(0, 5, 1000);'
+  str += "result = mesolve(H, psi0, tlist, c_ops, [sigmax(), sigmay(), sigmaz()]);";
+  str += "print(json.dumps(result.expect[0].tolist()));";
+  str += "print(json.dumps(result.expect[1].tolist()));";
+  str += "print(json.dumps(result.expect[2].tolist()));";
+  return str;
+}
+
+const demos = {
+  LARMOR: larmorDemo,
+  DEPHASING: dephasingDemo,
+}
+
 export default function Simulation({ children }) {
-  const [config, setConfig] = useState({});
-  const [results, setResults] = useState({});
+  const [config, setConfig] = useState({name: 'LARMOR'});
+  const [results, setResults] = useState([]);
   const [state, setSimState] = useState(states.INIT)
 
   const pyjsRef = useRef(null);
@@ -50,7 +71,8 @@ export default function Simulation({ children }) {
         pyjsRef.current = await loadWasm(loadResults);
       }
       setSimState(states.SIMULATING);
-      await pyjsRef.current.exec(demo());
+      console.log(config.name)
+      await pyjsRef.current.exec(demos[config.name]());
     } catch (e) {
       console.error(e);
     } finally {
@@ -64,9 +86,16 @@ export default function Simulation({ children }) {
 
   useEffect(() => {
     if (state === states.SIMULATED) {
+      console.log(resultsBuffer)
       setResults(resultsBuffer);
     }
   }, [state]);
+
+  const reset = () => {
+    setSimState(() => states.INIT)
+    setResultsBuffer([])
+    setResults([])
+  }
 
   const value = {
     state,
@@ -74,6 +103,7 @@ export default function Simulation({ children }) {
     results,
     submit,
     setConfig,
+    reset,
   };
 
   return (
