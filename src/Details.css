@@ -1,0 +1,22 @@
+#details {
+    position: relative;
+}
+
+button {
+    border-radius: 5px; 
+    border: none;
+    font-size: 32;
+    padding: 10px 25px; 
+    cursor: pointer;
+    color: #efefff;
+    background-color: #252525;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+button:disabled {
+    background-color: #575757;
+    color: #efefff;
+    cursor: wait;
+}
