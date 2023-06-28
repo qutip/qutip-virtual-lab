@@ -13,3 +13,12 @@
 .result-container .katex {
     font-size: 15px;
 }
+
+.results-placeholder {
+    font-size: 15px;
+    color: grey;
+    padding: 20px 40px;
+    margin-top: 20px;
+    background-color: lightgray;
+    border-radius: 5px;
+}
