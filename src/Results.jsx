@@ -22,11 +22,15 @@ export default function Results() {
     <div>
       <h2>Results</h2>
       <div className="result-container">
-        <BlochSphere time={time} data={results}/>
-        <LineGraph time={time} data={results}/>
-      </div>
-      <div className="result-controls">
-        <input type="range" value={time} onChange={setTime}/>
+        {!results.length ? (
+          <div className='results-placeholder'>
+            Press 'Simulate' to view the results here!
+            </div>
+        ): (
+          <>
+          <BlochSphere time={time} data={results}/>
+        <LineGraph data={results} onHover={setTime} time={time} onBlur={() => setTime(null)}/>
+        </>)}
       </div>
     </div>
   );
