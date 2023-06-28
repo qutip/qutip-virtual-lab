@@ -2,7 +2,6 @@ import './LineGraph.css';
 
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { InlineMath } from 'react-katex';
 
 import {
@@ -21,22 +20,22 @@ import {
 } from '@visx/scale';
 import { LinePath } from '@visx/shape';
 
-const demoData = Array.from({ length: 20 }, (x, i) => ({
-  time: i,
-  sx: Math.sin(i / 2),
-  sy: Math.cos(i / 2),
-  sz: 1,
-}));
+function zip (...arrays) {
+  return arrays?.[0].map((_,i) => {
+    return arrays.map((array) => array[i])
+  }) 
+}
 
-export default function LineGraph({ data = demoData }) {
-  const getSy = (d) => d.sy;
-  const getSx = (d) => d.sx;
-  const getSz = (d) => d.sz;
-
-  const getTime = (d) => d.time;
+export default function LineGraph({ data = [] }) {
+  let dataSeq = data.length ? zip(...data, Array.from({length: data[0].length}, (x,i) => i)) : []
+  
+  const getSx = d => d[0]
+  const getSy = d => d[1]
+  const getSz = d => d[2]
+  const getTime = d => d[3]
 
   const xScale = scaleLinear({
-    domain: [0, data.length],
+    domain: [0, Math.max(...dataSeq.map(getTime))],
     range: [20, 380],
     nice: true,
   });
@@ -47,7 +46,7 @@ export default function LineGraph({ data = demoData }) {
   });
   const colorScale = scaleOrdinal({
     domain: ["S_x", "S_y", "S_z"],
-    range: ["#333", "#888", "#aaa"],
+    range: ["hotpink", "darkviolet", "mediumblue"],
   });
 
   return (
@@ -55,26 +54,26 @@ export default function LineGraph({ data = demoData }) {
       <svg width={400} height={100}>
         <LinePath
           curve={curveMonotoneX}
-          data={data}
+          data={dataSeq}
           x={(d) => xScale(getTime(d))}
           y={(d) => yScale(getSx(d))}
-          stroke={"#888"}
+          stroke={"darkviolet"}
           strokeWidth={2}
         />
         <LinePath
           curve={curveMonotoneX}
-          data={data}
+          data={dataSeq}
           x={(d) => xScale(getTime(d))}
           y={(d) => yScale(getSy(d))}
-          stroke={"#333"}
+          stroke={"hotpink"}
           strokeWidth={2}
         />
         <LinePath
           curve={curveMonotoneX}
-          data={data}
+          data={dataSeq}
           x={(d) => xScale(getTime(d))}
           y={(d) => yScale(getSz(d))}
-          stroke={"#aaa"}
+          stroke={"mediumblue"}
           strokeWidth={2}
         />
 
@@ -103,13 +102,4 @@ export default function LineGraph({ data = demoData }) {
   );
 }
 
-LineGraph.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      time: PropTypes.number,
-      sx: PropTypes.number,
-      sy: PropTypes.number,
-      sz: PropTypes.number,
-    })
-  ),
-};
+
