@@ -1,5 +1,6 @@
 import './App.css';
 
+import Demos from './Demos';
 import Details from './Details';
 import Laboratory from './Laboratory';
 import Results from './Results';
@@ -22,6 +23,7 @@ function App() {
           <Results />
         </details>
         <SubmitButton />
+        <Demos/>
       </div>
     </>
   );

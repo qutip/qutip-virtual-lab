@@ -10,26 +10,28 @@ import LineGraph from './LineGraph';
 import { SimulationContext } from './Simulation';
 
 export default function Results() {
+  const { results } = useContext(SimulationContext);
 
-  const {
-    results, 
-} = useContext(SimulationContext)
-
-  const [time, setTime] = useState(0)
-
+  const [time, setTime] = useState(0);
 
   return (
     <div id="results">
       <div className="result-container">
         {!results.length ? (
-          <div className='results-placeholder'>
+          <div className="results-placeholder">
             Press 'Simulate' to view the results here!
-            </div>
-        ): (
+          </div>
+        ) : (
           <>
-          <BlochSphere time={time} data={results}/>
-        <LineGraph data={results} onHover={setTime} time={time} onBlur={() => setTime(null)}/>
-        </>)}
+            <BlochSphere time={time} data={results} />
+            <LineGraph
+              data={results}
+              onHover={setTime}
+              time={time}
+              onBlur={() => setTime(null)}
+            />
+          </>
+        )}
       </div>
     </div>
   );

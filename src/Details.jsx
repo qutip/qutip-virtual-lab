@@ -1,77 +1,48 @@
 import './Details.css';
 import 'katex/dist/katex.min.css';
 
-import React, {
-  useContext,
-  useState,
-} from 'react';
+import React, { useContext } from 'react';
 
 import { BlockMath } from 'react-katex';
 
 import { SimulationContext } from './Simulation';
 
 export default function Details() {
-  const { state, reset, submit, setConfig } = useContext(SimulationContext);
+  const { state, reset, submit, setConfig, config } =
+    useContext(SimulationContext);
 
-  const tabs = {
-    LARMOR: "LARMOR",
-    DEPHASING: "DEPHASING",
-  };
-
-  const [activeTab, setActiveTab] = useState(tabs.LARMOR);
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-    reset();
-    setConfig(() => ({ name: tab }));
-  };
+  const { Hamiltonian, initialState, collapseOperators, parameters } =
+    config.details;
 
   return (
     <div id="details">
       <div>
-        <details>
-          <summary>Demos</summary>
-          <ul className="details-tabs">
-            <li
-              onClick={() => handleTabClick(tabs.LARMOR)}
-              className={`details-tab ${
-                activeTab === tabs.LARMOR ? "active" : ""
-              }`}
-            >
-              Larmor Precession
-            </li>
-            <li
-              onClick={() => handleTabClick(tabs.DEPHASING)}
-              className={`details-tab ${
-                activeTab === tabs.DEPHASING ? "active" : ""
-              }`}
-            >
-              Qubit Dephasing
-            </li>
-          </ul>
-          <div className="details-tab--content">
-            {activeTab === tabs.LARMOR && (
-              <>
-                <BlockMath>
-                  {"\\mathcal{H} = \\lambda_1 \\sigma_x^{(1)}"}
-                </BlockMath>
-                <BlockMath>{"|\\psi(0)\\rangle = |0\\rangle"}</BlockMath>
-              </>
-            )}
-            {activeTab === tabs.DEPHASING && (
-              <>
-                <BlockMath>
-                  {
-                    "\\mathcal{H} = \\Delta(\\cos(\\theta) \\sigma_z^{(1)} + \\sin(\\theta)\\sigma_x^{(1)})"
-                  }
-                </BlockMath>
-                <BlockMath>
-                  {"C = \\sqrt{\\gamma_p}\\,\\sigma_z^{(1)}"}
-                </BlockMath>
-                <BlockMath>{"|\\psi(0)\\rangle = |0\\rangle"}</BlockMath>
-              </>
-            )}
+        <div className="details-tab--content">
+          <div>
+            <label>Hamiltonian</label>
+            <BlockMath>{`\\mathcal{H} = ${Hamiltonian}`}</BlockMath>
           </div>
-        </details>
+          <div>
+            <label>Initial State</label>
+            <BlockMath>{`|\\psi(0)\\rangle = ${initialState}`}</BlockMath>
+          </div>
+          {!!collapseOperators?.length && (
+            <div>
+              <label>Collapse Operators</label>
+              {collapseOperators.map((C, i) => (
+                <BlockMath>{`C_{${i}} = ${C}`}</BlockMath>
+              ))}
+            </div>
+          )}
+          {!!parameters?.length && (
+            <div>
+              <label>Parameters</label>
+              {parameters.map((p, i) => (
+                <BlockMath>{`${p}`}</BlockMath>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
