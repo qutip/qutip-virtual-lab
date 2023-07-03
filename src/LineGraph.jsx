@@ -65,13 +65,14 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
     range: [margin.top, margin.top + height],
     nice: true,
   });
+  const colors = ["hotpink", "orange", "red"]
   const colorScale = scaleOrdinal({
     domain: [
       "\\langle S_x \\rangle",
       "\\langle S_y \\rangle",
       "\\langle S_z \\rangle",
     ],
-    range: ["hotpink", "darkviolet", "mediumblue"],
+    range: colors,
   });
 
   const lineX = xScale(time)
@@ -90,7 +91,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
           data={dataSeq}
           x={(d) => xScale(getTime(d))}
           y={(d) => yScale(getSx(d))}
-          stroke={"hotpink"}
+          stroke={colors[0]}
           strokeWidth={2}
         />
         <LinePath
@@ -98,7 +99,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
           data={dataSeq}
           x={(d) => xScale(getTime(d))}
           y={(d) => yScale(getSy(d))}
-          stroke={"darkviolet"}
+          stroke={colors[1]}
           strokeWidth={2}
         />
         <LinePath
@@ -106,11 +107,12 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
           data={dataSeq}
           x={(d) => xScale(getTime(d))}
           y={(d) => yScale(getSz(d))}
-          stroke={"mediumblue"}
+          stroke={colors[2]}
           strokeWidth={2}
         />
-        <AxisBottom scale={xScale} top={100 / 2} />
+        <AxisBottom scale={xScale} stroke='#efefef' top={100 / 2} />
         <AxisLeft
+          stroke="#efefef"
           scale={yScale}
           left={35}
           numTicks={2}
@@ -121,7 +123,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
               {(time !== null) && <Line
                 from={{ x: lineX, y: margin.top }}
                 to={{ x: lineX, y: height + margin.top }}
-                stroke="black"
+                stroke="#efefef"
                 strokeWidth={2}
               />}
             <Bar

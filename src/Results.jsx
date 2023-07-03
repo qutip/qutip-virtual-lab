@@ -15,12 +15,11 @@ export default function Results() {
     results, 
 } = useContext(SimulationContext)
 
-
   const [time, setTime] = useState(0)
 
+
   return (
-    <div>
-      <h2>Results</h2>
+    <div id="results">
       <div className="result-container">
         {!results.length ? (
           <div className='results-placeholder'>

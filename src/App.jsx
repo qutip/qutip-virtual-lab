@@ -3,23 +3,27 @@ import './App.css';
 import Details from './Details';
 import Laboratory from './Laboratory';
 import Results from './Results';
-import Simulation from './Simulation';
+import SubmitButton from './SubmitButton';
 
-function App() { 
-  
+function App() {
+
   return (
-    <Simulation>
+    <>
+      <Laboratory />
       <div className="main">
-        <div className="panel--lab">
-          <Laboratory />
-          <Details/>
-        </div>
-        <div className="panel--lab">
-        <Results/>
-        </div>
+        <details id="details-toggle">
+          <summary>DETAILS</summary>
+          <Details />
+        </details>
+        <details id="results-toggle">
+          <summary>
+            RESULTS
+          </summary>
+          <Results />
+        </details>
+        <SubmitButton />
       </div>
-      {/* <Footer isLoading={isLoading} qutipVersion={qutipVersion}/> */}
-    </Simulation>
+    </>
   );
 }
 
