@@ -23,7 +23,7 @@ button {
   background-color: black;
   position: absolute;
   top: 20px;
-  left: 50px;
+  left: 150px;
   border: 1px solid #efefef;
 }
 
@@ -46,7 +46,7 @@ details {
 
 #details-toggle[open] {
   height: 50vh;
-  background-color: #121212
+  background-color: #121212aa
 }
 
 #results-toggle {
@@ -58,7 +58,8 @@ details {
 
 #results-toggle[open] {
   width: 50vw;
-  background-color: #121212;
+  background-color: #121212aa;
+  z-index: 3;
 }
 
 summary {
@@ -89,7 +90,7 @@ summary:hover {
 #demos {
   position: absolute;
   top: 20px;
-  left: 30vw;
+  left: 450px;
   border: 1px solid #efefef;
   border-radius: 5px;
 }
