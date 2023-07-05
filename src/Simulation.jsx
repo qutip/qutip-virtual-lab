@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -42,7 +43,7 @@ export default function Simulation({ children }) {
   
   const pyjsRef = useRef(null);
 
-  const submit = async () => {
+  const submit = useCallback(async () => {
     try {
       if (pyjsRef.current === null) {
         setSimState(states.LOADING);
@@ -55,7 +56,7 @@ export default function Simulation({ children }) {
     } finally {
       setSimState(states.SIMULATED);
     }
-  };
+  }, [config]);
 
   const loadResults = (results) => {
     setResultsBuffer((state) => [...state, JSON.parse(results)]);
