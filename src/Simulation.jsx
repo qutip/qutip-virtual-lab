@@ -17,7 +17,7 @@ export const states = {
 const emptyConfig = {
   details: {
     Hamiltonian: "",
-    parameters: [],
+    parameters: [{}],
     collapseOperators: [],
     initialState: "",
   },
