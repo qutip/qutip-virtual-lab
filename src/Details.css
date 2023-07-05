@@ -19,7 +19,22 @@
 }
 
 .details-tab--content {
+    display: flex;
+    flex-direction: row;
+    padding-right: 40px;
+}
+
+.details-field-cols {
+    flex: 1 1 auto;
+}
+
+.details-field {
     border: 1px solid black;
+}
+
+.details-field .katex-display > .katex {
+    text-align: left;
+    padding: 0 0px 0 12px;
 }
 
 label {
