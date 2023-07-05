@@ -40,7 +40,7 @@ const margin = {
   left: 20,
 };
 
-const axisLeft = 15
+const axisLeft = 15;
 
 export default function LineGraph({ data = [], time, onHover, onBlur }) {
   let dataSeq = data.length
@@ -57,7 +57,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
 
   const xScale = scaleLinear({
     domain: [0, Math.max(...dataSeq.map(getTime))],
-    range: [margin.left+axisLeft, axisLeft + margin.left + width],
+    range: [margin.left + axisLeft, axisLeft + margin.left + width],
     nice: true,
   });
   const yScale = scaleLinear({
@@ -65,7 +65,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
     range: [margin.top, margin.top + height],
     nice: true,
   });
-  const colors = ["hotpink", "orange", "red"]
+  const colors = ["hotpink", "orange", "red"];
   const colorScale = scaleOrdinal({
     domain: [
       "\\langle S_x \\rangle",
@@ -75,7 +75,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
     range: colors,
   });
 
-  const lineX = xScale(time)
+  const lineX = xScale(time);
 
   const handleHover = (e) => {
     const { x } = localPoint(e);
@@ -110,24 +110,32 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
           stroke={colors[2]}
           strokeWidth={2}
         />
-        <AxisBottom scale={xScale} stroke='#efefef' top={100 / 2} />
+        <AxisBottom
+          scale={xScale}
+          stroke="#efefef"
+          top={100 / 2}
+          tickLabelProps={{ fill: "#efefef" }}
+        />
         <AxisLeft
           stroke="#efefef"
           scale={yScale}
           left={35}
           numTicks={2}
           tickFormat={(v) => v.toFixed(0)}
+          tickLabelProps={{ fill: "#efefef" }}
         />
         {data.length && (
           <>
-              {(time !== null) && <Line
+            {time !== null && (
+              <Line
                 from={{ x: lineX, y: margin.top }}
                 to={{ x: lineX, y: height + margin.top }}
                 stroke="#efefef"
                 strokeWidth={2}
-              />}
+              />
+            )}
             <Bar
-              x={margin.left+axisLeft}
+              x={margin.left + axisLeft}
               y={margin.right}
               width={width}
               height={height}
