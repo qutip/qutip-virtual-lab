@@ -33,6 +33,8 @@ export const SimulationContext = createContext({
   submit: () => {},
   setResults: () => {},
   reset: () => {},
+  getDetails: () => {},
+  getSrc: () => {}
 });
 
 export default function Simulation({ children }) {
@@ -40,7 +42,7 @@ export default function Simulation({ children }) {
   const [results, setResults] = useState([]);
   const [state, setSimState] = useState(states.INIT);
   const [resultsBuffer, setResultsBuffer] = useState([]);
-  
+
   const pyjsRef = useRef(null);
 
   const submit = useCallback(async () => {
@@ -74,6 +76,46 @@ export default function Simulation({ children }) {
     setResults([]);
   };
 
+  const getDetails = () => {
+    const { lasers, interactions, baths, qubits } = config
+    const Hamiltonian = ""
+    return {
+      Hamiltonian,
+      parameters: [{}],
+      collapseOperators: [],
+      initialState: `|${"0".repeat(qubits)}\\rangle`,
+    };
+  }
+  
+  const getSrc = () => {
+    const { lasers, interactions, baths, qubits } = config;
+    let imports = "from qutip import *; import numpy as np; import json;";
+    let tlist = "tlist = np.linspace(0, 10, 100)";
+    let psi0 = `psi0 = basis(${qubits}, 0)`;
+    let H = [];
+    lasers.forEach((laser) => {
+      const { qubit, operator, param } = laser;
+      const embedded = Array.from({ length: qubits }, (_, i) =>
+        i === qubit ? `${param}*${operator}()` : "qeye(2)"
+      ).join();
+      H.push(`tensor(${embedded})`);
+    });
+    interactions.forEach((interaction) => {
+      const { pair, operators, param } = interaction;
+      const embedded = Array.from({ length: qubits }, () => "qeye(2)");
+      embedded[pair[0]] = `${operators[0]}()`;
+      embedded[pair[1]] = `${operators[1]}()`;
+      H.push(`${param}*tensor(${embedded.join()})`);
+    });
+    const solve =
+      "result = mesolve(H, psi0, tlist, [], [sigmax(), sigmay(), sigmaz()]";
+    const print = Array.from({ length: 3 })
+      .map((_, i) => `print(json.dumps(result.expect[${i}].tolist()))`)
+      .join(";");
+    return [imports, tlist, psi0, `H = ${H.join("+")}`, solve, print].join(";");
+  }
+
+
   const value = {
     state,
     config,
@@ -81,6 +123,8 @@ export default function Simulation({ children }) {
     submit,
     setConfig,
     reset,
+    // getSrc,
+    // getDetails,
   };
 
   return (
