@@ -21,7 +21,7 @@ export default function Details() {
           <div className="details-field-cols">
             <div className="details-field">
               <label>Hamiltonian</label>
-              <BlockMath>{`\\mathcal{H} = ${Hamiltonian}`}</BlockMath>
+              <BlockMath>{`H = ${Hamiltonian}`}</BlockMath>
             </div>
             <div className="details-field">
               <label>Initial State</label>
