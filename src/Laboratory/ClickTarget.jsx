@@ -11,9 +11,23 @@ const hoverProps = {
 };
 
 const ClickTarget = (props) => {
-  return <Rect {...props} {...hoverProps} fill="transparent" />;
+  return (
+    <Rect
+      {...props}
+      onMouseEnter={(e) => {
+        hoverProps.onMouseEnter(e);
+        props.onMouseEnter?.(e)
+      }}
+      onMouseLeave={(e) => {
+        hoverProps.onMouseLeave(e);
+        props.onMouseLeave?.(e)
+      }}
+      fill="transparent"
+      onTap={props.onClick}
+    />
+  );
 };
 
 export { hoverProps, setCursorStyle };
 
-export default ClickTarget
+export default ClickTarget;
