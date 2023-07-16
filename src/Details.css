@@ -25,11 +25,13 @@
 }
 
 .details-field-cols {
-    flex: 1 1 auto;
+    flex: 0 1 50%;
 }
 
 .details-field {
     border: 1px solid black;
+    overflow: scroll;
+    max-height: 25vh;
 }
 
 .details-field .katex-display > .katex {
