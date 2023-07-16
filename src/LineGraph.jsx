@@ -85,7 +85,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
 
   return (
     <div>
-      <svg width={400} height={100}>
+      <svg width={300} height={100}>
         <LinePath
           curve={curveMonotoneX}
           data={dataSeq}
