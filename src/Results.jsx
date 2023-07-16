@@ -22,15 +22,20 @@ export default function Results() {
             Press 'Simulate' to view the results here!
           </div>
         ) : (
-          <>
-            <BlochSphere time={time} data={results} />
-            <LineGraph
-              data={results}
-              onHover={setTime}
-              time={time}
-              onBlur={() => setTime(null)}
-            />
-          </>
+          results.map((data, i) => (
+            <>
+            <h2 style={{alignSelf: 'start'}}>Qubit {i}</h2>
+              <BlochSphere time={time} data={data} key={"b" + i} />
+              <LineGraph
+                key={"lg" + i}
+                data={data}
+                onHover={setTime}
+                time={time}
+                onBlur={() => setTime(null)}
+              />
+              <hr style={{backgroundColor: 'white', width: '100%', height: 1}}/>
+            </>
+          ))
         )}
       </div>
     </div>

@@ -1,5 +1,6 @@
 #results {
     padding: 20px;
+
 }
 
 .result-container {
@@ -8,6 +9,8 @@
     justify-content: space-around;
     align-items: center;
     width: 100%;
+    max-height: calc(100vh - 40px);
+    overflow: scroll;
 }
 
 .result-container > * {
