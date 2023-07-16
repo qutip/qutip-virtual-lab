@@ -42,8 +42,6 @@ const BoundsMarkers = ({ width, height }) => {
               height={l / 4}
               fill="orange"
               stroke="orange"
-              shadowBlur={10}
-              shadowColor={"red"}
               strokeWidth={1}
               x={startOffset + i * spacing}
               y={padding}
@@ -53,8 +51,6 @@ const BoundsMarkers = ({ width, height }) => {
               height={2}
               fill="orange"
               stroke="orange"
-              shadowBlur={10}
-              shadowColor={"red"}
               strokeWidth={1}
               y={startOffset + i * spacing}
               x={padding}
@@ -64,8 +60,6 @@ const BoundsMarkers = ({ width, height }) => {
               height={l / 4}
               fill="orange"
               stroke="orange"
-              shadowBlur={10}
-              shadowColor={"red"}
               strokeWidth={1}
               x={startOffset + i * spacing}
               y={height - padding - l / 4}
@@ -75,8 +69,6 @@ const BoundsMarkers = ({ width, height }) => {
               height={2}
               fill="orange"
               stroke="orange"
-              shadowBlur={10}
-              shadowColor={"red"}
               strokeWidth={1}
               y={startOffset + i * spacing}
               x={width - padding - l / 4}
