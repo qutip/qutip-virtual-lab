@@ -22,7 +22,8 @@ const emptyConfig = {
     collapseOperators: [],
     initialState: "",
   },
-  src: ""
+  src: "",
+  qubits: 0
 }
 
 export const SimulationContext = createContext({
