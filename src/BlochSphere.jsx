@@ -23,8 +23,8 @@ import {
 
 extend({ TextGeometry });
 
-const width = 200;
-const height = 220;
+const width = 100;
+const height = 120;
 const origin = new Vector3(0, 0, 0);
 
 const SPHERE_RADIUS = 1;
@@ -39,7 +39,7 @@ export default function ({ data = [[], [], []], time }) {
       <Canvas
         orthographic
         camera={{
-          zoom: 50,
+          zoom: 35,
           position: [5, 5, 5],
           near: 1,
           far: 100,
@@ -131,16 +131,20 @@ const ThreeDimAxis = () => {
     0.1 * SPHERE_RADIUS,
     0.1 * SPHERE_RADIUS,
   ];
+  const xAxisLabel = new Vector3(1.25*SPHERE_RADIUS, 0, 0);
+  const yAxisLabel = new Vector3(0, 1.25*SPHERE_RADIUS, 0);
+  const zAxisLabel = new Vector3(0, 0, 1.25*SPHERE_RADIUS);
+  const negZAxisLabel = new Vector3(0, 0, -1.25*SPHERE_RADIUS);
   return (
     <>
       <arrowHelper args={[xAxis, ...axisArrowArgs]} />
       <arrowHelper args={[yAxis, ...axisArrowArgs]} />
       <arrowHelper args={[zAxis, ...axisArrowArgs]} />
       <arrowHelper args={[negZAxis, ...axisArrowArgs]} />
-      <AxisLabel label={"|0⟩"} position={zAxis.multiplyScalar(1.25)} />
-      <AxisLabel label={"|1⟩"} position={negZAxis.multiplyScalar(1.25)} />
-      <AxisLabel label={"x"} position={xAxis.multiplyScalar(1.25)} />
-      <AxisLabel label={"y"} position={yAxis.multiplyScalar(1.25)} />
+      <AxisLabel label={"|0⟩"} position={zAxisLabel} />
+      <AxisLabel label={"|1⟩"} position={negZAxisLabel} />
+      <AxisLabel label={"x"} position={xAxisLabel} />
+      <AxisLabel label={"y"} position={yAxisLabel} />
     </>
   );
 };
