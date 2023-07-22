@@ -13,7 +13,7 @@ h2 {
     color: #efefef;
 }
 
-button {
+button#submit {
   border-radius: 5px; 
   font-size: 32px;
   text-align: center;
@@ -27,7 +27,7 @@ button {
   border: 1px solid #efefef;
 }
 
-button:disabled {
+button#submit:disabled {
   background-color: #000a;
   color: #efefff;
   cursor: wait;
