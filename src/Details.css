@@ -30,7 +30,8 @@
 
 .details-field {
     border: 1px solid black;
-    overflow: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
     max-height: 25vh;
 }
 
