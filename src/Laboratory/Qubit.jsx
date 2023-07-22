@@ -10,20 +10,9 @@ import {
 
 import ClickTarget from './ClickTarget';
 
-const radius = 40;
+export const radius = 40;
 
-const Qubit = ({
-  x,
-  y,
-  selected,
-  active,
-  onActivate,
-  onSelect,
-  onDeactivate,
-  onAddLaser,
-  onAddInteraction,
-  onAddHeatBath,
-}) => {
+const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled }) => {
   const selectedProps = {
     stroke: "orange",
     opacity: 0.5,
@@ -58,22 +47,14 @@ const Qubit = ({
             fill={"#efefef"}
           />
         </Group>
-        <ClickTarget
+        {!disabled && <ClickTarget
           onClick={onSelect}
           x={x}
           y={y}
           width={4 * radius}
           height={4 * radius}
           {...(selected ? selectedProps : {})}
-        />
-        <QubitMenu
-          x={x - 3 * radius - 5}
-          y={y}
-          visible={selected}
-          onClose={onSelect}
-          onRemoveQubit={onDeactivate}
-          {...{onAddHeatBath, onAddInteraction, onAddLaser}}
-        />
+        />}
       </>
     );
   return <QubitPlaceholder x={x} y={y} onActivate={onActivate} />;
@@ -97,7 +78,7 @@ export const QubitPlaceholder = ({ x, y, onActivate }) => {
         />
         <Text
           text={"ADD QUBIT"}
-          x={x+10}
+          x={x + 10}
           y={y + 2 * radius}
           fill="white"
           fontSize={18}
@@ -117,7 +98,7 @@ export const QubitPlaceholder = ({ x, y, onActivate }) => {
   );
 };
 
-const QubitMenu = ({
+export const QubitMenu = ({
   x,
   y,
   visible,
@@ -131,7 +112,9 @@ const QubitMenu = ({
   const width = 120;
   const menuItems = [
     { label: "Add Laser", onClick: onAddLaser },
-    { label: "Add Interaction", onClick: onAddInteraction },
+    ...(onAddInteraction
+      ? [{ label: "Add Interaction", onClick: onAddInteraction }]
+      : []),
     { label: "Add Heat Bath", onClick: onAddHeatBath },
     { label: "Remove Qubit", onClick: onRemoveQubit },
   ];
@@ -145,7 +128,7 @@ const QubitMenu = ({
           stroke="white"
           onClick={onClose}
           width={size}
-          height={size-2}
+          height={size - 2}
         />
       </Group>
       <Group visible={visible} x={x} y={y}>
@@ -164,7 +147,7 @@ const QubitMenu = ({
               width={width}
               height={size}
               onClick={onClick}
-              cornerRadius={i == menuItems.length-1 ? [0,0,10,10] : 0}
+              cornerRadius={i == menuItems.length - 1 ? [0, 0, 10, 10] : 0}
             />
           </Group>
         ))}
