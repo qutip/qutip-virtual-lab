@@ -10,6 +10,7 @@ export default function () {
 
   return (
     <button
+      id="submit"
       onClick={submit}
       disabled={[states.SIMULATING, states.LOADING].includes(state)}
     >
