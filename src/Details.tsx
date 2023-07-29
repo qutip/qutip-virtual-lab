@@ -3,16 +3,17 @@ import 'katex/dist/katex.min.css';
 
 import React, { useContext } from 'react';
 
+// @ts-ignore
 import { BlockMath } from 'react-katex';
 
 import { SimulationContext } from './Simulation';
 
 export default function Details() {
-  const { state, reset, submit, setConfig, config } =
+  const { details } =
     useContext(SimulationContext);
 
-  const { Hamiltonian, initialState, collapseOperators, parameters } =
-    config.details;
+  const { Hamiltonian, initialState, collapseOperators, parameters } = details
+    
 
   return (
     <div id="details">
