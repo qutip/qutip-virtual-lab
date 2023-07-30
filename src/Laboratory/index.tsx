@@ -5,7 +5,6 @@ import React, {
 } from 'react';
 
 // @ts-ignore
-import { InlineMath } from 'react-katex';
 import {
   Group,
   Layer,
@@ -17,9 +16,11 @@ import {
   type PauliOperator,
   type PauliOperatorKey,
   PauliOperators,
+  PauliX,
   type QubitId,
 } from '../simulationUtils';
 import AddInteractionModal from './AddInteractionModal';
+import Bath from './Bath';
 import Grid from './Grid';
 import Interaction from './Interaction';
 import InteractionModal from './InteractionModal';
@@ -39,7 +40,13 @@ const width = window.innerWidth - margin.right;
 const height = window.innerHeight - margin.bottom;
 const center = { x: width / 2, y: height / 2 };
 
-enum QubitPosition { TOP_LEFT = "TOP_LEFT", TOP_RIGHT = "TOP_RIGHT", BOTTOM_LEFT = "BOTTOM_LEFT", BOTTOM_RIGHT = "BOTTOM_RIGHT" }
+enum QubitPosition {
+  TOP_LEFT = "TOP_LEFT",
+  TOP_RIGHT = "TOP_RIGHT",
+  BOTTOM_LEFT = "BOTTOM_LEFT",
+  BOTTOM_RIGHT = "BOTTOM_RIGHT"
+}
+
 type QubitInteractions = `${QubitPosition},${QubitPosition}`
 
 interface QubitCoords {
@@ -55,10 +62,10 @@ const qubitIds: Record<QubitPosition, QubitId> = {
 }
 
 const qubitPositions: Record<QubitPosition, QubitCoords> = {
-  TOP_LEFT: { x: center.x - 270, y: center.y - 100 },
-  TOP_RIGHT: { x: center.x + 90, y: center.y - 100 },
-  BOTTOM_LEFT: { x: center.x - 90, y: center.y + 100 },
-  BOTTOM_RIGHT: { x: center.x + 270, y: center.y + 100 },
+  TOP_LEFT: { x: center.x - 270, y: center.y + 50 },
+  TOP_RIGHT: { x: center.x + 90, y: center.y + 50 },
+  BOTTOM_LEFT: { x: center.x - 90, y: center.y - 50 },
+  BOTTOM_RIGHT: { x: center.x + 270, y: center.y - 50 },
 } as const
 
 
@@ -86,9 +93,7 @@ export default function Laboratory() {
   const [isAddingInteraction, setIsAddingInteraction] = useState(false);
   const [interactionSourceQubit, setInteractionSourceQubit] = useState<undefined | QubitPosition>();
   const [interactionTargetQubit, setInteractionTargetQubit] = useState<undefined | QubitPosition>();
-  const [interactionModalVisible, setInteractionModalVisible] = useState<boolean>(
-    false
-  );
+  const [interactionModalVisible, setInteractionModalVisible] = useState<boolean>(false);
   const [interactions, setInteractions] = useState<Array<{ qubits: [QubitPosition, QubitPosition], label: PauliOperatorKey }>>([])
 
   const numActiveQubits = useMemo(() => {
@@ -103,7 +108,15 @@ export default function Laboratory() {
       ...positions,
       [position]: true
     }));
-    setConfig((config) => ({ ...config, qubits: Math.min(4, config.qubits + 1) }));
+
+    setConfig((config) => ({
+      ...config,
+      qubits: Math.min(4, config.qubits + 1),
+      initialStates: {
+        ...config.initialStates,
+        [qubitIds[position]]: '-z'
+      }
+    }));
   };
 
   const handleRemoveQubit = (position) => {
@@ -112,6 +125,15 @@ export default function Laboratory() {
       ...positions,
       [position]: false
     }));
+    setConfig((config) => {
+      const newInitialStates = config.initialStates
+      delete newInitialStates[qubitIds[position]]
+      return {
+        ...config,
+        qubits: Math.max(0, config.qubits - 1),
+        initialStates: newInitialStates,
+      }
+    });
   };
 
   const handleSelectQubit = (key: QubitPosition) => {
@@ -176,7 +198,7 @@ export default function Laboratory() {
           return {
             qubitId: qubitIds[key],
             operator: PauliOperators[laser.orientation],
-            parameter: { label: 'l', src: 'l', value: 1 } // TODO: fix me
+            parameter: { label: `\\lambda_${qubitIds[key]}`, src: `lambda_${qubitIds[key]}`, value: 1 }
           }
         })
     }))
@@ -197,14 +219,21 @@ export default function Laboratory() {
           return {
             qubitId: qubitIds[key],
             operator: PauliOperators[laser.orientation],
-            parameter: { label: 'l', src: 'l', value: 1 } // TODO: fix me
+            parameter: { label: `\\lambda_${qubitIds[key]}`, src: `lambda_${qubitIds[key]}`, value: 1 }
           }
         })
     }
     ))
   }
 
-  const handleAddHeatBath = () => { };
+  const handleToggleBath = () => {
+    setConfig(config => ({
+      ...config,
+      baths: config.baths.length ? [] : [{ label: '', parameter: { label: '\\gamma_p', src: '', value: 1 }, operator: PauliX }]
+    }))
+  };
+
+  console.log(numActiveQubits)
 
   return (
     <>
@@ -215,6 +244,8 @@ export default function Laboratory() {
       >
         <Layer>
           <Grid width={width} height={height} />
+          {(Object.entries(config.baths)).map(([key, { }]) => <Bath position={center} key={key + 'b'} />)}
+
           {(Object.entries(lasers) as Array<[QubitPosition, { orientation, on }]>).map(([key, { orientation, on }]) => (
             activeQubits[key] && <Laser
               on={on}
@@ -236,30 +267,31 @@ export default function Laboratory() {
             ))}
             {(Object.entries(activeQubits) as Array<[QubitPosition, boolean]>).map(
               ([key, active]) => (
-                <>
-                  <Qubit
-                    key={key}
-                    selected={qubitSelected === key}
-                    active={active}
-                    onActivate={() => handleAddQubit(key)}
-                    onSelect={() => handleSelectQubit(key)}
-                    disabled={isAddingInteraction && (interactionSourceQubit === key)}
-                    {...qubitPositions[key]}
-                  />
-                  <QubitMenu
-                    visible={qubitSelected === key}
-                    onClose={() => handleSelectQubit(key as QubitPosition)}
-                    onRemoveQubit={() => handleRemoveQubit(key)}
-                    onAddHeatBath={handleAddHeatBath}
-                    onAddLaser={() => handleToggleLaser(key)}
-                    onAddInteraction={numActiveQubits > 1 ? () => handleAddInteraction(key) : noop}
-                    {...qubitPositions[key]}
-                  />
-                </>
-              )
-            )}
+                (
+                  <>
+                    <Qubit
+                      key={key}
+                      selected={qubitSelected === key}
+                      active={active}
+                      onActivate={() => handleAddQubit(key)}
+                      onSelect={() => handleSelectQubit(key)}
+                      disabled={isAddingInteraction && (interactionSourceQubit === key)}
+                      {...qubitPositions[key]}
+                    />
+                    <QubitMenu
+                      visible={qubitSelected === key}
+                      onClose={() => handleSelectQubit(key as QubitPosition)}
+                      onRemoveQubit={() => handleRemoveQubit(key)}
+                      onToggleBath={() => handleToggleBath()}
+                      onAddLaser={() => handleToggleLaser(key)}
+                      onAddInteraction={numActiveQubits > 1 ? () => handleAddInteraction(key) : false}
+                      {...qubitPositions[key]}
+                    />
+                  </>
+                )
+              ))}
           </Group>
-          
+
         </Layer>
       </Stage>
       {isAddingInteraction && !interactionModalVisible && (
