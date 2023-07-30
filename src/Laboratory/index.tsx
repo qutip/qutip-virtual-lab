@@ -125,6 +125,7 @@ export default function Laboratory() {
       ...positions,
       [position]: false
     }));
+    setInteractions(interactions => interactions.filter(({qubits}) => !qubits.includes(position)))
     setConfig((config) => {
       const newInitialStates = config.initialStates
       delete newInitialStates[qubitIds[position]]
@@ -132,6 +133,7 @@ export default function Laboratory() {
         ...config,
         qubits: Math.max(0, config.qubits - 1),
         initialStates: newInitialStates,
+        interactions: config.interactions.filter(({qubitIds: qubits}) => !qubits.includes(qubitIds[position]))
       }
     });
   };
@@ -232,8 +234,6 @@ export default function Laboratory() {
       baths: config.baths.length ? [] : [{ label: '', parameter: { label: '\\gamma_p', src: '', value: 1 }, operator: PauliX }]
     }))
   };
-
-  console.log(numActiveQubits)
 
   return (
     <>
