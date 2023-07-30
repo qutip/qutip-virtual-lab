@@ -45,8 +45,8 @@ details {
 }
 
 #details-toggle[open] {
-  height: 50vh;
-  background-color: #121212aa
+  height: 80vh;
+  background-color: #121212ee
 }
 
 #results-toggle {
@@ -57,8 +57,8 @@ details {
 }
 
 #results-toggle[open] {
-  width: 50vw;
-  background-color: #121212aa;
+  width: 100vw;
+  background-color: #121212ee;
   z-index: 3;
 }
 
