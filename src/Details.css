@@ -1,46 +1,46 @@
-.details-tabs {
+#details .details-tabs {
     list-style: none;
     cursor: pointer;
     padding: 0;
     margin: 10px 0 0;
 }
 
-.details-tab {
+#details .details-tab {
     display: inline-block;
     border-top: 1px solid grey;
     padding: 5px 10px;
     font-family: monospace;
 }
 
-.details-tab.active {
+#details .details-tab.active {
     border-top: 1px solid black;
     background-color: lightgrey;
     cursor: initial;
 }
 
-.details-tab--content {
+#details .details-tab--content {
     display: flex;
     flex-direction: row;
     padding-right: 40px;
 }
 
-.details-field-cols {
+#details .details-field-cols {
     flex: 0 1 50%;
 }
 
-.details-field {
+#details .details-field {
     border: 1px solid black;
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 25vh;
 }
 
-.details-field .katex-display > .katex {
+#details .details-field .katex-display > .katex {
     text-align: left;
     padding: 0 0px 0 12px;
 }
 
-label {
+#details label {
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 1px;
