@@ -47,14 +47,27 @@ const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled }) => {
             fill={"#efefef"}
           />
         </Group>
-        {!disabled && <ClickTarget
-          onClick={onSelect}
-          x={x}
-          y={y}
-          width={4 * radius}
-          height={4 * radius}
-          {...(selected ? selectedProps : {})}
-        />}
+        {!disabled && (
+          <ClickTarget
+            onClick={onSelect}
+            x={x}
+            y={y}
+            width={4 * radius}
+            height={4 * radius}
+            {...(selected ? selectedProps : {})}
+          />
+        )}
+        {disabled && (
+          <Rect
+            width={4 * radius}
+            height={4 * radius}
+            fill={"black"}
+            opacity={0.3}
+            x={x}
+            y={y}
+            cornerRadius={15}
+          />
+        )}
       </>
     );
   return <QubitPlaceholder x={x} y={y} onActivate={onActivate} />;
@@ -104,24 +117,24 @@ export const QubitMenu = ({
   visible,
   onClose,
   onAddInteraction,
-  onAddHeatBath,
+  onToggleBath,
   onAddLaser,
   onRemoveQubit,
 }) => {
   const size = radius;
   const width = 120;
   const menuItems = [
-    { label: "Add Laser", onClick: onAddLaser },
+    { label: "Toggle Laser", onClick: onAddLaser },
     ...(onAddInteraction
       ? [{ label: "Add Interaction", onClick: onAddInteraction }]
       : []),
-    { label: "Add Heat Bath", onClick: onAddHeatBath },
+    { label: "Toggle Bath", onClick: onToggleBath },
     { label: "Remove Qubit", onClick: onRemoveQubit },
   ];
   const textPadding = { y: size / 2 - 5, x: 5 };
   return (
     <>
-      <Group visible={visible} x={x} y={y - size}>
+      <Group visible={visible} x={x + 2*radius} y={y + 2*radius}>
         <Rect fill="black" width={width} height={size} stroke="black" />
         <Text text="×" x={7} fill="white" fontSize={40} />
         <ClickTarget
@@ -130,10 +143,8 @@ export const QubitMenu = ({
           width={size}
           height={size - 2}
         />
-      </Group>
-      <Group visible={visible} x={x} y={y}>
         {menuItems.map(({ label, onClick }, i) => (
-          <Group y={i * size}>
+          <Group y={(i+1) * size}>
             <Rect fill="#252525" width={width} height={size} />
             <Text
               text={label}
