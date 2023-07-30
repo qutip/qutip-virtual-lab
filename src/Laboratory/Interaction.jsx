@@ -1,12 +1,26 @@
 import {
   Group,
+  Image,
   Line,
-  Text,
 } from 'react-konva';
+import useImage from 'use-image';
 
+import SxSx from '../assets/sxsx.svg';
+import SySy from '../assets/sysy.svg';
+import SzSz from '../assets/szsz.svg';
 import { radius } from './Qubit';
 
 const Interaction = ({ qubit1Position, qubit2Position, label }) => {
+  const [SxSxImage] = useImage(SxSx)
+  const [SySyImage] = useImage(SySy)
+  const [SzSzImage] = useImage(SzSz)
+
+  const images = {
+    'Sx': SxSxImage,
+    'Sy': SySyImage,
+    'Sz': SzSzImage
+  }
+
   const x1 = qubit1Position.x;
   const y1 = qubit1Position.y;
   const x2 = qubit2Position.x;
@@ -48,7 +62,7 @@ const Interaction = ({ qubit1Position, qubit2Position, label }) => {
         rotation={rotation}
         points={points}
       />
-      <Text {...labelPosition} fill="white" fontSize={25} text={`${label}${label}`} />
+      <Image {...labelPosition} fontSize={25} image={images[label]} fill="#00000000"/>
     </Group>
   );
 };
