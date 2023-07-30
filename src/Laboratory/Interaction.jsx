@@ -48,7 +48,7 @@ const Interaction = ({ qubit1Position, qubit2Position, label }) => {
         rotation={rotation}
         points={points}
       />
-      <Text {...labelPosition} fill="white" fontSize={25} text={label} />
+      <Text {...labelPosition} fill="white" fontSize={25} text={`${label}${label}`} />
     </Group>
   );
 };
