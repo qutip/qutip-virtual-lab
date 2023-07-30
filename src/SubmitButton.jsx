@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import {
   SimulationContext,
-  states,
+  States,
 } from './Simulation';
 
 export default function () {
@@ -12,12 +12,12 @@ export default function () {
     <button
       id="submit"
       onClick={submit}
-      disabled={[states.SIMULATING, states.LOADING].includes(state)}
+      disabled={[States.SIMULATING, States.LOADING].includes(state)}
     >
-      {state === states.INIT && "Simulate   ▶️"}
-      {state === states.LOADING && "Loading QuTiP..."}
-      {state === states.SIMULATING && "Simulating..."}
-      {state === states.SIMULATED && "Run Again ⟳"}
+      {state === States.INIT && "Simulate   ▶️"}
+      {state === States.LOADING && "Loading QuTiP..."}
+      {state === States.SIMULATING && "Simulating..."}
+      {state === States.SIMULATED && "Run Again ⟳"}
     </button>
   );
 }
