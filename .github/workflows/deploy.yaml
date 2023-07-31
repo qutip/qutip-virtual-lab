@@ -15,7 +15,7 @@ jobs:
       run: npm run build:dockerimage && npm run copy_runtime
     - name: Patch pyjs
       run: |
-        chmod -c +rx ./src/pyjs/pyjs_runtime_browser.js
+        chmod -c +rw ./src/pyjs/pyjs_runtime_browser.js
         node ./patch_pyjs.js
     - name: Build web app
       run: npm run build
