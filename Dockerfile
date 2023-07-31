@@ -1,4 +1,4 @@
-FROM mambaorg/micromamba:jammy
+FROM mambaorg/micromamba:latest
 
 # Copy over env/config files
 COPY --chown=$MAMBA_USER:$MAMBA_USER build-environment.yaml /tmp/build-environment.yaml
