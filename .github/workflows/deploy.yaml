@@ -12,7 +12,13 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
     - name: Build w/ docker image
-      run: npm run build:with_docker
+      run: npm run build:dockerimage && npm run copy_runtime
+    - name: Patch pyjs
+      run: |
+        chmod -c -R +rx ./src/pyjs/pyjs_runtime_browser.js
+        node ./patch_pyjs.js
+    - name: Build web app
+      run: npm run build
     - name: Fix permissions
       run: |
         chmod -c -R +rX "_site/" | while read line; do
