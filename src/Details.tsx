@@ -15,60 +15,92 @@ import { InitialState } from './simulationUtils';
 export default function Details() {
   const { details, setConfig, config } =
     useContext(SimulationContext);
-    
-    const initialStateOptions: Array<InitialState> = ["x", "y", "z", "-x", "-y", "-z"]
-    
-    const { Hamiltonian, initialState, collapseOperators, parameters } = details
-    const { initialStates } = config
+
+  const initialStateOptions: Array<{ label: string; state: InitialState }> =
+    [
+      { label: "+", state: 'x' },
+      { label: "-", state: '-x' },
+      { label: 'i', state: "y" },
+      { label: '-i', state: "-y" },
+      { label: '1', state: "z" },
+      { label: '0', state: "-z" }
+    ]
+
+  const { Hamiltonian, initialState, collapseOperators, parameters } = details
+  const { initialStates } = config
+  const { singleQubitTerms, interactionTerms } = Hamiltonian
 
   const handleChangeInitialState = (val: InitialState, qubit) => {
-    let newInitialStates = config.initialStates
-    newInitialStates[qubit] = val
-    setConfig(config => ({...config, initialStates: newInitialStates}))
+    setConfig(config => {
+      let newInitialStates = config.initialStates
+      newInitialStates[qubit] = val
+      return ({ ...config, initialStates: newInitialStates })
+    })
+  }
+
+  const handleChangeParameterValue = (val: number, parameterLabel, key) => {
+    setConfig(config => {
+      return ({
+        ...config,
+        [key]: config[key].map(operator => {
+          if (operator.parameter.label === parameterLabel)
+            return { ...operator, parameter: { ...operator.parameter, value: val } }
+          return operator
+        })
+      })
+    })
   }
 
   return (
     <div id="details">
-      <div>
-        <div className="details-tab--content">
-          <div className="details-field-cols">
+      <div className="details-tab--content">
+        <div className="details-field-cols">
+          <div className="details-field">
+            <label>Hamiltonian</label>
+            <BlockMath>{`H = H_{\\text{sys}} + H_{\\text{int}}`}</BlockMath>
+            <BlockMath>{`H_{\\text{sys}} = ${singleQubitTerms || "0"}`}</BlockMath>
+            <BlockMath>{`H_{\\text{int}} = ${interactionTerms || "0"}`}</BlockMath>
+          </div>
+          <div className="details-field">
+            <label>Initial State</label>
+            {Object.entries(initialStates).map(([key, initialState]) => (
+              <div style={{ paddingLeft: 12, margin: "1em 0" }}>
+                <InlineMath>{`|q_${key}\\rangle = |`}</InlineMath>
+                <select value={initialState} onChange={e => handleChangeInitialState(e.target.value as InitialState, key)}>
+                  {initialStateOptions.map(option => (
+                    <option value={option.state}>{option.label}</option>
+                  ))}
+                </select>
+                <InlineMath>{'\\rangle'}</InlineMath>
+              </div>
+            ))}
+            <BlockMath>{`|\\psi\\rangle = ${initialState}`}</BlockMath>
+          </div>
+        </div>
+        <div className="details-field-cols">
+          {!!collapseOperators?.length && (
             <div className="details-field">
-              <label>Hamiltonian</label>
-              <BlockMath>{`H = ${Hamiltonian}`}</BlockMath>
-            </div>
-            <div className="details-field">
-              <label>Initial State</label>
-              {Object.entries(initialStates).map(([key, initialState]) => (
-                <div>
-                  <InlineMath>{`|q_${key}\\rangle = |`}</InlineMath>
-                  <select value={initialState} onChange={e => handleChangeInitialState(e.target.value as InitialState, key)}>
-                    {initialStateOptions.map(option => (
-                      <option value={option}>{option}</option>
-                    ))}
-                  </select>
-                  <InlineMath>{'\\rangle'}</InlineMath>
-                </div>
+              <label>Collapse Operators</label>
+              {collapseOperators.map((C, i) => (
+                <BlockMath>{`C_{${i}} = ${C.parameter.label}${C.operator.label}`}</BlockMath>
               ))}
-              <BlockMath>{`|\\psi\\rangle = ${initialState}`}</BlockMath>
             </div>
-          </div>
-          <div className="details-field-cols">
-            {!!collapseOperators?.length && (
+          )}
+          {Object.keys(parameters).map(key =>
+            !!parameters[key]?.length && (
               <div className="details-field">
-                <label>Collapse Operators</label>
-                {collapseOperators.map((C, i) => (
-                  <BlockMath>{`C_{${i}} = ${C.parameter.label}${C.operator.label}`}</BlockMath>
-                ))}
+                <label>{`${key.slice(0, -1)} Parameters`}</label>
+                {
+                  parameters[key].map(({ label, value }, i) => {
+                    return (label) && (<div style={{ padding: 12, margin: '0.5em 0' }}>
+                      <InlineMath>{`${label} = `}</InlineMath>
+                      <input type="number" width="2" value={value} onChange={e => handleChangeParameterValue(Number(e.target.value) as number, label, key)} />
+                    </div>)
+                  })
+                }
               </div>
-            )}
-            {!!parameters?.length && (
-              <div className="details-field">
-                <label>Parameters</label>
-                {parameters.map(({ label, value }, i) => { return (label) && (<BlockMath>{`${label} = ${value}`}</BlockMath>) }
-                )}
-              </div>
-            )}
-          </div>
+            )
+          )}
         </div>
       </div>
     </div>

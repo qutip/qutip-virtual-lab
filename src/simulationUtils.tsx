@@ -58,8 +58,15 @@ type CollapseOperator = {
 }
 
 export interface SimulationConfigDetails {
-    Hamiltonian: string;
-    parameters: Array<SimulationParameter>;
+    Hamiltonian: {
+        singleQubitTerms: string;
+        interactionTerms: string;
+    };
+    parameters: {
+        lasers: Array<SimulationParameter>;
+        interactions: Array<SimulationParameter>;
+        baths: Array<SimulationParameter>;
+    };
     collapseOperators: Array<CollapseOperator>;
     initialState: string;
 }
@@ -96,24 +103,24 @@ export const getDetails = (config: SimulationConfig): SimulationConfigDetails =>
             + `${interaction.operator.label}^{(${interaction.qubitIds[1]})}`
         interactionTerms = [...interactionTerms, str]
     })
-    let H: Array<string> = [...singleQubitTerms, ...interactionTerms]
+    let H = { singleQubitTerms: singleQubitTerms.join('+'), interactionTerms: interactionTerms.join('+') }
 
     const getParameter = v => v.parameter
-    const parameters = [
-        ...Object.values(lasers).map(getParameter),
-        ...interactions.map(getParameter),
-        ...baths.map(getParameter)
-    ]
+    const parameters = {
+        lasers: Object.values(lasers).map(getParameter),
+        interactions: interactions.map(getParameter),
+        baths: baths.map(getParameter)
+    }
     const initialState = Object.values(initialStates).map((state) => {
         if (state === '-z') return '|0\\rangle'
         if (state === 'z') return '|1\\rangle'
-        if (state === 'x') return '\\frac{1}{\\sqrt{2}}(|0\\rangle + |1\\rangle)'
-        if (state === '-x') return '\\frac{1}{\\sqrt{2}}(|0\\rangle - |1\\rangle)'
-        if (state === 'y') return '\\frac{1}{\\sqrt{2}}(|0\\rangle + i|1\\rangle)'
-        if (state === '-y') return '\\frac{1}{\\sqrt{2}}(|0\\rangle - i|1\\rangle)'
+        if (state === 'x') return '|+\\rangle'
+        if (state === '-x') return '|-\\rangle'
+        if (state === 'y') return '|i\\rangle'
+        if (state === '-y') return '|-i\\rangle'
     }).join('\\otimes')
     return {
-        Hamiltonian: H.join('+'),
+        Hamiltonian: H,
         parameters,
         collapseOperators: baths,
         initialState

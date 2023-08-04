@@ -40,8 +40,15 @@ export const SimulationContext = createContext<SimulationContext>({
   config: emptyConfig,
   results: [],
   details: {
-    Hamiltonian: "",
-    parameters: [],
+    Hamiltonian: {
+      singleQubitTerms: "",
+      interactionTerms: "",
+    },
+    parameters: {
+      lasers: [],
+      interactions: [],
+      baths: []
+    },
     collapseOperators: [],
     initialState: ""
   },
