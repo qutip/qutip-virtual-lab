@@ -26,6 +26,7 @@ import Interaction from './Interaction';
 import InteractionModal from './InteractionModal';
 import Laser from './Laser';
 import Qubit, { QubitMenu } from './Qubit';
+import RemoveInteractionModal from './RemoveInteractionModal';
 
 const margin = {
   top: 0,
@@ -91,10 +92,11 @@ export default function Laboratory() {
   )
   const [qubitSelected, setQubitSelected] = useState<undefined | QubitPosition>();
   const [isAddingInteraction, setIsAddingInteraction] = useState(false);
+  const [isRemovingInteraction, setIsRemovingInteraction] = useState(false);
   const [interactionSourceQubit, setInteractionSourceQubit] = useState<undefined | QubitPosition>();
   const [interactionTargetQubit, setInteractionTargetQubit] = useState<undefined | QubitPosition>();
   const [interactionModalVisible, setInteractionModalVisible] = useState<boolean>(false);
-  const [interactions, setInteractions] = useState<Array<{ qubits: [QubitPosition, QubitPosition], label: PauliOperatorKey }>>([])
+  const [interactions, setInteractions] = useState<Array<{ qubits: [QubitPosition, QubitPosition], label: PauliOperatorKey, id: string }>>([])
 
   const numActiveQubits = useMemo(() => {
     return Object.values(activeQubits).reduce(
@@ -102,6 +104,24 @@ export default function Laboratory() {
       0
     );
   }, [activeQubits]);
+
+  const interactionsByQubit = useMemo(() => {
+    return interactions.reduce((acc, curr) => {
+      return {
+        ...acc,
+        [curr.qubits[0]]: acc[curr.qubits[0]] ? [...acc[curr.qubits[0]], curr.id] : [curr.id],
+        [curr.qubits[1]]: acc[curr.qubits[1]] ? [...acc[curr.qubits[1]], curr.id] : [curr.id]
+      }
+    }, {})
+  }, [interactions])
+
+  const disabledInteractionOptions: Array<PauliOperatorKey> = useMemo(() => {
+    if (interactionSourceQubit && interactionTargetQubit) {
+      return interactions.filter(interaction => interaction.qubits.includes(interactionSourceQubit) && interaction.qubits.includes(interactionTargetQubit))
+        .map(interaction => interaction.label)
+    }
+    return []
+  }, [interactions, interactionSourceQubit, interactionTargetQubit])
 
   const handleAddQubit = (position) => {
     setActiveQubits((positions) => ({
@@ -125,7 +145,7 @@ export default function Laboratory() {
       ...positions,
       [position]: false
     }));
-    setInteractions(interactions => interactions.filter(({qubits}) => !qubits.includes(position)))
+    setInteractions(interactions => interactions.filter(({ qubits }) => !qubits.includes(position)))
     setConfig((config) => {
       const newInitialStates = config.initialStates
       delete newInitialStates[qubitIds[position]]
@@ -133,7 +153,7 @@ export default function Laboratory() {
         ...config,
         qubits: Math.max(0, config.qubits - 1),
         initialStates: newInitialStates,
-        interactions: config.interactions.filter(({qubitIds: qubits}) => !qubits.includes(qubitIds[position]))
+        interactions: config.interactions.filter(({ qubitIds: qubits }) => !qubits.includes(qubitIds[position]))
       }
     });
   };
@@ -161,16 +181,25 @@ export default function Laboratory() {
   const handleFinishAddInteraction = ({ operatorKey, operator, scalar }: handleFinishAddInteractionArgs) => {
     if (interactionSourceQubit && interactionTargetQubit) {
       const [qubit1, qubit2] = [qubitIds[interactionSourceQubit], qubitIds[interactionTargetQubit]]
-      setInteractions(interactions => [...interactions, { qubits: [interactionSourceQubit, interactionTargetQubit], label: operatorKey }])
+      const id = `${interactionSourceQubit}${interactionTargetQubit}-${operatorKey}`
+      setInteractions(interactions => [
+        ...interactions,
+        {
+          qubits: [interactionSourceQubit, interactionTargetQubit],
+          label: operatorKey,
+          id: id,
+        }
+      ])
       let parameter = {
         value: scalar,
-        label: `\\lambda_{${qubit1}${qubit2}}`,
-        src: `lambda_${qubit1}${qubit2}`
+        label: `\\lambda^{(${qubit1}${qubit2})}_${operator.label.slice(-1)}`,
+        src: `lambda_${qubit1}${qubit2}_${operator.label.slice(-1)}`
       }
       const newInteraction = {
         qubitIds: [qubit1, qubit2],
         operator,
-        parameter
+        parameter,
+        id
       }
       setConfig(config => (
         {
@@ -183,6 +212,28 @@ export default function Laboratory() {
     setInteractionModalVisible(false);
     setInteractionSourceQubit(undefined);
   };
+
+  const handleRemoveInteraction = (qubitId) => {
+    console.log(qubitId)
+    setQubitSelected(undefined);
+    setIsRemovingInteraction(true)
+    setInteractionSourceQubit(qubitId)
+  }
+
+  const handleCancelRemoveInteraction = () => {
+    setIsRemovingInteraction(false);
+    setInteractionSourceQubit(undefined);
+  }
+
+  const handleFinishRemoveInteraction = (interactionId) => {
+    setIsRemovingInteraction(false)
+    setInteractionSourceQubit(undefined)
+    setInteractions(interactions => interactions.filter(interaction => interaction.id !== interactionId))
+    setConfig(config => ({
+      ...config,
+      interactions: config.interactions.filter(interaction => interaction.id !== interactionId)
+    }))
+  }
 
   const handleToggleLaser = (targetQubit: QubitPosition) => {
     const newLasers = lasers
@@ -245,7 +296,6 @@ export default function Laboratory() {
         <Layer>
           <Grid width={width} height={height} />
           {(Object.entries(config.baths)).map(([key, { }]) => <Bath position={center} key={key + 'b'} />)}
-
           {(Object.entries(lasers) as Array<[QubitPosition, { orientation, on }]>).map(([key, { orientation, on }]) => (
             activeQubits[key] && <Laser
               on={on}
@@ -258,11 +308,14 @@ export default function Laboratory() {
             />
           ))}
           <Group x={-120} y={-60}>
-            {interactions.map(({ qubits, label }) => (
+          {interactions.map(({ qubits, label, id }) => (
               <Interaction
                 qubit1Position={qubitPositions[qubits[0]]}
                 qubit2Position={qubitPositions[qubits[1]]}
                 label={label}
+                disabled={interactionSourceQubit ? !qubits.includes(interactionSourceQubit) : false}
+                onRemove={isRemovingInteraction ? () => handleFinishRemoveInteraction(id) : false}
+                isRemoving={isRemovingInteraction}
               />
             ))}
             {(Object.entries(activeQubits) as Array<[QubitPosition, boolean]>).map(
@@ -275,16 +328,17 @@ export default function Laboratory() {
                       active={active}
                       onActivate={() => handleAddQubit(key)}
                       onSelect={() => handleSelectQubit(key)}
-                      disabled={isAddingInteraction && (interactionSourceQubit === key)}
+                      disabled={(isAddingInteraction && (interactionSourceQubit === key)) || isRemovingInteraction}
                       {...qubitPositions[key]}
                     />
                     <QubitMenu
                       visible={qubitSelected === key}
-                      onClose={() => handleSelectQubit(key as QubitPosition)}
+                      onClose={() => setQubitSelected(undefined)}
                       onRemoveQubit={() => handleRemoveQubit(key)}
                       onToggleBath={() => handleToggleBath()}
                       onAddLaser={() => handleToggleLaser(key)}
                       onAddInteraction={numActiveQubits > 1 ? () => handleAddInteraction(key) : false}
+                      onRemoveInteraction={interactionsByQubit[key]?.length ? () => handleRemoveInteraction(key) : false}
                       {...qubitPositions[key]}
                     />
                   </>
@@ -298,7 +352,10 @@ export default function Laboratory() {
         <AddInteractionModal onCancel={handleCancelAddInteraction} />
       )}
       {isAddingInteraction && interactionModalVisible && (
-        <InteractionModal onCancel={handleCancelAddInteraction} onSubmit={handleFinishAddInteraction} />
+        <InteractionModal disabledOptions={disabledInteractionOptions} onCancel={handleCancelAddInteraction} onSubmit={handleFinishAddInteraction} />
+      )}
+      {isRemovingInteraction && (
+        <RemoveInteractionModal onCancel={handleCancelRemoveInteraction} />
       )}
     </>
   );

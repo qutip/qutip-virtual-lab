@@ -48,6 +48,7 @@ export type InteractionOperator = {
     qubitIds: QubitId[];
     operator: PauliOperator;
     parameter: SimulationParameter;
+    id: string;
 }
 
 type CollapseOperator = {

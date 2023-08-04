@@ -1,36 +1,31 @@
 import {
+  Circle,
   Group,
-  Image,
   Line,
+  Text,
 } from 'react-konva';
-import useImage from 'use-image';
 
-import SxSx from '../assets/sxsx.svg';
-import SySy from '../assets/sysy.svg';
-import SzSz from '../assets/szsz.svg';
 import { radius } from './Qubit';
 
-const Interaction = ({ qubit1Position, qubit2Position, label }) => {
-  const [SxSxImage] = useImage(SxSx)
-  const [SySyImage] = useImage(SySy)
-  const [SzSzImage] = useImage(SzSz)
-
-  const images = {
-    'Sx': SxSxImage,
-    'Sy': SySyImage,
-    'Sz': SzSzImage
-  }
-
+const Interaction = ({
+  qubit1Position,
+  qubit2Position,
+  label,
+  onRemove,
+  disabled,
+  isRemoving,
+}) => {
   const x1 = qubit1Position.x;
   const y1 = qubit1Position.y;
   const x2 = qubit2Position.x;
   const y2 = qubit2Position.y;
   const dot = (q1, q2) => q1.x * q2.x + q1.y * q2.y;
   const abs = (q) => Math.sqrt(Math.pow(q.x, 2) + Math.pow(q.y, 2));
-  const rotation = Math.acos(
-    dot(qubit1Position, qubit2Position) /
-      (abs(qubit1Position) * abs(qubit2Position))
-  );
+  const diff = { x: x2 - x1, y: y2 - y1 };
+  const rotation =
+    (180 / Math.PI) *
+    Math.acos(dot(diff, { x: 1, y: 0 }) / (abs(diff) * abs({ x: 1, y: 0 })));
+  const dist = abs(diff);
   const points = Array.from({ length: 200 }).flatMap((_, i) => [
     // i / 4,
     // 10 * Math.sin(Math.PI * (i / 200)) * Math.sin(Math.PI * (i / 15)),
@@ -44,25 +39,51 @@ const Interaction = ({ qubit1Position, qubit2Position, label }) => {
     x2: -y2 / abs(qubit2Position),
     y2: x2 / abs(qubit2Position),
   };
-  const labelPosition = {x: lineMidpointPosition.x + 30*lineNormal.x1, y: lineMidpointPosition.y + 30*lineNormal.y1 }
+  const labelPosition = {
+    x: lineMidpointPosition.x + 30 * lineNormal.x1,
+    y: lineMidpointPosition.y + 30 * lineNormal.y1,
+  };
   const interactionStyles = {
-    Sx: { stroke: 'red', shadowColor: 'red'},
-    Sy: { stroke: 'hotpink', shadowColor: 'hotpink'},
-    Sz: { stroke: 'orange', shadowColor: 'orange'}
-  }
+    Sx: { stroke: "red", shadowColor: "red" },
+    Sy: { stroke: "hotpink", shadowColor: "hotpink" },
+    Sz: { stroke: "orange", shadowColor: "orange" },
+  };
   return (
     <Group x={2 * radius} y={2 * radius}>
       <Line
-        stroke="white"
         pointerLength={5}
         pointerWidth={5}
         shadowBlur={10}
-        {...interactionStyles[label]}
-        strokeWidth={2}
-        rotation={rotation}
+        strokeWidth={10}
         points={points}
+        {...interactionStyles[label]}
+        opacity={disabled ? 0.1 : 1}
       />
-      <Image {...labelPosition} fontSize={25} image={images[label]} fill="#00000000"/>
+      {isRemoving && (
+        <>
+          <Circle
+            stroke="black"
+            strokeWidth={3}
+            x={lineMidpointPosition.x}
+            y={lineMidpointPosition.y}
+            height={30}
+            width={30}
+            onClick={onRemove}
+            onTap={onRemove}
+            fill={"grey"}
+          />
+          <Text
+            text={"×"}
+            onClick={onRemove}
+            onTap={onRemove}
+            fill="white"
+            fontSize={20}
+            x={lineMidpointPosition.x - 6}
+            y={lineMidpointPosition.y - 8}
+            fontFamily="monospace"
+          />
+        </>
+      )}
     </Group>
   );
 };

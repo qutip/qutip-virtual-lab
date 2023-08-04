@@ -117,16 +117,20 @@ export const QubitMenu = ({
   visible,
   onClose,
   onAddInteraction,
+  onRemoveInteraction,
   onToggleBath,
   onAddLaser,
   onRemoveQubit,
 }) => {
   const size = radius;
-  const width = 120;
+  const width = 150;
   const menuItems = [
     { label: "Toggle Laser", onClick: onAddLaser },
     ...(onAddInteraction
       ? [{ label: "Add Interaction", onClick: onAddInteraction }]
+      : []),
+    ...(onRemoveInteraction
+      ? [{ label: "Remove Interaction", onClick: onRemoveInteraction }]
       : []),
     { label: "Toggle Bath", onClick: onToggleBath },
     { label: "Remove Qubit", onClick: onRemoveQubit },
