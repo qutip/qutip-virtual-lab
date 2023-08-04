@@ -10,13 +10,13 @@ import {
   PauliZ,
 } from '../simulationUtils';
 
-export default function InteractionModal({ onCancel, onSubmit }) {
+export default function InteractionModal({ onCancel, onSubmit, disabledOptions }) {
   const operatorSelectOptions = {
     Sx: PauliX,
     Sy: PauliY,
     Sz: PauliZ,
   }
-  const [operatorSelected, setOperatorSelected] = useState<PauliOperatorKey>("Sx");
+  const [operatorSelected, setOperatorSelected] = useState<PauliOperatorKey | undefined>();
   const [scalar, setScalar] = useState<number>(0);
   return (
     <div
@@ -40,8 +40,9 @@ export default function InteractionModal({ onCancel, onSubmit }) {
             type="radio"
             value={key}
             onChange={(e) => setOperatorSelected(e.target.value as PauliOperatorKey)}
-            checked={operatorSelected === key}>
-          </input>
+            checked={operatorSelected === key}
+            disabled={disabledOptions.includes(key)}
+          />
           <InlineMath>{operator.label}</InlineMath>
         </label>
       ))}
@@ -65,12 +66,12 @@ export default function InteractionModal({ onCancel, onSubmit }) {
       >
         <button
           style={{ padding: "10px 30px" }}
-          disabled={operatorSelected === null || scalar === 0}
-          onClick={() => onSubmit({ 
-            operatorKey: operatorSelected, 
-            operator: operatorSelectOptions[operatorSelected], 
+          disabled={operatorSelected === undefined || scalar === 0}
+          onClick={() => onSubmit({
+            operatorKey: operatorSelected,
+            operator: operatorSelected ? operatorSelectOptions[operatorSelected] : undefined,
             scalar,
-           })}
+          })}
         >
           OK
         </button>
