@@ -24,7 +24,7 @@ const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled }) => {
           <Circle
             radius={radius + 3}
             stroke="orange"
-            opacity={0.5}
+            opacity={disabled ? 0.2 : 1}
             strokeWidth={3}
             fill={"#252525"}
           />
@@ -33,17 +33,20 @@ const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled }) => {
             points={[0, 2 * radius - 5, 0, -2 * radius - 5]}
             rotation={30}
             fill={"#efefef"}
+            opacity={disabled ? 0.2 : 1}
           />
           <Circle
             radius={radius}
             stroke="#efefef"
             strokeWidth={1}
+            opacity={disabled ? 0.2 : 1}
             fill={"transparent"}
           />
           <Circle
             radius={radius - 3}
             stroke="#efefef"
             strokeWidth={1}
+            opacity={disabled ? 0.2 : 1}
             fill={"#efefef"}
           />
         </Group>
@@ -55,17 +58,6 @@ const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled }) => {
             width={4 * radius}
             height={4 * radius}
             {...(selected ? selectedProps : {})}
-          />
-        )}
-        {disabled && (
-          <Rect
-            width={4 * radius}
-            height={4 * radius}
-            fill={"black"}
-            opacity={0.3}
-            x={x}
-            y={y}
-            cornerRadius={15}
           />
         )}
       </>
@@ -138,7 +130,7 @@ export const QubitMenu = ({
   const textPadding = { y: size / 2 - 5, x: 5 };
   return (
     <>
-      <Group visible={visible} x={x + 2*radius} y={y + 2*radius}>
+      <Group visible={visible} x={x + 2 * radius} y={y + 2 * radius}>
         <Rect fill="black" width={width} height={size} stroke="black" />
         <Text text="×" x={7} fill="white" fontSize={40} />
         <ClickTarget
@@ -148,7 +140,7 @@ export const QubitMenu = ({
           height={size - 2}
         />
         {menuItems.map(({ label, onClick }, i) => (
-          <Group y={(i+1) * size}>
+          <Group y={(i + 1) * size}>
             <Rect fill="#252525" width={width} height={size} />
             <Text
               text={label}
