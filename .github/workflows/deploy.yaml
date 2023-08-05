@@ -29,7 +29,6 @@ jobs:
         --file web-environment.yaml
     - name: Fix permissions
       run: |
-        ls -l /root/micromamba/envs
         chmod +rw /root/micromamba/envs/web
     - name: Pack
       run: |
