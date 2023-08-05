@@ -29,7 +29,7 @@ jobs:
         --file web-environment.yaml
     - name: Fix permissions
       run: |
-        chmod +rw /root/micromamba/envs/web
+        sudo chmod +rw /root/micromamba/envs
     - name: Pack
       run: |
         mkdir -p ./public/empack && mkdir -p ./src/pyjs
