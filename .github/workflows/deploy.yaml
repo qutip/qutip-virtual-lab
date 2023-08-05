@@ -28,6 +28,7 @@ jobs:
         --platform=emscripten-32 \
         --file web-environment.yaml
         mkdir -p ./public/empack && mkdir -p ./src/pyjs
+        sudo chmod +rw /root/micromamba/envs
         empack pack env \
         --env-prefix=/root/micromamba/envs/web \
         --relocate-prefix=/ \
