@@ -7,25 +7,53 @@ on:
 
 jobs:
   build:
+    defaults:
+      run:
+        shell: bash -l {0}
     runs-on: ubuntu-latest 
     steps:
     - name: Check out code
       uses: actions/checkout@v3
-    - name: Build w/ docker image
-      run: npm run build:dockerimage && npm run copy_runtime
-    - name: Patch pyjs
+    - name: Setup micromamba
+      uses: mamba-org/setup-micromamba@v1
+      env:
+        ACTIONS_STEP_DEBUG: true
+      with:
+        environment-file: build-environment.yaml
+        environment-name: build
+        init-shell: bash
+    - name: Build
       run: |
-        chmod -c +rw ./src/pyjs/pyjs_runtime_browser.js
-        node ./patch_pyjs.js
+        micromamba create \
+        --yes \
+        --platform=emscripten-32 \
+        --file web-environment.yaml
+    - name: Pack
+      run: |
+        mkdir -p ./public/empack && mkdir -p ./src/pyjs
+        empack pack env \
+        --env-prefix=/root/micromamba/envs/web \
+        --relocate-prefix=/ \
+        --no-use-cache \
+        --outdir=./public/empack \
+        --config=empack_config.yaml && \
+        cp -r /root/micromamba/envs/web/lib_js/pyjs/. ./src/pyjs/
+        ls -l ./src/pyjs
+    - name: Copy
+      run: npm run copy_runtime
+    - name: Patch
+      run: npm run patch_runtime
     - name: Build web app
-      run: npm run build
+      run: npm install && npm run build
     - name: Fix permissions
       run: |
-        chmod -c -R +rX "_site/" | while read line; do
+        chmod -c -R +rX "./dist/" | while read line; do
           echo "::warning title=Invalid file permissions automatically fixed::$line"
         done
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v2
+      with:
+        path: ./dist
   deploy:
     needs: build
     permissions:

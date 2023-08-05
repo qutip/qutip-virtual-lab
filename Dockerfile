@@ -6,7 +6,7 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER web-environment.yaml /tmp/web-environment.y
 COPY --chown=$MAMBA_USER:$MAMBA_USER empack_config.yaml /tmp/empack_config.yaml
 
 # create base and web conda envs
-RUN micromamba install -n base \
+RUN micromamba install -n build \
     --yes --file /tmp/build-environment.yaml \
     && \
     micromamba create \
@@ -16,7 +16,7 @@ RUN micromamba install -n base \
     micromamba clean --all --yes
 
 # activate env
-ARG ENV_NAME=base
+ARG ENV_NAME=build
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
 # pack pyjs dependencies
