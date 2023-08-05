@@ -27,6 +27,10 @@ jobs:
         --yes \
         --platform=emscripten-32 \
         --file web-environment.yaml
+    - name: Fix permissions
+      run: |
+        ls -l /root/micromamba/envs
+        chmod +rw /root/micromamba/envs/web
     - name: Pack
       run: |
         mkdir -p ./public/empack && mkdir -p ./src/pyjs
