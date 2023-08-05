@@ -39,8 +39,6 @@ jobs:
         --config=empack_config.yaml && \
         cp -r /root/micromamba/envs/web/lib_js/pyjs/. ./src/pyjs/
         ls -l ./src/pyjs
-    - name: Copy
-      run: npm run copy_runtime
     - name: Patch
       run: npm run patch_runtime
     - name: Build web app
