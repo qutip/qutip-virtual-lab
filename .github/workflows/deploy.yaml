@@ -31,7 +31,7 @@ jobs:
     - name: Pack
       run: |
         mkdir -p ./public/empack && mkdir -p ./src/pyjs
-        empack pack env \
+        sudo empack pack env \
         --env-prefix=/root/micromamba/envs/web \
         --relocate-prefix=/ \
         --no-use-cache \
