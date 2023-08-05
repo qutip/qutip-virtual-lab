@@ -30,12 +30,12 @@ jobs:
         mkdir -p ./public/empack && mkdir -p ./src/pyjs
         sudo chmod +rw ~/micromamba
         empack pack env \
-        --env-prefix=/root/micromamba/envs/web \
+        --env-prefix=~/micromamba/envs/web \
         --relocate-prefix=/ \
         --no-use-cache \
         --outdir=./public/empack \
         --config=empack_config.yaml && \
-        cp -r /root/micromamba/envs/web/lib_js/pyjs/. ./src/pyjs/
+        cp -r ~/micromamba/envs/web/lib_js/pyjs/. ./src/pyjs/
         ls -l ./src/pyjs
     - name: Patch
       run: npm run patch_runtime
