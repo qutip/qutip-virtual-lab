@@ -35,7 +35,7 @@ export default function InteractionModal({ onCancel, onSubmit, disabledOptions }
     >
       Operator:{" "}
       {Object.entries(operatorSelectOptions).map(([key, operator]) => (
-        <label>
+        <label key={key}>
           <input
             type="radio"
             value={key}

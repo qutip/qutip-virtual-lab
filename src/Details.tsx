@@ -64,11 +64,11 @@ export default function Details() {
           <div className="details-field">
             <label>Initial State</label>
             {Object.entries(initialStates).map(([key, initialState]) => (
-              <div style={{ paddingLeft: 12, margin: "1em 0" }}>
+              <div style={{ paddingLeft: 12, margin: "1em 0" }} key={key}>
                 <InlineMath>{`|q_${key}\\rangle = |`}</InlineMath>
                 <select value={initialState} onChange={e => handleChangeInitialState(e.target.value as InitialState, key)}>
                   {initialStateOptions.map(option => (
-                    <option value={option.state}>{option.label}</option>
+                    <option key={option.state} value={option.state}>{option.label}</option>
                   ))}
                 </select>
                 <InlineMath>{'\\rangle'}</InlineMath>
@@ -82,20 +82,22 @@ export default function Details() {
             <div className="details-field">
               <label>Collapse Operators</label>
               {collapseOperators.map((C, i) => (
-                <BlockMath>{`C_{${i}} = ${C.parameter.label}${C.operator.label}`}</BlockMath>
+                <BlockMath key={i}>{`C_{${i}} = ${C.parameter.label}${C.operator.label}`}</BlockMath>
               ))}
             </div>
           )}
           {Object.keys(parameters).map(key =>
             !!parameters[key]?.length && (
-              <div className="details-field">
+              <div className="details-field" key={key}>
                 <label>{`${key.slice(0, -1)} Parameters`}</label>
                 {
                   parameters[key].map(({ label, value }, i) => {
-                    return (label) && (<div style={{ padding: 12, margin: '0.5em 0' }}>
+                    return (label) && (
+                    <div key={label} style={{ padding: 12, margin: '0.5em 0' }}>
                       <InlineMath>{`${label} = `}</InlineMath>
                       <input type="number" width="2" value={value} onChange={e => handleChangeParameterValue(Number(e.target.value) as number, label, key)} />
-                    </div>)
+                    </div>
+                    )
                   })
                 }
               </div>

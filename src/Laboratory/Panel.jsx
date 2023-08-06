@@ -38,7 +38,7 @@ const Panel = ({ x, toolSelected, onSelectTool }) => {
       {Object.keys(Tools).map((key, i) => {
         const Tool = Tools[key];
         return (
-          <Group x={0} y={i * blockHeight + 1}>
+          <Group x={0} y={i * blockHeight + 1} key={key}>
             <Rect
               key={"p" + i}
               width={panelWidth}

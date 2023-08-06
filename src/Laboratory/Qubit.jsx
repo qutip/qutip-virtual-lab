@@ -140,7 +140,7 @@ export const QubitMenu = ({
           height={size - 2}
         />
         {menuItems.map(({ label, onClick }, i) => (
-          <Group y={(i + 1) * size}>
+          <Group y={(i + 1) * size} key={`menuitem-${i}-${x}-${y}`}>
             <Rect fill="#252525" width={width} height={size} />
             <Text
               text={label}

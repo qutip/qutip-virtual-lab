@@ -308,8 +308,9 @@ export default function Laboratory() {
             />
           ))}
           <Group x={-120} y={-60}>
-          {interactions.map(({ qubits, label, id }) => (
+            {interactions.map(({ qubits, label, id }) => (
               <Interaction
+                key={id}
                 qubit1Position={qubitPositions[qubits[0]]}
                 qubit2Position={qubitPositions[qubits[1]]}
                 label={label}
@@ -332,6 +333,7 @@ export default function Laboratory() {
                       {...qubitPositions[key]}
                     />
                     <QubitMenu
+                      key={key + 'menu'}
                       visible={qubitSelected === key}
                       onClose={() => setQubitSelected(undefined)}
                       onRemoveQubit={() => handleRemoveQubit(key)}
