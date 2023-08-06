@@ -7,5 +7,5 @@ export default defineConfig({
     server: {
         port: 8080
     },
-    base: 'qutip-virtual-lab/'
+    base: '/qutip-virtual-lab/'
 });
