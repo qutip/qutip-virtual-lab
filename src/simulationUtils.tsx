@@ -127,6 +127,8 @@ export const getDetails = (config: SimulationConfig): SimulationConfigDetails =>
     };
 }
 
+
+
 export const getSrc = (config: SimulationConfig): string => {
     const { lasers, interactions, baths, qubits, initialStates } = config;
     let imports = "from qutip import *; import numpy as np; import json";
@@ -171,9 +173,19 @@ export const getSrc = (config: SimulationConfig): string => {
     });
     let c_ops = `c_ops = [${baths.map(bath => `${bath.parameter.value}*${bath.operator.src}`).join()}]`
     const solve =
-        "result = mesolve(H, psi0, tlist, c_ops, [sigmax(), sigmay(), sigmaz()])";
-    const print = Array.from({ length: 3 })
-        .map((_, i) => `print(json.dumps(result.expect[${i}].tolist()))`)
-        .join(";");
-    return [imports, tlist, psi0, params.join(';'), `H = ${H.join("+")}`, c_ops, solve, print].join(";");
+        "result = mesolve(H, psi0, tlist, c_ops, [])";
+
+    const expect = [
+        "components = [sigmax(), sigmay(), sigmaz()]",
+        `bloch_vector = ${qubits === 1 ? '[components]' : '[[tensor([component if q == qubit else qeye(2) for q in range(qubits)]) for component in components] for qubit in range(qubits)]'}`,
+        "expectation_values = expect(bloch_vector, result.states)"
+    ]
+
+    const print = Array.from({ length: qubits }).flatMap((_, q) => (
+        `print(json.dumps([e.tolist() for e in expect(bloch_vector, result.states)[${q}]]))`
+    ))
+
+    let returnArr = [imports, tlist, qs, psi0, params.join(';'), `H = ${H.join("+")}`, c_ops, solve, ...expect, ...print]
+    console.log(JSON.stringify(returnArr, undefined, 4))
+    return returnArr.join(";");
 }
