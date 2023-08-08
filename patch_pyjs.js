@@ -4,6 +4,10 @@ import os from 'os';
 
 const path = "./src/pyjs/pyjs_runtime_browser.js";
 fs.readFile(path, { encoding: 'utf-8'}, (err, data) => {
+  if (err) {
+    console.error(err)
+    return
+  }
   const str = 'package'
   const regexs = [
     '(\\${)'+str+'(\\.filename})', 
