@@ -87,7 +87,12 @@ export default function Simulation({ children }) {
     }
   }, [config]);
 
-  const loadResults = (results) => {
+  const loadResults = (results: string) => {
+    // The results from pyjs are just a string
+    // but, once parsed into JSON, should be an array of arrays:
+    // Each item in the outer array corresponds to a specific qubit
+    // Each item in the inner array corresponds to a Bloch vector component of each qubit
+    // listing the values of each component for each point in time
     setResultsBuffer((state) => [...state, JSON.parse(results)]);
   };
 
