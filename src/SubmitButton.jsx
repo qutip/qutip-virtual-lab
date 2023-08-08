@@ -6,13 +6,22 @@ import {
 } from './Simulation';
 
 export default function () {
-  const { submit, state } = useContext(SimulationContext);
+  const { submit, state, config } = useContext(SimulationContext);
+  const { qubits, lasers, interactions, baths } = config
+
+  const isDisabled = (
+    [States.SIMULATING, States.LOADING].includes(state) 
+    || (qubits === 0)
+    || (lasers.length === 0
+    && interactions.length === 0
+    && baths.length === 0)
+  )
 
   return (
     <button
       id="submit"
       onClick={submit}
-      disabled={[States.SIMULATING, States.LOADING].includes(state)}
+      disabled={isDisabled}
     >
       {state === States.INIT && "Simulate   ▶️"}
       {state === States.LOADING && "Loading QuTiP..."}
