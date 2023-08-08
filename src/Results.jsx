@@ -23,8 +23,8 @@ export default function Results() {
           </div>
         ) : (
           results.map((data, i) => (
-            <span key={i}>
-            <h2 style={{alignSelf: 'start'}}>Qubit {i}</h2>
+            <div style={{ border: '1px solid black'}} key={i}>
+            <h2 style={{alignSelf: 'start', background: 'black', padding: 5}}>Qubit {i+1}</h2>
               <BlochSphere time={time} data={data} key={"b" + i} />
               <LineGraph
                 key={"lg" + i}
@@ -33,8 +33,7 @@ export default function Results() {
                 time={time}
                 onBlur={() => setTime(null)}
               />
-              <hr style={{backgroundColor: 'white', width: '100%', height: 1}}/>
-            </span>
+            </div>
           ))
         )}
       </div>

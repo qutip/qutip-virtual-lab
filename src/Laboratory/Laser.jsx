@@ -21,6 +21,12 @@ export default function Laser({
   const { x, y } = at;
   const baseline = 100;
   const pathLength = baseline - y + height;
+  const fillColors = {
+    Sx: 'red',
+    Sy: 'orange',
+    Sz: 'hotpink'
+  }
+  
   return (
     <Group x={x - 120} y={baseline}>
       <Rect
@@ -38,7 +44,7 @@ export default function Laser({
           <Group y={25} x={width / 3 / 2} key={orientationOption}>
             <Rect
               x={(width / 3) * i - 5}
-              fill={orientation === orientationOption ? "orange" : "none"}
+              fill={orientation === orientationOption ? fillColors[orientation] : "none"}
               stroke="white"
               strokeWidth={1}
               height={10}
@@ -52,7 +58,7 @@ export default function Laser({
             />
             <ClickTarget
               x={(width / 3) * i - 5}
-              fill={orientation === orientationOption ? "orange" : "none"}
+              fill={orientation === orientationOption ? fillColors[orientation] : "none"}
               onClick={() => onSelectOrientation(orientationOption)}
               height={10}
               width={10}
