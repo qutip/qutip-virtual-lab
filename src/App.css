@@ -23,14 +23,15 @@ button#submit {
   background-color: black;
   position: absolute;
   top: 20px;
-  left: 170px;
+  left: 120px;
   border: 1px solid #efefef;
 }
 
 button#submit:disabled {
   background-color: #000a;
-  color: #efefff;
+  color: #575757;
   cursor: wait;
+  border: 1px solid grey;
 }
 
 details {
