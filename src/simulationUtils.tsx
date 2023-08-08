@@ -158,11 +158,16 @@ export const getSrc = (config: SimulationConfig): string => {
     });
     interactions.forEach((interaction) => {
         const { qubitIds, operator, parameter } = interaction;
-        const embedded = Array.from({ length: qubits }, () => "qeye(2)");
-        embedded[qubitIds[0]] = `${operator.src}`;
-        embedded[qubitIds[1]] = `${operator.src}`;
+        if (qubits > 2) {
+            const embedded = Array.from({ length: qubits }, () => "qeye(2)");
+            embedded[qubitIds[0]] = `${operator.src}`;
+            embedded[qubitIds[1]] = `${operator.src}`;
+            H.push(`${parameter.src}*tensor(${embedded.join()})`);
+        }
+        else {
+            H.push(`${parameter.src}*tensor(${operator.src},${operator.src})`)
+        }
         params = [...params, `${parameter.src} = ${parameter.value}`]
-        H.push(`${parameter.src}*tensor(${embedded.join()})`);
     });
     let c_ops = `c_ops = [${baths.map(bath => `${bath.parameter.value}*${bath.operator.src}`).join()}]`
     const solve =
