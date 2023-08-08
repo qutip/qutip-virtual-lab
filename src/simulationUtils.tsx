@@ -128,10 +128,23 @@ export const getDetails = (config: SimulationConfig): SimulationConfigDetails =>
 }
 
 export const getSrc = (config: SimulationConfig): string => {
-    const { lasers, interactions, baths, qubits } = config;
+    const { lasers, interactions, baths, qubits, initialStates } = config;
     let imports = "from qutip import *; import numpy as np; import json";
     let tlist = "tlist = np.linspace(0, 10, 100)";
-    let psi0 = `psi0 = basis(${qubits}, 0)`; // TODO: fix me
+    let qs = `qubits = ${qubits}`
+    let psi0Arr = (Object.keys(initialStates) as Array<string>)
+        .map(Number)
+        .sort((id1, id2) => id1 - id2)
+        .map((qubitId) => {
+            const initialState = initialStates[qubitId]
+            if (initialState === '-z') return "basis(2,0)"
+            if (initialState === 'z') return "basis(2,1)"
+            if (initialState === 'x') return "(basis(2,0) + basis(2,1))/np.sqrt(2)"
+            if (initialState === '-x') return "(basis(2,0) + basis(2,1))/np.sqrt(2)"
+            if (initialState === 'y') return "(basis(2,0) + j*basis(2,1))/np.sqrt(2)"
+            if (initialState === '-y') return "(basis(2,0) - j*basis(2,1))/np.sqrt(2)"
+        })
+    const psi0 = qubits === 1 ? `psi0 = ${psi0Arr[0]}` : `psi0 = tensor(${psi0Arr.join()})`
     let H: Array<string> = [];
     let params: Array<string> = [];
     lasers.forEach((laser) => {
