@@ -99,6 +99,7 @@ export default function Simulation({ children }) {
   useEffect(() => {
     if (state === States.SIMULATED) {
       setResults(resultsBuffer);
+      setResultsBuffer([])
     }
   }, [state]);
 
