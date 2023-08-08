@@ -19,8 +19,8 @@ export default function Laser({
   const width = 150;
   const height = 100;
   const { x, y } = at;
-  const baseline = 600;
-  const pathLength = baseline - y;
+  const baseline = 100;
+  const pathLength = baseline - y + height;
   return (
     <Group x={x - 120} y={baseline}>
       <Rect
@@ -35,7 +35,7 @@ export default function Laser({
       />
       <Group>
         {["Sx", "Sy", "Sz"].map((orientationOption, i) => (
-          <Group y={25} x={width / 3 / 2}>
+          <Group y={25} x={width / 3 / 2} key={orientationOption}>
             <Rect
               x={(width / 3) * i - 5}
               fill={orientation === orientationOption ? "orange" : "none"}
@@ -102,10 +102,10 @@ export default function Laser({
         <>
           <Line
             x={width / 2}
-            y={width / 2}
+            y={height}
             stroke="orange"
             strokeWidth={4}
-            points={[0, -width / 2, 0, -pathLength]}
+            points={[0, 0, 0, -pathLength]}
             shadowColor="red"
             shadowBlur={20}
           />
