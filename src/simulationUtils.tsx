@@ -149,11 +149,12 @@ export const getSrc = (config: SimulationConfig): string => {
     let params: Array<string> = [];
     lasers.forEach((laser) => {
         const { qubitId, operator, parameter } = laser;
-        const embedded = Array.from({ length: qubits }, (_, i) =>
-            i === qubitId ? `${parameter.src}*${operator.src}` : "qeye(2)"
+        const embedded = lasers.map(({qubitId: subspaceId}) => {
+            return qubitId === subspaceId ? `${parameter.src}*${operator.src}` : "qeye(2)"
+        }
         ).join();
+        H = [...H, qubits > 1 ? `tensor(${embedded})` : embedded];
         params = [...params, `${parameter.src} = ${parameter.value}`]
-        H = [...H, `tensor(${embedded})`];
     });
     interactions.forEach((interaction) => {
         const { qubitIds, operator, parameter } = interaction;
