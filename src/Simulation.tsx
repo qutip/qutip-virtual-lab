@@ -60,7 +60,7 @@ export const SimulationContext = createContext<SimulationContext>({
 });
 
 export default function Simulation({ children }) {
-  const [config, setConfig] = useState(emptyConfig);
+  const [config, _setConfig] = useState(emptyConfig);
   const [results, setResults] = useState<string[]>([]);
   const [state, setSimState] = useState(States.INIT);
   const [resultsBuffer, setResultsBuffer] = useState<string[]>([]);
@@ -102,6 +102,11 @@ export default function Simulation({ children }) {
     setResultsBuffer([]);
     setResults([]);
   };
+
+  const setConfig: typeof _setConfig = (...args) => {
+    reset()
+    _setConfig(...args)
+  } 
 
   const value = {
     state,
