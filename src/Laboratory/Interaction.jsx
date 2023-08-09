@@ -26,24 +26,27 @@ const Interaction = ({
     (180 / Math.PI) *
     Math.acos(dot(diff, { x: 1, y: 0 }) / (abs(diff) * abs({ x: 1, y: 0 })));
   const dist = abs(diff);
-  const lineMidpointPosition = { x: x1 + (x2 - x1) / 2, y: y1 + (y2 - y1) / 2 };
   const lineShift = {
     x: (y2 - y1) / abs(diff),
     y: (x1 - x2) / abs(diff),
   };
+  const nudge = label === "Sy" ? 20 : label === "Sz" ? -20 : 0;
+  const coords = {
+    start: {
+      x: x1 + nudge * lineShift.x,
+      y: y1 + nudge * lineShift.y,
+    },
+    end: {
+      x: x2 + nudge * lineShift.x,
+      y: y2 + nudge * lineShift.y,
+    },
+  };
+  const lineMidpointPosition = {
+    x: coords.start.x + (coords.end.x - coords.start.x) / 2,
+    y: coords.start.y + (coords.end.y - coords.start.y) / 2,
+  };
+
   const points = Array.from({ length: 200 }).flatMap((_, i) => {
-    const nudge = label === 'Sy' ? 10 : label === 'Sz' ? -10 : 0;
-    let coords = { 
-      start: { 
-        x: x1 + nudge * lineShift.x, 
-        y: y1 + nudge * lineShift.y
-      }, 
-      end: { 
-        x: x2 + nudge * lineShift.x,  
-        y: y2 + nudge * lineShift.y
-      } 
-    };
-    
     return [
       coords.start.x + (i / 200) * (coords.end.x - coords.start.x),
       coords.start.y + (i / 200) * (coords.end.y - coords.start.y),
@@ -68,8 +71,8 @@ const Interaction = ({
           <Circle
             stroke="black"
             strokeWidth={3}
-            height={30}
-            width={30}
+            height={10}
+            width={10}
             onClick={onRemove}
             onTap={onRemove}
             fill={"grey"}
