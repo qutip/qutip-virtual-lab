@@ -69,3 +69,9 @@ Introduction:
 
 Testing:
 - E2E testing
+
+Performance:
+- Load QuTiP in background using Web Workers
+
+Lab:
+- Multiple bath operators
