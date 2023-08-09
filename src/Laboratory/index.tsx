@@ -56,15 +56,15 @@ interface QubitCoords {
 }
 
 const qubitIds: Record<QubitPosition, QubitId> = {
-  TOP_LEFT: 1,
-  TOP_RIGHT: 2,
-  BOTTOM_LEFT: 3,
-  BOTTOM_RIGHT: 4
+  TOP_LEFT: 0,
+  TOP_RIGHT: 1,
+  BOTTOM_LEFT: 2,
+  BOTTOM_RIGHT: 3
 }
 
 const qubitPositions: Record<QubitPosition, QubitCoords> = {
-  TOP_LEFT: { x: center.x - 270, y: center.y + 50 },
-  TOP_RIGHT: { x: center.x + 90, y: center.y + 50 },
+  TOP_LEFT: { x: center.x - 270, y: center.y + 90 },
+  TOP_RIGHT: { x: center.x + 90, y: center.y + 90 },
   BOTTOM_LEFT: { x: center.x - 90, y: center.y - 50 },
   BOTTOM_RIGHT: { x: center.x + 270, y: center.y - 50 },
 } as const
@@ -129,9 +129,10 @@ export default function Laboratory() {
       [position]: true
     }));
 
+    let newConfigQubits = [...new Set([...config.qubits, qubitIds[position]])]
     setConfig((config) => ({
       ...config,
-      qubits: Math.min(4, config.qubits + 1),
+      qubits: newConfigQubits,
       initialStates: {
         ...config.initialStates,
         [qubitIds[position]]: '-z'
@@ -151,7 +152,7 @@ export default function Laboratory() {
       delete newInitialStates[qubitIds[position]]
       return {
         ...config,
-        qubits: Math.max(0, config.qubits - 1),
+        qubits: config.qubits.filter(qubitId => qubitId !== qubitIds[position]),
         initialStates: newInitialStates,
         interactions: config.interactions.filter(({ qubitIds: qubits }) => !qubits.includes(qubitIds[position]))
       }

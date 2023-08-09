@@ -72,7 +72,7 @@ export interface SimulationConfigDetails {
 }
 
 export interface SimulationConfig {
-    qubits: number;
+    qubits: Array<QubitId>;
     lasers: Array<SingleQubitOperator>;
     interactions: Array<InteractionOperator>;
     baths: Array<CollapseOperator>;
@@ -85,7 +85,7 @@ export const emptyConfig: SimulationConfig = {
     lasers: [],
     interactions: [],
     baths: [],
-    qubits: 0,
+    qubits: [],
     initialStates: {}
 }
 
@@ -127,13 +127,11 @@ export const getDetails = (config: SimulationConfig): SimulationConfigDetails =>
     };
 }
 
-
-
 export const getSrc = (config: SimulationConfig): string => {
     const { lasers, interactions, baths, qubits, initialStates } = config;
     let imports = "from qutip import *; import numpy as np; import json";
     let tlist = "tlist = np.linspace(0, 10, 100)";
-    let qs = `qubits = ${qubits}`
+    let qs = `qubits = ${qubits.length}`
     let psi0Arr = (Object.keys(initialStates) as Array<string>)
         .map(Number)
         .sort((id1, id2) => id1 - id2)
@@ -146,22 +144,22 @@ export const getSrc = (config: SimulationConfig): string => {
             if (initialState === 'y') return "(basis(2,0) + j*basis(2,1))/np.sqrt(2)"
             if (initialState === '-y') return "(basis(2,0) - j*basis(2,1))/np.sqrt(2)"
         })
-    const psi0 = qubits === 1 ? `psi0 = ${psi0Arr[0]}` : `psi0 = tensor(${psi0Arr.join()})`
+    const psi0 = qubits.length === 1 ? `psi0 = ${psi0Arr[0]}` : `psi0 = tensor(${psi0Arr.join()})`
     let H: Array<string> = [];
     let params: Array<string> = [];
     lasers.forEach((laser) => {
         const { qubitId, operator, parameter } = laser;
-        const embedded = lasers.map(({qubitId: subspaceId}) => {
+        const embedded = qubits.map((subspaceId) => {
             return qubitId === subspaceId ? `${parameter.src}*${operator.src}` : "qeye(2)"
         }
         ).join();
-        H = [...H, qubits > 1 ? `tensor(${embedded})` : embedded];
+        H = [...H, qubits.length > 1 ? `tensor(${embedded})` : embedded];
         params = [...params, `${parameter.src} = ${parameter.value}`]
     });
     interactions.forEach((interaction) => {
         const { qubitIds, operator, parameter } = interaction;
-        if (qubits > 2) {
-            const embedded = Array.from({ length: qubits }, () => "qeye(2)");
+        if (qubits.length > 2) {
+            const embedded = Array.from(qubits, () => "qeye(2)");
             embedded[qubitIds[0]] = `${operator.src}`;
             embedded[qubitIds[1]] = `${operator.src}`;
             H.push(`${parameter.src}*tensor(${embedded.join()})`);
@@ -177,11 +175,11 @@ export const getSrc = (config: SimulationConfig): string => {
 
     const expect = [
         "components = [sigmax(), sigmay(), sigmaz()]",
-        `bloch_vector = ${qubits === 1 ? '[components]' : '[[tensor([component if q == qubit else qeye(2) for q in range(qubits)]) for component in components] for qubit in range(qubits)]'}`,
+        `bloch_vector = ${qubits.length === 1 ? '[components]' : '[[tensor([component if q == qubit else qeye(2) for q in range(qubits)]) for component in components] for qubit in range(qubits)]'}`,
         "expectation_values = expect(bloch_vector, result.states)"
     ]
 
-    const print = Array.from({ length: qubits }).flatMap((_, q) => (
+    const print = Array.from(qubits).flatMap((_, q) => (
         `print(json.dumps([e.tolist() for e in expect(bloch_vector, result.states)[${q}]]))`
     ))
 
