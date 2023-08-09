@@ -96,7 +96,7 @@ export default function Laboratory() {
   const [interactionSourceQubit, setInteractionSourceQubit] = useState<undefined | QubitPosition>();
   const [interactionTargetQubit, setInteractionTargetQubit] = useState<undefined | QubitPosition>();
   const [interactionModalVisible, setInteractionModalVisible] = useState<boolean>(false);
-  const [interactions, setInteractions] = useState<Array<{ qubits: [QubitPosition, QubitPosition], label: PauliOperatorKey, id: string }>>([])
+  const [interactions, setInteractions] = useState<Array<{ qubits: QubitPosition[], label: PauliOperatorKey, id: string }>>([])
 
   const numActiveQubits = useMemo(() => {
     return Object.values(activeQubits).reduce(
@@ -185,7 +185,7 @@ export default function Laboratory() {
       setInteractions(interactions => [
         ...interactions,
         {
-          qubits: [interactionSourceQubit, interactionTargetQubit],
+          qubits: [interactionSourceQubit, interactionTargetQubit].sort((q1, q2) => qubitIds[q1] - qubitIds[q2]),
           label: operatorKey,
           id: id,
         }
@@ -214,7 +214,6 @@ export default function Laboratory() {
   };
 
   const handleRemoveInteraction = (qubitId) => {
-    console.log(qubitId)
     setQubitSelected(undefined);
     setIsRemovingInteraction(true)
     setInteractionSourceQubit(qubitId)
@@ -280,9 +279,22 @@ export default function Laboratory() {
   }
 
   const handleToggleBath = () => {
+    setQubitSelected(undefined)
     setConfig(config => ({
       ...config,
-      baths: config.baths.length ? [] : [{ label: '', parameter: { label: '\\gamma_p', src: '', value: 1 }, operator: PauliX }]
+      baths: config.baths.length 
+        ? [] 
+        : [
+          { 
+            label: '', 
+            operator: PauliX,
+            parameter: { 
+              label: '\\gamma_p^{(n)}', 
+              src: 'gamma_p', 
+              value: 1
+            }, 
+           }
+        ]
     }))
   };
 
@@ -316,7 +328,7 @@ export default function Laboratory() {
                 label={label}
                 disabled={interactionSourceQubit ? !qubits.includes(interactionSourceQubit) : false}
                 onRemove={isRemovingInteraction ? () => handleFinishRemoveInteraction(id) : false}
-                isRemoving={isRemovingInteraction}
+                isRemoving={isRemovingInteraction && interactionSourceQubit && qubits.includes(interactionSourceQubit)}
               />
             ))}
             {(Object.entries(activeQubits) as Array<[QubitPosition, boolean]>).map(

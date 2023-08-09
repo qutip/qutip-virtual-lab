@@ -26,23 +26,29 @@ const Interaction = ({
     (180 / Math.PI) *
     Math.acos(dot(diff, { x: 1, y: 0 }) / (abs(diff) * abs({ x: 1, y: 0 })));
   const dist = abs(diff);
-  const points = Array.from({ length: 200 }).flatMap((_, i) => [
-    // i / 4,
-    // 10 * Math.sin(Math.PI * (i / 200)) * Math.sin(Math.PI * (i / 15)),
-    x1 + (i / 200) * (x2 - x1),
-    y1 + (i / 200) * (y2 - y1),
-  ]);
   const lineMidpointPosition = { x: x1 + (x2 - x1) / 2, y: y1 + (y2 - y1) / 2 };
-  const lineNormal = {
-    x1: -y1 / abs(qubit1Position),
-    y1: x1 / abs(qubit1Position),
-    x2: -y2 / abs(qubit2Position),
-    y2: x2 / abs(qubit2Position),
+  const lineShift = {
+    x: (y2 - y1) / abs(diff),
+    y: (x1 - x2) / abs(diff),
   };
-  const labelPosition = {
-    x: lineMidpointPosition.x + 30 * lineNormal.x1,
-    y: lineMidpointPosition.y + 30 * lineNormal.y1,
-  };
+  const points = Array.from({ length: 200 }).flatMap((_, i) => {
+    const nudge = label === 'Sy' ? 10 : label === 'Sz' ? -10 : 0;
+    let coords = { 
+      start: { 
+        x: x1 + nudge * lineShift.x, 
+        y: y1 + nudge * lineShift.y
+      }, 
+      end: { 
+        x: x2 + nudge * lineShift.x,  
+        y: y2 + nudge * lineShift.y
+      } 
+    };
+    
+    return [
+      coords.start.x + (i / 200) * (coords.end.x - coords.start.x),
+      coords.start.y + (i / 200) * (coords.end.y - coords.start.y),
+    ];
+  });
   const interactionStyles = {
     Sx: { stroke: "red", shadowColor: "red" },
     Sy: { stroke: "hotpink", shadowColor: "hotpink" },
@@ -51,21 +57,17 @@ const Interaction = ({
   return (
     <Group x={2 * radius} y={2 * radius}>
       <Line
-        pointerLength={5}
-        pointerWidth={5}
         shadowBlur={10}
-        strokeWidth={10}
+        strokeWidth={5}
         points={points}
         {...interactionStyles[label]}
         opacity={disabled ? 0.1 : 1}
       />
       {isRemoving && (
-        <>
+        <Group x={lineMidpointPosition.x} y={lineMidpointPosition.y}>
           <Circle
             stroke="black"
             strokeWidth={3}
-            x={lineMidpointPosition.x}
-            y={lineMidpointPosition.y}
             height={30}
             width={30}
             onClick={onRemove}
@@ -78,11 +80,11 @@ const Interaction = ({
             onTap={onRemove}
             fill="white"
             fontSize={20}
-            x={lineMidpointPosition.x - 6}
-            y={lineMidpointPosition.y - 8}
+            x={-6}
+            y={-8}
             fontFamily="monospace"
           />
-        </>
+        </Group>
       )}
     </Group>
   );
