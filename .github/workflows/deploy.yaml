@@ -11,32 +11,40 @@ jobs:
       run:
         shell: bash -l {0}
     runs-on: ubuntu-latest
+    container:
+      image: mambaorg/micromamba:latest
+      options: --user=root
     steps:
+    - uses: actions/checkout@master
+    - shell: _entrypoint.sh /bin/bash --noprofile --norc -eo pipefail {0}
+      run: |
+        micromamba info
+        which micromamba
     - name: Check out code
       uses: actions/checkout@v3
-    - name: Setup micromamba
-      uses: mamba-org/setup-micromamba@v1
-      with:
-        micromamba-version: '1.3.1-0'
-        environment-file: build-environment.yaml
-        environment-name: build
-        init-shell: bash
-    - name: Build
+    - name: Install build env
+      run: |
+        micromamba install -n base \
+        --yes --file build-environment.yaml \
+    - name: Create web env
       run: |
         micromamba create \
         --yes \
         --platform=emscripten-32 \
         --file web-environment.yaml
+    - name: Pack
+      run: |
+        micromamba activate base
         mkdir -p ./public/empack && mkdir -p ./src/pyjs
-        sudo chmod +rw ~/micromamba
         empack pack env \
-        --env-prefix=~/micromamba/envs/web \
+        --env-prefix=/opt/conda/envs/web \
         --relocate-prefix=/ \
         --no-use-cache \
         --outdir=./public/empack \
-        --config=empack_config.yaml && \
-        cp -r ~/micromamba/envs/web/lib_js/pyjs/. ./src/pyjs/
-        ls -l ./src/pyjs
+        --config=empack_config.yaml
+    - name: Copy runtime
+      run: |
+        cp -r /opt/conda/envs/web/lib_js/pyjs/. ./src/pyjs/
     - name: Patch
       run: npm run patch_runtime
     - name: Build web app
