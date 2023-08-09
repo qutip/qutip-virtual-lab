@@ -30,16 +30,23 @@
 }
 
 #details .details-field-cols {
-    flex: 0 1 50%;
+    flex: none;
     height: 100%;
+    width: 50%;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 #details .details-field {
+    flex: 0 1 auto;
     border: 1px solid black;
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 50%;
-    height: 50%;
+    width: 100%;
+}
+
+#details .details-field--body {
+    overflow: auto;
+    width: 100%;
 }
 
 #details .details-field .katex-display > .katex {
