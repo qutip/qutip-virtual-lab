@@ -12,11 +12,15 @@ jobs:
       image: mambaorg/micromamba:latest
       options: --user=root
     steps:
+    - name: Install node
+      run: |
+        apt-get update
+        apt-get install curl -y
+        curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
+        apt-get install -y nodejs
     - uses: actions/checkout@master
     - shell: _entrypoint.sh /bin/bash --noprofile --norc -eo pipefail {0}
-      run: |
-        micromamba info
-        which micromamba
+      run: micromamba info
     - name: Check out code
       uses: actions/checkout@v3
     - name: Install build env
@@ -30,8 +34,8 @@ jobs:
         --platform=emscripten-32 \
         --file web-environment.yaml
     - name: Pack
+      shell: _entrypoint.sh /bin/bash --noprofile --norc -eo pipefail {0}
       run: |
-        micromamba activate base
         mkdir -p ./public/empack && mkdir -p ./src/pyjs
         empack pack env \
         --env-prefix=/opt/conda/envs/web \
