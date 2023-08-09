@@ -45,7 +45,8 @@ jobs:
         --config=empack_config.yaml
     - name: Copy runtime
       run: |
-        cp -r /opt/conda/envs/web/lib_js/pyjs/. ./src/pyjs/
+        cp /opt/conda/envs/web/lib_js/pyjs/pyjs_runtime_browser.js ./src/pyjs/
+        cp /opt/conda/envs/web/lib_js/pyjs/pyjs_runtime_browser.wasm ./public/
     - name: Patch
       run: npm run patch_runtime
     - name: Build web app
