@@ -27,19 +27,7 @@ import InteractionModal from './InteractionModal';
 import Laser from './Laser';
 import Qubit, { QubitMenu } from './Qubit';
 import RemoveInteractionModal from './RemoveInteractionModal';
-
-const margin = {
-  top: 0,
-  right: 40,
-  bottom: 40,
-  left: 0,
-};
-
-const noop = () => { }
-
-const width = window.innerWidth - margin.right;
-const height = window.innerHeight - margin.bottom;
-const center = { x: width / 2, y: height / 2 };
+import useResize from './useResize';
 
 enum QubitPosition {
   TOP_LEFT = "TOP_LEFT",
@@ -47,8 +35,6 @@ enum QubitPosition {
   BOTTOM_LEFT = "BOTTOM_LEFT",
   BOTTOM_RIGHT = "BOTTOM_RIGHT"
 }
-
-type QubitInteractions = `${QubitPosition},${QubitPosition}`
 
 interface QubitCoords {
   x: number,
@@ -62,12 +48,7 @@ const qubitIds: Record<QubitPosition, QubitId> = {
   BOTTOM_RIGHT: 3
 }
 
-const qubitPositions: Record<QubitPosition, QubitCoords> = {
-  TOP_LEFT: { x: center.x - 270, y: center.y + 90 },
-  TOP_RIGHT: { x: center.x + 90, y: center.y + 90 },
-  BOTTOM_LEFT: { x: center.x - 90, y: center.y - 50 },
-  BOTTOM_RIGHT: { x: center.x + 270, y: center.y - 50 },
-} as const
+
 
 
 const initQubitState: Record<QubitPosition, boolean> = {
@@ -79,6 +60,15 @@ const initQubitState: Record<QubitPosition, boolean> = {
 
 
 export default function Laboratory() {
+  const { width, height } = useResize()
+  const center = { x: width / 2, y: height / 2 };
+  const qubitPositions: Record<QubitPosition, QubitCoords> = {
+    TOP_LEFT: { x: center.x - 270, y: center.y + 90 },
+    TOP_RIGHT: { x: center.x + 90, y: center.y + 90 },
+    BOTTOM_LEFT: { x: center.x - 90, y: center.y - 50 },
+    BOTTOM_RIGHT: { x: center.x + 270, y: center.y - 50 },
+  } as const
+  
   const { config, setConfig } = useContext(SimulationContext);
   const [activeQubits, setActiveQubits] =
     useState(initQubitState);
