@@ -63,10 +63,10 @@ export default function Laboratory() {
   const { width, height } = useResize()
   const center = { x: width / 2, y: height / 2 };
   const qubitPositions: Record<QubitPosition, QubitCoords> = {
-    TOP_LEFT: { x: center.x - 270, y: center.y + 90 },
-    TOP_RIGHT: { x: center.x + 90, y: center.y + 90 },
-    BOTTOM_LEFT: { x: center.x - 90, y: center.y - 50 },
-    BOTTOM_RIGHT: { x: center.x + 270, y: center.y - 50 },
+    TOP_LEFT: { x: center.x - width / 9, y: center.y - height / 8 },
+    TOP_RIGHT: { x: center.x + width / 3, y: center.y - height / 8 },
+    BOTTOM_LEFT: { x: center.x - width / 3, y: center.y + height / 8 },
+    BOTTOM_RIGHT: { x: center.x + (width / 9), y: center.y + height / 8 },
   } as const
 
   const { config, setConfig } = useContext(SimulationContext);
