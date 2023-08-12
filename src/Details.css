@@ -61,3 +61,25 @@
     background-color: black;
     padding: 5px 10px;
 }
+
+#details .info {
+    display: inline-block;
+    position: relative;
+}
+
+#details .info >.info--body:not(.visible) {
+    display: none;
+}
+
+#details .info > .info--body.visible {
+    position: absolute;
+    background: grey;
+    color: #efefef;
+    border: 1px solid #efefef;
+    border-radius: 5px;
+    top: 0;
+    left: calc(100% + 10px);
+    padding: 5px 10px;
+    font-size: 12px;
+    width: 200px
+}

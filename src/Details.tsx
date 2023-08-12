@@ -1,7 +1,10 @@
 import './Details.css';
 import 'katex/dist/katex.min.css';
 
-import React, { useContext } from 'react';
+import React, {
+  useContext,
+  useState,
+} from 'react';
 
 // @ts-ignore
 import {
@@ -80,7 +83,9 @@ export default function Details() {
           </div>
           {!!collapseOperators?.length && (
             <div className="details-field">
-              <label>Collapse Operators</label>
+              <label>Collapse Operators
+              </label>
+              <Info text="Collapse operators parameterize the system-bath interaction"/>
               {collapseOperators.map((C, i) => (
                 <BlockMath key={i}>{`C^{(n)} = ${C.parameter.label}${C.operator.label}^{(n)}`}</BlockMath>
               ))}
@@ -111,4 +116,16 @@ export default function Details() {
       </div>
     </div>
   );
+}
+
+export const Info = ({ text }) => {
+  const [visible, setVisible] = useState(false)
+  const toggleVisible = () => setVisible(v => !v)
+  return (
+    <div className={"info"}><span onClick={toggleVisible}>ⓘ</span>
+      <div className={`info--body ${visible ? 'visible' : ''}`}>
+        {text}
+      </div>
+    </div>
+  )
 }
