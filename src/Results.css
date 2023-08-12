@@ -1,15 +1,12 @@
 #results {
     padding: 20px;
-
-}
-
-.result-container {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    overflow-y: auto;
+    flex-wrap: wrap;
+    max-height: 100%;
 }
 
 .result-container > * {

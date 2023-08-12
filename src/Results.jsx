@@ -16,27 +16,27 @@ export default function Results() {
 
   return (
     <div id="results">
-      <div className="result-container">
-        {!results.length ? (
-          <div className="results-placeholder">
-            Press 'Simulate' to view the results here!
+      {!results.length ? (
+        <div className="results-placeholder">
+          Press 'Simulate' to view the results here!
+        </div>
+      ) : (
+        results.map((data, i) => (
+          <div style={{ border: "1px solid black" }} key={i}>
+            <h2 style={{ alignSelf: "start", background: "black", padding: 5 }}>
+              Qubit {i + 1}
+            </h2>
+            <BlochSphere time={time} data={data} key={"b" + i} />
+            <LineGraph
+              key={"lg" + i}
+              data={data}
+              onHover={setTime}
+              time={time}
+              onBlur={() => setTime(null)}
+            />
           </div>
-        ) : (
-          results.map((data, i) => (
-            <div style={{ border: '1px solid black'}} key={i}>
-            <h2 style={{alignSelf: 'start', background: 'black', padding: 5}}>Qubit {i+1}</h2>
-              <BlochSphere time={time} data={data} key={"b" + i} />
-              <LineGraph
-                key={"lg" + i}
-                data={data}
-                onHover={setTime}
-                time={time}
-                onBlur={() => setTime(null)}
-              />
-            </div>
-          ))
-        )}
-      </div>
+        ))
+      )}
     </div>
   );
 }
