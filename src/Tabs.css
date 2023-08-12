@@ -1,0 +1,44 @@
+.tab-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: absolute;
+    bottom: 0px;
+    height: 40px;
+    width: 100%;
+    background-color: #000;
+  }
+  
+  .tab-control {
+    line-height: 40px;
+    padding: 0 10px;
+    background-color: #1d1d1d;
+    cursor: pointer;
+  }
+  
+  .tab-headers {
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .tab-header {
+    font-weight: normal;
+    font-family: monospace;
+    text-transform: uppercase;
+    padding: 0 15px;
+    line-height: 40px;
+    background-color: #000;
+    cursor: pointer;
+    transition: 0.1s background linear;
+    flex: none;
+  }
+  
+  .tab-header.active {
+    background-color: grey;
+  }
+  
+  .tab-body {
+    height: 100%;
+    background-color: #1d1d1d;
+  }

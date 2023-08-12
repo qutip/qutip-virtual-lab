@@ -13,80 +13,6 @@ h2 {
     color: #efefef;
 }
 
-button#submit {
-  border-radius: 5px; 
-  font-size: 32px;
-  text-align: center;
-  padding: 10px 25px; 
-  cursor: pointer;
-  color: #efefff;
-  background-color: black;
-  position: absolute;
-  top: 20px;
-  left: 120px;
-  border: 1px solid #efefef;
-}
-
-button#submit:disabled {
-  background-color: #000a;
-  color: #575757;
-  cursor: wait;
-  border: 1px solid grey;
-}
-
-details {
-  font-family: 'monospace';
-  font-size: 20px;
-}
-
-#details-toggle {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
-
-#details-toggle[open] {
-  height: 80vh;
-  background-color: #121212ee
-}
-
-#results-toggle {
-  position: absolute;
-  right: 0px;
-  height: 100%;
-  min-width: 40px;
-}
-
-#results-toggle[open] {
-  width: 100vw;
-  background-color: #121212ee;
-  z-index: 3;
-}
-
-summary {
-  font-weight: normal;
-  padding: 5px;
-  background-color: #000;
-  text-transform: capitalize;
-  cursor: pointer;
-  transition: 0.1s background linear;
-}
-
-summary:hover {
-  background-color: #1d1d1d;
-}
-
-#results-toggle > summary {
-  text-orientation: mixed; 
-  writing-mode: vertical-lr;
-  height: 100%;
-}
-
-#results-toggle[open] > summary {
-  text-orientation:unset;
-  writing-mode: unset;
-  height: 40px;
-}
 
 #demos {
   position: absolute;
@@ -103,4 +29,22 @@ summary:hover {
   border-radius: 5px;
   padding: 10px 25px;
 
+}
+
+button#submit { 
+  text-align: center;
+  padding: 10px 25px; 
+  cursor: pointer;
+  color: #efefff;
+  background-color: black;
+  font-family: monospace;
+  text-transform: uppercase;
+  border: 1px solid white;
+}
+
+button#submit:disabled {
+  background-color: #000a;
+  color: #575757;
+  cursor: wait;
+  border: 1px solid grey;
 }

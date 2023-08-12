@@ -68,7 +68,7 @@ export default function Laboratory() {
     BOTTOM_LEFT: { x: center.x - 90, y: center.y - 50 },
     BOTTOM_RIGHT: { x: center.x + 270, y: center.y - 50 },
   } as const
-  
+
   const { config, setConfig } = useContext(SimulationContext);
   const [activeQubits, setActiveQubits] =
     useState(initQubitState);

@@ -1,30 +1,39 @@
 import './App.css';
 
-import Demos from './Demos';
+import { useState } from 'react';
+
 import Details from './Details';
 import Laboratory from './Laboratory';
 import Results from './Results';
-import SubmitButton from './SubmitButton';
+import TabHeaders, { Tab } from './Tabs';
 
 function App() {
+  const tabs = ["laboratory", "details", "results"];
+  const [activeTab, setActiveTab] = useState("laboratory");
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
 
   return (
     <>
-      <Laboratory />
-      <div className="main">
-        <details id="details-toggle">
-          <summary>DETAILS</summary>
-          <Details />
-        </details>
-        <details id="results-toggle">
-          <summary>
-            RESULTS
-          </summary>
-          <Results />
-        </details>
-        <SubmitButton />
-        <Demos/>
-      </div>
+        <div style={{height: '100%'}}>
+          <div className="tab-body">
+            <Tab active={activeTab === "laboratory"}>
+              <Laboratory />
+            </Tab>
+            <Tab active={activeTab === "details"}>
+              <Details />
+            </Tab>
+            <Tab active={activeTab === "results"}>
+              <Results />
+            </Tab>
+          </div>
+          <TabHeaders
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabClick={handleTabClick}
+          />
+        </div>
     </>
   );
 }
