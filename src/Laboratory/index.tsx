@@ -181,7 +181,7 @@ export default function Laboratory() {
   type handleFinishAddInteractionArgs = { operatorKey: PauliOperatorKey, operator: PauliOperator, scalar: number }
   const handleFinishAddInteraction = ({ operatorKey, operator, scalar }: handleFinishAddInteractionArgs) => {
     if (interactionSourceQubit && interactionTargetQubit) {
-      const [qubit1, qubit2] = [qubitIds[interactionSourceQubit], qubitIds[interactionTargetQubit]]
+      const [qubit1, qubit2] = [qubitIds[interactionSourceQubit], qubitIds[interactionTargetQubit]].sort((a, b) => a - b)
       const id = `${interactionSourceQubit}${interactionTargetQubit}-${operatorKey}`
       setInteractions(interactions => [
         ...interactions,
@@ -251,7 +251,7 @@ export default function Laboratory() {
           return {
             qubitId: qubitIds[key],
             operator: PauliOperators[laser.orientation],
-            parameter: { label: `\\lambda_${qubitIds[key]}`, src: `lambda_${qubitIds[key]}`, value: 1 }
+            parameter: { label: `\\lambda^{(${qubitIds[key]})}`, src: `lambda_${qubitIds[key]}`, value: 1 }
           }
         })
     }))
@@ -283,18 +283,18 @@ export default function Laboratory() {
     setQubitSelected(undefined)
     setConfig(config => ({
       ...config,
-      baths: config.baths.length 
-        ? [] 
+      baths: config.baths.length
+        ? []
         : [
-          { 
-            label: '', 
+          {
+            label: '',
             operator: PauliX,
-            parameter: { 
-              label: '\\gamma_p^{(n)}', 
-              src: 'gamma_p', 
+            parameter: {
+              label: '\\gamma_p^{(n)}',
+              src: 'gamma_p',
               value: 1
-            }, 
-           }
+            },
+          }
         ]
     }))
   };

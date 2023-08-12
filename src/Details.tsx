@@ -82,7 +82,7 @@ export default function Details() {
             <div className="details-field">
               <label>Collapse Operators</label>
               {collapseOperators.map((C, i) => (
-                <BlockMath key={i}>{`C_{${i}} = ${C.parameter.label}${C.operator.label}^{(n)}`}</BlockMath>
+                <BlockMath key={i}>{`C^{(n)} = ${C.parameter.label}${C.operator.label}^{(n)}`}</BlockMath>
               ))}
             </div>
           )}
