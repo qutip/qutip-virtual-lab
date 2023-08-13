@@ -7,6 +7,7 @@ import {
 } from 'react-konva';
 
 import ClickTarget from './ClickTarget';
+import { qubitRadius } from './Qubit';
 
 export default function Laser({
   at,
@@ -16,19 +17,19 @@ export default function Laser({
   onTogglePower,
   onSelectOrientation,
 }) {
-  const width = 150;
-  const height = 100;
+  const width = 100;
+  const height = 80;
   const { x, y } = at;
-  const baseline = 100;
-  const pathLength = baseline - y + height;
+  const baseline = 20;
+  const pathLength = baseline - y + height + qubitRadius;
   const fillColors = {
-    Sx: 'red',
-    Sy: 'orange',
-    Sz: 'hotpink'
-  }
-  
+    Sx: "red",
+    Sy: "orange",
+    Sz: "hotpink",
+  };
+
   return (
-    <Group x={x - 120} y={baseline}>
+    <Group x={x - width / 2} y={baseline}>
       <Rect
         x={0}
         y={0}
@@ -41,10 +42,14 @@ export default function Laser({
       />
       <Group>
         {["Sx", "Sy", "Sz"].map((orientationOption, i) => (
-          <Group y={25} x={width / 3 / 2} key={orientationOption}>
+          <Group y={15} x={width / 3 / 2} key={orientationOption}>
             <Rect
               x={(width / 3) * i - 5}
-              fill={orientation === orientationOption ? fillColors[orientation] : "none"}
+              fill={
+                orientation === orientationOption
+                  ? fillColors[orientation]
+                  : "none"
+              }
               stroke="white"
               strokeWidth={1}
               height={10}
@@ -52,13 +57,17 @@ export default function Laser({
             />
             <Text
               fill="white"
-              text={orientationOption}
+              text={orientationOption.at(-1).toUpperCase()}
               x={(width / 3) * i - 5}
               y={15}
             />
             <ClickTarget
               x={(width / 3) * i - 5}
-              fill={orientation === orientationOption ? fillColors[orientation] : "none"}
+              fill={
+                orientation === orientationOption
+                  ? fillColors[orientation]
+                  : "none"
+              }
               onClick={() => onSelectOrientation(orientationOption)}
               height={10}
               width={10}
@@ -98,35 +107,28 @@ export default function Laser({
             x={0}
             y={0}
             height={height / 4}
-            width={(width -14) / 2}
+            width={(width - 14) / 2}
             cornerRadius={[5, 5, 5, 5]}
             onClick={onTogglePower}
           />
         </Group>
       </Group>
       {on && (
-        <>
+        <Group y={height}>
           <Line
             x={width / 2}
-            y={height}
+            y={0}
             stroke="orange"
             strokeWidth={4}
             points={[0, 0, 0, -pathLength]}
             shadowColor="red"
             shadowBlur={20}
           />
-          <Circle
-            x={width / 2}
-            y={width / 2 - pathLength}
-            fill="white"
-            radius={8}
-          />
-          <Group x={width / 2} y={width / 2 - pathLength}>
+          <Circle x={width / 2} y={-pathLength} fill="white" radius={8} />
+          <Group x={width / 2} y={-pathLength}>
             {Array.from({ length: 12 }).map((_, i) => (
               <Group key={"l" + i}>
                 <Line
-                  x={0}
-                  y={0}
                   points={[6, 0, 15, 0]}
                   rotation={60 * i}
                   stroke="orange"
@@ -134,8 +136,6 @@ export default function Laser({
                   shadowBlur={20}
                 />
                 <Line
-                  x={0}
-                  y={0}
                   points={[6, 0, 15, 0]}
                   rotation={30 * i}
                   stroke="orange"
@@ -145,7 +145,7 @@ export default function Laser({
               </Group>
             ))}
           </Group>
-        </>
+        </Group>
       )}
     </Group>
   );

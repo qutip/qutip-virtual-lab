@@ -48,9 +48,6 @@ const qubitIds: Record<QubitPosition, QubitId> = {
   BOTTOM_RIGHT: 3
 }
 
-
-
-
 const initQubitState: Record<QubitPosition, boolean> = {
   TOP_LEFT: false,
   TOP_RIGHT: false,
@@ -63,10 +60,10 @@ export default function Laboratory() {
   const { width, height } = useResize()
   const center = { x: width / 2, y: height / 2 };
   const qubitPositions: Record<QubitPosition, QubitCoords> = {
-    TOP_LEFT: { x: center.x - width / 9, y: center.y - height / 8 },
-    TOP_RIGHT: { x: center.x + width / 3, y: center.y - height / 8 },
-    BOTTOM_LEFT: { x: center.x - width / 3, y: center.y + height / 8 },
-    BOTTOM_RIGHT: { x: center.x + (width / 9), y: center.y + height / 8 },
+    TOP_LEFT: { x: width / 5, y: height / 3 },
+    TOP_RIGHT: { x: 3 * width / 5, y: height / 3 },
+    BOTTOM_LEFT: { x: 2 * width / 5, y: 2 * height / 3 },
+    BOTTOM_RIGHT: { x: 4 * width / 5, y: 2 * height / 3 },
   } as const
 
   const { config, setConfig } = useContext(SimulationContext);
@@ -310,7 +307,7 @@ export default function Laboratory() {
               label={orientation}
             />
           ))}
-          <Group x={-120} y={-60}>
+          <Group>
             {interactions.map(({ qubits, label, id }) => (
               <Interaction
                 key={id}
@@ -335,22 +332,28 @@ export default function Laboratory() {
                       disabled={(isAddingInteraction && (interactionSourceQubit === key)) || isRemovingInteraction}
                       {...qubitPositions[key]}
                     />
-                    <QubitMenu
-                      key={key + 'menu'}
-                      visible={qubitSelected === key}
-                      onClose={() => setQubitSelected(undefined)}
-                      onRemoveQubit={() => handleRemoveQubit(key)}
-                      onToggleBath={() => handleToggleBath()}
-                      onAddLaser={() => handleToggleLaser(key)}
-                      onAddInteraction={numActiveQubits > 1 ? () => handleAddInteraction(key) : false}
-                      onRemoveInteraction={interactionsByQubit[key]?.length ? () => handleRemoveInteraction(key) : false}
-                      {...qubitPositions[key]}
-                    />
                   </>
                 )
               ))}
           </Group>
-
+        </Layer>
+        <Layer>
+          <Group>
+            {(Object.entries(activeQubits) as Array<[QubitPosition, boolean]>).map(
+              ([key, active]) => (
+                <QubitMenu
+                  key={key + 'menu'}
+                  visible={qubitSelected === key}
+                  onClose={() => setQubitSelected(undefined)}
+                  onRemoveQubit={() => handleRemoveQubit(key)}
+                  onToggleBath={() => handleAddBath()}
+                  onAddLaser={() => handleToggleLaser(key)}
+                  onAddInteraction={numActiveQubits > 1 ? () => handleAddInteraction(key) : false}
+                  onRemoveInteraction={interactionsByQubit[key]?.length ? () => handleRemoveInteraction(key) : false}
+                  {...qubitPositions[key]}
+                />
+              ))}
+          </Group>
         </Layer>
       </Stage>
       {isAddingInteraction && !interactionModalVisible && (

@@ -10,7 +10,7 @@ import {
 
 import ClickTarget from './ClickTarget';
 
-export const radius = 40;
+export const qubitRadius = 30;
 
 const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled }) => {
   const selectedProps = {
@@ -19,48 +19,46 @@ const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled }) => {
   };
   if (active)
     return (
-      <>
-        <Group x={x + 2 * radius} y={y + 2 * radius}>
-          <Circle
-            radius={radius + 3}
-            stroke="orange"
-            opacity={disabled ? 0.2 : 1}
-            strokeWidth={3}
-            fill={"#252525"}
-          />
-          <Arrow
-            stroke={"#efefef"}
-            points={[0, 2 * radius - 5, 0, -2 * radius - 5]}
-            rotation={30}
-            fill={"#efefef"}
-            opacity={disabled ? 0.2 : 1}
-          />
-          <Circle
-            radius={radius}
-            stroke="#efefef"
-            strokeWidth={1}
-            opacity={disabled ? 0.2 : 1}
-            fill={"transparent"}
-          />
-          <Circle
-            radius={radius - 3}
-            stroke="#efefef"
-            strokeWidth={1}
-            opacity={disabled ? 0.2 : 1}
-            fill={"#efefef"}
-          />
-        </Group>
+      <Group x={x} y={y}>
+        <Circle
+          radius={qubitRadius + 3}
+          stroke="orange"
+          opacity={disabled ? 0.2 : 1}
+          strokeWidth={3}
+          fill={"#252525"}
+        />
+        <Arrow
+          stroke={"#efefef"}
+          points={[0, 2 * qubitRadius - 5, 0, -2 * qubitRadius - 5]}
+          rotation={30}
+          fill={"#efefef"}
+          opacity={disabled ? 0.2 : 1}
+        />
+        <Circle
+          radius={qubitRadius}
+          stroke="#efefef"
+          strokeWidth={1}
+          opacity={disabled ? 0.2 : 1}
+          fill={"transparent"}
+        />
+        <Circle
+          radius={qubitRadius - 3}
+          stroke="#efefef"
+          strokeWidth={1}
+          opacity={disabled ? 0.2 : 1}
+          fill={"#efefef"}
+        />
         {!disabled && (
           <ClickTarget
             onClick={onSelect}
-            x={x}
-            y={y}
-            width={4 * radius}
-            height={4 * radius}
+            x={- 2 * qubitRadius}
+            y={- 2 * qubitRadius}
+            width={4 * qubitRadius}
+            height={4 * qubitRadius}
             {...(selected ? selectedProps : {})}
           />
         )}
-      </>
+      </Group>
     );
   return <QubitPlaceholder x={x} y={y} onActivate={onActivate} />;
 };
@@ -71,34 +69,30 @@ export const QubitPlaceholder = ({ x, y, onActivate }) => {
   const [hover, setHover] = useState(false);
   return (
     <>
-      <Group>
+      <Group x={x-2*qubitRadius} y={y-2*qubitRadius}>
         <Rect
-          width={4 * radius}
-          height={4 * radius}
+          width={4 * qubitRadius}
+          height={4 * qubitRadius}
           stroke={hover ? "white" : "orange"}
           opacity={hover ? 1 : 0.3}
-          x={x}
-          y={y}
           cornerRadius={15}
         />
         <Text
           text={"ADD QUBIT"}
-          x={x + 10}
-          y={y + 2 * radius}
+          x={10}
+          y={2 * qubitRadius}
           fill="white"
           fontSize={18}
           fontFamily="monospace"
         />
-      </Group>
       <ClickTarget
-        x={x}
-        y={y}
-        width={4 * radius}
-        height={4 * radius}
+        width={4 * qubitRadius}
+        height={4 * qubitRadius}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         onClick={onActivate}
-      />
+        />
+      </Group>
     </>
   );
 };
@@ -114,7 +108,7 @@ export const QubitMenu = ({
   onAddLaser,
   onRemoveQubit,
 }) => {
-  const size = radius;
+  const size = qubitRadius;
   const width = 150;
   const menuItems = [
     { label: "Toggle Laser", onClick: onAddLaser },
@@ -130,7 +124,7 @@ export const QubitMenu = ({
   const textPadding = { y: size / 2 - 5, x: 5 };
   return (
     <>
-      <Group visible={visible} x={x + 2 * radius} y={y + 2 * radius}>
+      <Group visible={visible} x={x} y={y}>
         <Rect fill="black" width={width} height={size} stroke="black" />
         <Text text="×" x={7} fill="white" fontSize={40} />
         <ClickTarget

@@ -5,8 +5,6 @@ import {
   Text,
 } from 'react-konva';
 
-import { radius } from './Qubit';
-
 const Interaction = ({
   qubit1Position,
   qubit2Position,
@@ -58,7 +56,7 @@ const Interaction = ({
     Sz: { stroke: "orange", shadowColor: "orange" },
   };
   return (
-    <Group x={2 * radius} y={2 * radius}>
+    <Group>
       <Line
         shadowBlur={10}
         strokeWidth={5}
