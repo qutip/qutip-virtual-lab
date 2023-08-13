@@ -1,7 +1,6 @@
 #details .details-tab--content {
     display: flex;
     flex-direction: row;
-    padding-right: 40px;
     height: 100%;
 }
 
