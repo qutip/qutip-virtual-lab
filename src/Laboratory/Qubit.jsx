@@ -104,11 +104,12 @@ export const QubitMenu = ({
   onClose,
   onAddInteraction,
   onRemoveInteraction,
-  onToggleBath,
+  onAddBath,
+  onRemoveBath,
   onAddLaser,
   onRemoveQubit,
 }) => {
-  const size = qubitRadius;
+  const size = 40;
   const width = 150;
   const menuItems = [
     { label: "Toggle Laser", onClick: onAddLaser },
@@ -118,7 +119,10 @@ export const QubitMenu = ({
     ...(onRemoveInteraction
       ? [{ label: "Remove Interaction", onClick: onRemoveInteraction }]
       : []),
-    { label: "Toggle Bath", onClick: onToggleBath },
+    { label: "Add Bath", onClick: onAddBath },
+    ...(onRemoveBath
+      ? [{ label: "Remove Bath", onClick: onRemoveBath }]
+      : []),
     { label: "Remove Qubit", onClick: onRemoveQubit },
   ];
   const textPadding = { y: size / 2 - 5, x: 5 };
@@ -126,7 +130,7 @@ export const QubitMenu = ({
     <>
       <Group visible={visible} x={x} y={y}>
         <Rect fill="black" width={width} height={size} stroke="black" />
-        <Text text="×" x={7} fill="white" fontSize={40} />
+        <Text text="×" x={7} fill="white" fontSize={40} y={0} />
         <ClickTarget
           stroke="white"
           onClick={onClose}

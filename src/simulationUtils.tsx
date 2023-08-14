@@ -18,7 +18,16 @@ export const PauliZ = {
     src: "sigmaz()",
     label: "\\sigma_z"
 } as const
-
+export const PauliPlus = {
+    src: "sigmap()",
+    label: "\\sigma_+",
+    key: 'Sp'
+} as const
+export const PauliMinus = {
+    src: "sigmam()",
+    label: "\\sigma_-",
+    key: 'Sm'
+} as const
 
 export type PauliOperator = (typeof PauliX) | typeof PauliY | typeof PauliZ
 
@@ -53,7 +62,7 @@ export type InteractionOperator = {
 
 type CollapseOperator = {
     label: string;
-    operator: PauliOperator;
+    operator: typeof PauliPlus | typeof PauliMinus;
     parameter: SimulationParameter
 }
 

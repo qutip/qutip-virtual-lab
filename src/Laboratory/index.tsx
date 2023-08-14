@@ -16,16 +16,17 @@ import {
   type PauliOperator,
   type PauliOperatorKey,
   PauliOperators,
-  PauliX,
   type QubitId,
 } from '../simulationUtils';
 import AddInteractionModal from './AddInteractionModal';
 import Bath from './Bath';
+import BathModal from './BathModal';
 import Grid from './Grid';
 import Interaction from './Interaction';
 import InteractionModal from './InteractionModal';
 import Laser from './Laser';
 import Qubit, { QubitMenu } from './Qubit';
+import RemoveBathModal from './RemoveBathModal';
 import RemoveInteractionModal from './RemoveInteractionModal';
 import useResize from './useResize';
 
@@ -84,6 +85,10 @@ export default function Laboratory() {
   const [interactionTargetQubit, setInteractionTargetQubit] = useState<undefined | QubitPosition>();
   const [interactionModalVisible, setInteractionModalVisible] = useState<boolean>(false);
   const [interactions, setInteractions] = useState<Array<{ qubits: QubitPosition[], label: PauliOperatorKey, id: string }>>([])
+  const [isAddingBath, setIsAddingBath] = useState(false)
+  const [bathModalVisible, setBathModalVisible] = useState(false)
+  const [baths, setBaths] = useState<Array<'Sm' | 'Sp'>>([])
+  const [isRemovingBath, setIsRemovingBath] = useState(false)
 
   const numActiveQubits = useMemo(() => {
     return Object.values(activeQubits).reduce(
@@ -110,11 +115,17 @@ export default function Laboratory() {
     return []
   }, [interactions, interactionSourceQubit, interactionTargetQubit])
 
+  const disabledBathOptions = useMemo(() => {
+    const options: Array<'Sm' | 'Sp'> = ['Sm', 'Sp']
+    return options.filter(op => !baths.includes(op))
+  }, [baths])
+
   const handleAddQubit = (position) => {
     setActiveQubits((positions) => ({
       ...positions,
       [position]: true
     }));
+    setQubitSelected(undefined)
 
     let newConfigQubits = [...new Set([...config.qubits, qubitIds[position]])]
     setConfig((config) => ({
@@ -266,25 +277,55 @@ export default function Laboratory() {
     ))
   }
 
-  const handleToggleBath = () => {
+  const handleAddBath = () => {
+    setIsAddingBath(true)
+    setBathModalVisible(true)
+  }
+
+  const handleCancelAddBath = () => {
+    setIsAddingBath(false)
+    setBathModalVisible(false)
     setQubitSelected(undefined)
+  }
+
+  const handleFinishAddBath = ({ operatorKey, operator, scalar }) => {
+    setIsAddingBath(false)
+    setBaths(baths => [...baths, operatorKey])
     setConfig(config => ({
       ...config,
-      baths: config.baths.length
-        ? []
-        : [
-          {
-            label: '',
-            operator: PauliX,
-            parameter: {
-              label: '\\gamma_p^{(n)}',
-              src: 'gamma_p',
-              value: 1
-            },
-          }
-        ]
+      baths: [...config.baths, {
+        label: `bath-${config.baths.length}`,
+        operator,
+        parameter: {
+          label: operatorKey === 'Sm' ? '\\gamma^{(n)}_-' : '\\gamma^{(n)}_+',
+          src: `gamma_${operatorKey}`,
+          value: scalar
+        }
+      }]
     }))
+    setQubitSelected(undefined)
+  }
+
+  const handleRemoveBath = () => {
+    setIsRemovingBath(true)
+  }
+
+  const handleFinishRemoveBath = ({operatorKey}) => {
+    setQubitSelected(undefined)
+    setBaths(baths => baths.filter(bath => (bath !== operatorKey)))
+    setConfig(config => ({
+      ...config,
+      baths: config.baths.filter(bath => (bath.operator.key !== operatorKey))
+    }))
+    setIsRemovingBath(false)
   };
+
+  const handleCancelRemoveBath = () => {
+    setIsRemovingBath(false)
+  }
+
+  console.log(baths)
+  console.log(config.baths)
 
   return (
     <>
@@ -295,7 +336,9 @@ export default function Laboratory() {
       >
         <Layer>
           <Grid width={width} height={height} />
-          {(Object.entries(config.baths)).map(([key, { }]) => <Bath position={center} key={key + 'b'} />)}
+        </Layer>
+        <Layer>
+          {baths.map((operatorKey) => <Bath operatorKey={operatorKey} position={center} key={operatorKey + 'b'} />)}
           {(Object.entries(lasers) as Array<[QubitPosition, { orientation, on }]>).map(([key, { orientation, on }]) => (
             activeQubits[key] && <Laser
               on={on}
@@ -346,7 +389,8 @@ export default function Laboratory() {
                   visible={qubitSelected === key}
                   onClose={() => setQubitSelected(undefined)}
                   onRemoveQubit={() => handleRemoveQubit(key)}
-                  onToggleBath={() => handleAddBath()}
+                  onAddBath={() => handleAddBath()}
+                  onRemoveBath={baths.length ? () => handleRemoveBath() : undefined}
                   onAddLaser={() => handleToggleLaser(key)}
                   onAddInteraction={numActiveQubits > 1 ? () => handleAddInteraction(key) : false}
                   onRemoveInteraction={interactionsByQubit[key]?.length ? () => handleRemoveInteraction(key) : false}
@@ -364,6 +408,12 @@ export default function Laboratory() {
       )}
       {isRemovingInteraction && (
         <RemoveInteractionModal onCancel={handleCancelRemoveInteraction} />
+      )}
+      {isAddingBath && bathModalVisible && (
+        <BathModal disabledOptions={baths} onCancel={handleCancelAddBath} onSubmit={handleFinishAddBath} />
+      )}
+      {isRemovingBath && (
+        <RemoveBathModal disabledOptions={disabledBathOptions} onCancel={handleCancelRemoveBath} onSubmit={handleFinishRemoveBath} />
       )}
     </>
   );

@@ -8,13 +8,12 @@ import {
   PauliPlus,
 } from '../simulationUtils';
 
-export default function BathModal({ onCancel, onSubmit, disabledOptions }) {
+export default function RemoveBathModal({ onCancel, onSubmit, disabledOptions }) {
   const operatorSelectOptions = {
     Sp: PauliPlus,
     Sm: PauliMinus
   }
   const [operatorSelected, setOperatorSelected] = useState<'Sp' | 'Sm' | undefined>();
-  const [scalar, setScalar] = useState<number>(0);
   return (
     <div
       style={{
@@ -43,15 +42,6 @@ export default function BathModal({ onCancel, onSubmit, disabledOptions }) {
           <InlineMath>{operator.label}</InlineMath>
         </label>
       ))}
-      <br />
-      Strength:{" "}
-      <input
-        style={{ height: 35, width: "100%" }}
-        type="number"
-        value={scalar || 0}
-        onChange={(e) => setScalar(Number.parseFloat(e.target.value))}
-      />
-      <br />
       <div
         style={{
           display: "flex",
@@ -63,11 +53,9 @@ export default function BathModal({ onCancel, onSubmit, disabledOptions }) {
       >
         <button
           style={{ padding: "10px 30px" }}
-          disabled={operatorSelected === undefined || scalar === 0}
+          disabled={operatorSelected === undefined}
           onClick={() => onSubmit({
             operatorKey: operatorSelected,
-            operator: operatorSelected ? operatorSelectOptions[operatorSelected] : undefined,
-            scalar,
           })}
         >
           OK

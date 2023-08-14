@@ -3,7 +3,7 @@ import {
   Group,
 } from 'react-konva';
 
-const Bath = ({ position }) => {
+const Bath = ({ operatorKey, position }) => {
   const { x, y } = position;
   const width = 30;
   const waveArray = [
@@ -22,10 +22,11 @@ const Bath = ({ position }) => {
         <Ellipse
           x={0}
           y={0}
+          rotation={operatorKey === 'Sm' ? -2 : 2}
           radius={{ x: x, y: (7 * y) / 12 }}
           shadowBlur={30}
-          shadowColor="red"
-          fill="#ff00001f"
+          shadowColor={operatorKey === 'Sm' ? "cyan"  :"red"}
+          fill={operatorKey === 'Sm' ? "#00ffff1f" : "#ff00001f"}
         />
       </Group>
     </>
