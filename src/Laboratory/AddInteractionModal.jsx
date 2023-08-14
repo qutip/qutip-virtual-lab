@@ -6,7 +6,7 @@ export default function AddInteractionModal ({ onCancel }) {
             color: "white",
             fontFamily: "monospace",
             fontSize: 20,
-            bottom: 140,
+            bottom: 40,
             left: "50%",
             transform: "translateX(-50%)",
             background: "#252525",
