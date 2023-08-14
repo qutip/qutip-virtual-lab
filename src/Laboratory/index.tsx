@@ -323,10 +323,7 @@ export default function Laboratory() {
   const handleCancelRemoveBath = () => {
     setIsRemovingBath(false)
   }
-
-  console.log(baths)
-  console.log(config.baths)
-
+  
   return (
     <>
       <Stage
