@@ -23,6 +23,10 @@ export enum States {
   SIMULATED = "SIMULATED",
 };
 
+type ComponentValue = number
+type BlochVectorValues = [Array<ComponentValue>, Array<ComponentValue>, Array<ComponentValue>]
+type SimulationResults = Array<BlochVectorValues>
+
 type SimulationContext = {
   state: States,
   config: SimulationConfig,
@@ -88,11 +92,15 @@ export default function Simulation({ children }) {
   }, [config]);
 
   const loadResults = (results: string) => {
-    // The results from pyjs are just a string
-    // but, once parsed into JSON, should be an array of arrays:
-    // Each item in the outer array corresponds to a specific qubit
-    // Each item in the inner array corresponds to a Bloch vector component of each qubit
-    // listing the values of each component for each point in time
+    // The results from pyjs are returned
+    // by the print statements in getSrc
+    // 
+    // Once parsed into JSON, should be a
+    // tensor of dimension Q x 3 x T
+    // Q = number of Qubits
+    // 3 = bloch vector components
+    // T = number of time samples
+    // See type `SimulationResults`
     setResultsBuffer((state) => [...state, JSON.parse(results)]);
   };
 
