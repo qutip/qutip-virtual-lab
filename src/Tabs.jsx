@@ -1,8 +1,12 @@
 import './Tabs.css';
 
+import { useContext } from 'react';
+
+import { SimulationContext } from './Simulation';
 import SubmitButton from './SubmitButton';
 
 export default function TabHeaders({ tabs, activeTab, onTabClick }) {
+  const { toggleDemo } = useContext(SimulationContext)
   return (
     <div className="tab-header-container">
       <div className="tab-headers">
@@ -15,7 +19,24 @@ export default function TabHeaders({ tabs, activeTab, onTabClick }) {
           </div>
         ))}
       </div>
-      <SubmitButton />
+      <div>
+        <button
+          style={{
+            display: "inline",
+            borderRadius: 30,
+            border: "1px solid grey",
+            margin: "0 10px",
+            padding: "6px 10px",
+            cursor: 'pointer',
+            background: 'none',
+            color: 'grey'
+          }}
+          onClick={toggleDemo}
+        >
+          ?
+        </button>
+        <SubmitButton />
+      </div>
     </div>
   );
 }

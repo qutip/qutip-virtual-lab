@@ -37,6 +37,7 @@ type SimulationContext = {
   submit: () => void,
   setResults: (value: React.SetStateAction<string[]>) => void,
   reset: () => void,
+  toggleDemo: () => {}
 }
 
 export const SimulationContext = createContext<SimulationContext>({
@@ -61,6 +62,7 @@ export const SimulationContext = createContext<SimulationContext>({
   submit: () => {},
   setResults: () => {},
   reset: () => {},
+  toggleDemo: () => {},
 });
 
 export default function Simulation({ children }) {
