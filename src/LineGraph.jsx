@@ -15,6 +15,7 @@ import {
   LegendLabel,
   LegendOrdinal,
 } from '@visx/legend';
+import { ParentSize } from '@visx/responsive';
 import {
   scaleLinear,
   scaleOrdinal,
@@ -84,87 +85,91 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
   };
 
   return (
-    <div>
-      <svg width={300} height={100}>
-        <LinePath
-          curve={curveMonotoneX}
-          data={dataSeq}
-          x={(d) => xScale(getTime(d))}
-          y={(d) => yScale(getSx(d))}
-          stroke={colors[0]}
-          strokeWidth={2}
-        />
-        <LinePath
-          curve={curveMonotoneX}
-          data={dataSeq}
-          x={(d) => xScale(getTime(d))}
-          y={(d) => yScale(getSy(d))}
-          stroke={colors[1]}
-          strokeWidth={2}
-        />
-        <LinePath
-          curve={curveMonotoneX}
-          data={dataSeq}
-          x={(d) => xScale(getTime(d))}
-          y={(d) => yScale(getSz(d))}
-          stroke={colors[2]}
-          strokeWidth={2}
-        />
-        <AxisBottom
-          scale={xScale}
-          stroke="#efefef"
-          top={100 / 2}
-          tickLabelProps={{ fill: "#efefef" }}
-        />
-        <AxisLeft
-          stroke="#efefef"
-          scale={yScale}
-          left={35}
-          numTicks={2}
-          tickFormat={(v) => v.toFixed(0)}
-          tickLabelProps={{ fill: "#efefef" }}
-        />
-        {data.length && (
-          <>
-            {time !== null && (
-              <Line
-                from={{ x: lineX, y: margin.top }}
-                to={{ x: lineX, y: height + margin.top }}
-                stroke="#efefef"
-                strokeWidth={2}
-              />
-            )}
-            <Bar
-              x={margin.left + axisLeft}
-              y={margin.right}
-              width={width}
-              height={height}
-              fill="transparent"
-              onMouseEnter={handleHover}
-              onMouseMove={handleHover}
-              onMouseLeave={onBlur}
+    <ParentSize>
+      {({ width }) => (
+        <>
+          <svg width={width} height={100}>
+            <LinePath
+              curve={curveMonotoneX}
+              data={dataSeq}
+              x={(d) => xScale(getTime(d))}
+              y={(d) => yScale(getSx(d))}
+              stroke={colors[0]}
+              strokeWidth={2}
             />
-          </>
-        )}
-      </svg>
-      <div className="label-container">
-        <LegendOrdinal scale={colorScale}>
-          {(labels) => (
-            <div>
-              {labels.map((label) => (
-                <LegendItem key={label.value}>
-                  <svg width={10} height={10} key={label.value}>
-                    <rect fill={label.value} width={10} height={10} />
-                  </svg>
-                  <LegendLabel style={{ marginLeft: 5 }}>
-                    <InlineMath>{label.text}</InlineMath>
-                  </LegendLabel>
-                </LegendItem>
-              ))}
-            </div>
-          )}
-        </LegendOrdinal>
-      </div>
-    </div>
+            <LinePath
+              curve={curveMonotoneX}
+              data={dataSeq}
+              x={(d) => xScale(getTime(d))}
+              y={(d) => yScale(getSy(d))}
+              stroke={colors[1]}
+              strokeWidth={2}
+            />
+            <LinePath
+              curve={curveMonotoneX}
+              data={dataSeq}
+              x={(d) => xScale(getTime(d))}
+              y={(d) => yScale(getSz(d))}
+              stroke={colors[2]}
+              strokeWidth={2}
+            />
+            <AxisBottom
+              scale={xScale}
+              stroke="#efefef"
+              top={100 / 2}
+              tickLabelProps={{ fill: "#efefef" }}
+            />
+            <AxisLeft
+              stroke="#efefef"
+              scale={yScale}
+              left={35}
+              numTicks={2}
+              tickFormat={(v) => v.toFixed(0)}
+              tickLabelProps={{ fill: "#efefef" }}
+            />
+            {data.length && (
+              <>
+                {time !== null && (
+                  <Line
+                    from={{ x: lineX, y: margin.top }}
+                    to={{ x: lineX, y: height + margin.top }}
+                    stroke="#efefef"
+                    strokeWidth={2}
+                  />
+                )}
+                <Bar
+                  x={margin.left + axisLeft}
+                  y={margin.right}
+                  width={width}
+                  height={height}
+                  fill="transparent"
+                  onMouseEnter={handleHover}
+                  onMouseMove={handleHover}
+                  onMouseLeave={onBlur}
+                />
+              </>
+            )}
+          </svg>
+          <div className="label-container">
+            <LegendOrdinal scale={colorScale}>
+              {(labels) => (
+                <div>
+                  {labels.map((label) => (
+                    <LegendItem key={label.value}>
+                      <svg width={10} height={10} key={label.value}>
+                        <rect fill={label.value} width={10} height={10} />
+                      </svg>
+                      <LegendLabel style={{ marginLeft: 5 }}>
+                        <InlineMath>{label.text}</InlineMath>
+                      </LegendLabel>
+                    </LegendItem>
+                  ))}
+                </div>
+              )}
+            </LegendOrdinal>
+          </div>
+        </>
+      )}
+    </ParentSize>
   );
 }
