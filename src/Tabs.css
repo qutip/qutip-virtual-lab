@@ -42,3 +42,17 @@
     height: 100%;
     background-color: #1d1d1d;
   }
+
+  .tab-button {
+    display: inline;
+    cursor: pointer;
+    background: none;
+    color: grey;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 25px;
+    line-height: 0;
+    padding: 10px;
+    border: 1px solid grey;
+    width: 40px;
+  }
