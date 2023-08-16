@@ -1,13 +1,12 @@
-import React, {
-  useContext,
-  useState,
-} from 'react';
+import React, { useContext } from 'react';
 
 import { SimulationContext } from './Simulation';
 import {
+  PauliMinus,
   PauliX,
   PauliY,
   PauliZ,
+  type QubitId,
   type SimulationConfig,
 } from './simulationUtils';
 
@@ -16,8 +15,7 @@ const DEPHASING = "DEPHASING";
 const SPIN_CHAIN = "SPIN_CHAIN";
 
 export default function Demos() {
-  const [demoSelected, setDemoSelected] = useState("demo");
-  const { setConfig, reset } = useContext(SimulationContext);
+  const { setConfig, demoSelected, setDemoSelected } = useContext(SimulationContext);
 
   const handleChange = (e) => {
     setDemoSelected(e.target.value);
@@ -27,7 +25,7 @@ export default function Demos() {
   return (
     <div id="demos">
       <select value={demoSelected} onChange={handleChange}>
-        <option disabled value="demo">
+        <option disabled>
           Demo
         </option>
         <option value={LARMOR}>Larmor Precession</option>
@@ -41,61 +39,51 @@ export default function Demos() {
 const LarmorPrecessionConfig: SimulationConfig = {
   qubits: [1],
   lasers: [{
-    qubitId: 1,
+    qubitId: 0,
     operator: PauliX,
     parameter: {
-      label: "\\lambda^{(1)}",
-      src: "lambda_1",
+      label: "\\lambda^{(0)}",
+      src: "lambda_0",
       value: 1
     }
   }],
   interactions: [],
   baths: [],
   initialStates: {
-    1: '-z'
+    0: '-z'
   }
 };
 
 const QubitDephasingConfig: SimulationConfig = {
   qubits: [1],
   lasers: [{
-    qubitId: 1,
-    operator: PauliX,
+    qubitId: 0,
+    operator: PauliZ,
     parameter: {
-      label: "\\lambda^{(1)}",
-      src: "lambda_1",
+      label: "\\lambda^{(0)}",
+      src: "lambda_0",
       value: Math.cos(0.2 * Math.PI)
     }
   },
-  {
-    qubitId: 1,
-    operator: PauliZ,
-    parameter: {
-      label: "\\lambda^{(2)}",
-      src: "lambda_2",
-      value: Math.sin(0.2 * Math.PI)
-    }
-  }
   ],
   interactions: [],
   baths: [{
     label: "bath1",
-    //@ts-ignore
-    operator: PauliX,
+    operator: PauliMinus,
     parameter: {
       label: "\\gamma_p",
       src: "gamma_p",
       value: 0.5
     }
   }],
-  initialStates: { 1: "-z" }
+  initialStates: { 1: "x" }
 };
 
 const SpinChainConfig: SimulationConfig = {
-  qubits: [1, 2, 3, 4],
-  lasers: Array.from({length: 4}, (_, i) => (
+  qubits: [0,1,2,3],
+  lasers: ([0,1,2,3] as Array<QubitId>).map((i: QubitId) => (
     {
-      qubitId: i+1,
+      qubitId: i,
       operator: PauliZ,
       parameter: {
         label: "u",
@@ -107,14 +95,14 @@ const SpinChainConfig: SimulationConfig = {
   //@ts-ignore
   interactions: Array.from({length: 3}).flatMap((_, i) => (
     ['x','y','z'].map((axis => ({
-      qubitIds: [i+1, i+2],
+      qubitIds: [i, i+1],
       operator: {x: PauliX, y: PauliY, z: PauliZ}[axis], 
       parameter: {
         label: `J_${axis}`,
         src: `J_${axis}`,
         value: 0.2*Math.PI
       },
-      id: `${axis}${i+1}${i+2}`
+      id: `${axis}${i}${i+1}`
     }
   ))))),
   baths: [
@@ -130,10 +118,10 @@ const SpinChainConfig: SimulationConfig = {
      }
   ],
   initialStates: {
-    1: 'z',
+    0: 'z',
+    1: '-z',
     2: '-z',
     3: '-z',
-    4: '-z',
   }
 }
 

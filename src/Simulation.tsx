@@ -37,7 +37,8 @@ type SimulationContext = {
   submit: () => void,
   setResults: (value: React.SetStateAction<string[]>) => void,
   reset: () => void,
-  toggleDemo: () => {}
+  demoSelected: string | undefined
+  setDemoSelected: (value: React.SetStateAction<string|undefined>) => void,
 }
 
 export const SimulationContext = createContext<SimulationContext>({
@@ -62,10 +63,12 @@ export const SimulationContext = createContext<SimulationContext>({
   submit: () => {},
   setResults: () => {},
   reset: () => {},
-  toggleDemo: () => {},
+  demoSelected: undefined,
+  setDemoSelected: () => {}
 });
 
 export default function Simulation({ children }) {
+  const [demoSelected, setDemoSelected] = useState<string|undefined>()
   const [config, _setConfig] = useState(emptyConfig);
   const [results, setResults] = useState<string[]>([]);
   const [state, setSimState] = useState(States.INIT);
@@ -134,6 +137,8 @@ export default function Simulation({ children }) {
     submit,
     setResults,
     reset,
+    demoSelected,
+    setDemoSelected
   };
 
   return (

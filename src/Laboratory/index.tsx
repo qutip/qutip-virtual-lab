@@ -1,5 +1,6 @@
 import React, {
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -42,11 +43,22 @@ interface QubitCoords {
   y: number
 }
 
+type InvertResult<T extends Record<PropertyKey, PropertyKey>> = {
+  [P in keyof T as T[P]]: P
+}
+
 const qubitIds: Record<QubitPosition, QubitId> = {
   TOP_LEFT: 0,
   TOP_RIGHT: 1,
   BOTTOM_LEFT: 2,
   BOTTOM_RIGHT: 3
+}
+
+const qubitPositionsById: InvertResult<typeof qubitIds> = {
+  0:  QubitPosition.TOP_LEFT,
+  1:  QubitPosition.TOP_RIGHT,
+  2:  QubitPosition.BOTTOM_LEFT,
+  3:  QubitPosition.BOTTOM_RIGHT,
 }
 
 const initQubitState: Record<QubitPosition, boolean> = {
@@ -55,6 +67,14 @@ const initQubitState: Record<QubitPosition, boolean> = {
   BOTTOM_LEFT: false,
   BOTTOM_RIGHT: false,
 };
+
+const initLasersState: Record<QubitPosition, { on: boolean, orientation: PauliOperatorKey | undefined }> =
+  {
+    TOP_LEFT: { on: false, orientation: undefined },
+    TOP_RIGHT: { on: false, orientation: undefined },
+    BOTTOM_LEFT: { on: false, orientation: undefined },
+    BOTTOM_RIGHT: { on: false, orientation: undefined },
+  }
 
 
 export default function Laboratory() {
@@ -67,17 +87,10 @@ export default function Laboratory() {
     BOTTOM_RIGHT: { x: 4 * width / 5, y: 2 * height / 3 },
   } as const
 
-  const { config, setConfig } = useContext(SimulationContext);
+  const { config, setConfig, demoSelected } = useContext(SimulationContext);
   const [activeQubits, setActiveQubits] =
     useState(initQubitState);
-  const [lasers, setLasers] = useState<Record<QubitPosition, { on: boolean, orientation: PauliOperatorKey | undefined }>>(
-    {
-      TOP_LEFT: { on: false, orientation: undefined },
-      TOP_RIGHT: { on: false, orientation: undefined },
-      BOTTOM_LEFT: { on: false, orientation: undefined },
-      BOTTOM_RIGHT: { on: false, orientation: undefined },
-    }
-  )
+  const [lasers, setLasers] = useState<Record<QubitPosition, { on: boolean, orientation: PauliOperatorKey | undefined }>>(initLasersState)
   const [qubitSelected, setQubitSelected] = useState<undefined | QubitPosition>();
   const [isAddingInteraction, setIsAddingInteraction] = useState(false);
   const [isRemovingInteraction, setIsRemovingInteraction] = useState(false);
@@ -119,6 +132,39 @@ export default function Laboratory() {
     const options: Array<'Sm' | 'Sp'> = ['Sm', 'Sp']
     return options.filter(op => !baths.includes(op))
   }, [baths])
+
+  useEffect(() => {
+    if (demoSelected) {
+      setActiveQubits(() => {
+        let newActiveQubits = {...initQubitState}
+        const keys = Object.keys(initQubitState)
+        for(const qubit in config.qubits) {
+          newActiveQubits[keys[qubit]] = true
+        }
+        return newActiveQubits
+      })
+      setLasers(() => {
+        const newLasers = {...initLasersState}
+        const lasersOn = config.lasers.map(l => ({position: qubitPositionsById[l.qubitId], orientation: l.operator.key}))
+        for (const {position, orientation} of lasersOn) {
+          newLasers[position] = { on: true, orientation }
+        }
+        return newLasers
+      })
+      setInteractions(() => {
+        return config.interactions.map(({ qubitIds, operator, parameter, id }) => (
+          {
+            qubits: qubitIds.map(qid => qubitPositionsById[qid]),
+            label: operator.key,
+            id
+          }
+        ))
+      })
+      setBaths(() => {
+        return config.baths.map(({operator}) => operator.key)
+      })
+    }
+  }, [demoSelected])
 
   const handleAddQubit = (position) => {
     setActiveQubits((positions) => ({
