@@ -1,4 +1,4 @@
-export type QubitId = number;
+export type QubitId = 0 | 1 | 2 | 3;
 export const X = 'x' as const
 export const Y = 'y' as const
 export const Z = 'z' as const
@@ -9,14 +9,17 @@ export type PauliOperatorKey = `S${Axis}`
 export const PauliX = {
     src: "sigmax()",
     label: "\\sigma_x",
+    key: 'Sx'
 } as const
 export const PauliY = {
     src: "sigmay()",
     label: "\\sigma_y",
+    key: 'Sy'
 } as const
 export const PauliZ = {
     src: "sigmaz()",
-    label: "\\sigma_z"
+    label: "\\sigma_z",
+    key: 'Sz'
 } as const
 export const PauliPlus = {
     src: "sigmap()",
@@ -86,8 +89,8 @@ export interface SimulationConfig {
     interactions: Array<InteractionOperator>;
     baths: Array<CollapseOperator>;
     initialStates: {
-        [key: QubitId]: InitialState
-    };
+        [key in QubitId]: InitialState
+    } | {};
 }
 
 export const emptyConfig: SimulationConfig = {
@@ -159,7 +162,7 @@ export const getSrc = (config: SimulationConfig): string => {
     lasers.forEach((laser) => {
         const { qubitId, operator, parameter } = laser;
         const laserSrc = qubits.length > 1 
-            ? `expand_operator(${operator.src}, ${qubits.length}, ${qubitId-1})` 
+            ? `expand_operator(${operator.src}, ${qubits.length}, ${qubitId})` 
             : operator.src
         H = [...H, `${parameter.src}*${laserSrc}`];
         params = [...params, `${parameter.src} = ${parameter.value}`]
@@ -167,7 +170,7 @@ export const getSrc = (config: SimulationConfig): string => {
     interactions.forEach((interaction) => {
         const { qubitIds, operator, parameter } = interaction;
         const interactionSrc = qubits.length > 2 
-            ? `expand_operator(tensor(${operator.src},${operator.src}), ${qubits.length}, [${qubitIds[0]-1},${qubitIds[1]-1}])` 
+            ? `expand_operator(tensor(${operator.src},${operator.src}), ${qubits.length}, [${qubitIds[0]},${qubitIds[1]}])` 
             : `tensor(${operator.src},${operator.src})`
         H = [...H, `${parameter.src}*${interactionSrc}`]
         params = [...params, `${parameter.src} = ${parameter.value}`]
