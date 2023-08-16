@@ -55,10 +55,10 @@ const qubitIds: Record<QubitPosition, QubitId> = {
 }
 
 const qubitPositionsById: InvertResult<typeof qubitIds> = {
-  0:  QubitPosition.TOP_LEFT,
-  1:  QubitPosition.TOP_RIGHT,
-  2:  QubitPosition.BOTTOM_LEFT,
-  3:  QubitPosition.BOTTOM_RIGHT,
+  0: QubitPosition.TOP_LEFT,
+  1: QubitPosition.TOP_RIGHT,
+  2: QubitPosition.BOTTOM_LEFT,
+  3: QubitPosition.BOTTOM_RIGHT,
 }
 
 const initQubitState: Record<QubitPosition, boolean> = {
@@ -69,12 +69,12 @@ const initQubitState: Record<QubitPosition, boolean> = {
 };
 
 const initLasersState: Record<QubitPosition, { on: boolean, orientation: PauliOperatorKey | undefined }> =
-  {
-    TOP_LEFT: { on: false, orientation: undefined },
-    TOP_RIGHT: { on: false, orientation: undefined },
-    BOTTOM_LEFT: { on: false, orientation: undefined },
-    BOTTOM_RIGHT: { on: false, orientation: undefined },
-  }
+{
+  TOP_LEFT: { on: false, orientation: undefined },
+  TOP_RIGHT: { on: false, orientation: undefined },
+  BOTTOM_LEFT: { on: false, orientation: undefined },
+  BOTTOM_RIGHT: { on: false, orientation: undefined },
+}
 
 
 export default function Laboratory() {
@@ -136,17 +136,17 @@ export default function Laboratory() {
   useEffect(() => {
     if (demoSelected) {
       setActiveQubits(() => {
-        let newActiveQubits = {...initQubitState}
+        let newActiveQubits = { ...initQubitState }
         const keys = Object.keys(initQubitState)
-        for(const qubit in config.qubits) {
+        for (const qubit in config.qubits) {
           newActiveQubits[keys[qubit]] = true
         }
         return newActiveQubits
       })
       setLasers(() => {
-        const newLasers = {...initLasersState}
-        const lasersOn = config.lasers.map(l => ({position: qubitPositionsById[l.qubitId], orientation: l.operator.key}))
-        for (const {position, orientation} of lasersOn) {
+        const newLasers = { ...initLasersState }
+        const lasersOn = config.lasers.map(l => ({ position: qubitPositionsById[l.qubitId], orientation: l.operator.key }))
+        for (const { position, orientation } of lasersOn) {
           newLasers[position] = { on: true, orientation }
         }
         return newLasers
@@ -161,7 +161,7 @@ export default function Laboratory() {
         ))
       })
       setBaths(() => {
-        return config.baths.map(({operator}) => operator.key)
+        return config.baths.map(({ operator }) => operator.key)
       })
     }
   }, [demoSelected])
@@ -295,7 +295,11 @@ export default function Laboratory() {
           return {
             qubitId: qubitIds[key],
             operator: PauliOperators[laser.orientation],
-            parameter: { label: `\\lambda^{(${qubitIds[key]})}`, src: `lambda_${qubitIds[key]}`, value: 1 }
+            parameter: {
+              label: `\\lambda^{(${qubitIds[key]})}`,
+              src: `lambda_${qubitIds[key]}`,
+              value: 1
+            }
           }
         })
     }))
@@ -356,7 +360,7 @@ export default function Laboratory() {
     setIsRemovingBath(true)
   }
 
-  const handleFinishRemoveBath = ({operatorKey}) => {
+  const handleFinishRemoveBath = ({ operatorKey }) => {
     setQubitSelected(undefined)
     setBaths(baths => baths.filter(bath => (bath !== operatorKey)))
     setConfig(config => ({
@@ -369,7 +373,7 @@ export default function Laboratory() {
   const handleCancelRemoveBath = () => {
     setIsRemovingBath(false)
   }
-  
+
   return (
     <>
       <Stage
