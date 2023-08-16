@@ -158,27 +158,25 @@ export const getSrc = (config: SimulationConfig): string => {
     let params: Array<string> = [];
     lasers.forEach((laser) => {
         const { qubitId, operator, parameter } = laser;
-        const embedded = qubits.map((subspaceId) => {
-            return qubitId === subspaceId ? `${parameter.src}*${operator.src}` : "qeye(2)"
-        }
-        ).join();
-        H = [...H, qubits.length > 1 ? `tensor(${embedded})` : embedded];
+        const laserSrc = qubits.length > 1 
+            ? `expand_operator(${operator.src}, ${qubits.length}, ${qubitId-1})` 
+            : operator.src
+        H = [...H, `${parameter.src}*${laserSrc}`];
         params = [...params, `${parameter.src} = ${parameter.value}`]
     });
     interactions.forEach((interaction) => {
         const { qubitIds, operator, parameter } = interaction;
-        if (qubits.length > 2) {
-            const embedded = Array.from(qubits, () => "qeye(2)");
-            embedded[qubitIds[0]] = `${operator.src}`;
-            embedded[qubitIds[1]] = `${operator.src}`;
-            H.push(`${parameter.src}*tensor(${embedded.join()})`);
-        }
-        else {
-            H.push(`${parameter.src}*tensor(${operator.src},${operator.src})`)
-        }
+        const interactionSrc = qubits.length > 2 
+            ? `expand_operator(tensor(${operator.src},${operator.src}), ${qubits.length}, [${qubitIds[0]-1},${qubitIds[1]-1}])` 
+            : `tensor(${operator.src},${operator.src})`
+        H = [...H, `${parameter.src}*${interactionSrc}`]
         params = [...params, `${parameter.src} = ${parameter.value}`]
     });
-    let c_ops = `c_ops = [${baths.map(bath => `${bath.parameter.value}*${bath.operator.src}`).join()}]`
+    if(!H.length) {
+        H = [Array.from(qubits, () => 'qeye(2)').join("*")]
+    }
+    const bathsSrc = baths.map(bath => `[expand_operator(${bath.parameter.value}*${bath.operator.src}, ${qubits.length}, i) for i in range(${qubits.length})]`)
+    let c_ops = `c_ops = ${bathsSrc.join('+')}`
     const solve =
         "result = mesolve(H, psi0, tlist, c_ops, [])";
 
@@ -188,11 +186,37 @@ export const getSrc = (config: SimulationConfig): string => {
         "expectation_values = expect(bloch_vector, result.states)"
     ]
 
-    const print = Array.from(qubits).flatMap((_, q) => (
+    const print_density_matrix = [
+        "rhos = [ket2dm(state) for state in result.states]",
+        "print(rhos)"
+    ]
+
+    const print_bloch_vectors = Array.from(qubits).flatMap((_, q) => (
         `print(json.dumps([e.tolist() for e in expect(bloch_vector, result.states)[${q}]]))`
     ))
 
-    let returnArr = [imports, tlist, qs, psi0, params.join(';'), `H = ${H.join("+")}`, c_ops, solve, ...expect, ...print]
+    const print_q_func = [
+        "print(json.dumps([qfunc(rho, np.linspace(), np.linspace()) for rho in rhos]))",
+    ]
+
+    const print_outputs = [
+        // ...print_density_matrix, 
+        ...print_bloch_vectors,
+        // ...print_q_func
+    ]
+
+    let returnArr = [
+        imports, 
+        tlist, 
+        qs, 
+        psi0,
+        ...(params.length ? [params.join(";")] : []),
+        `H = ${H.join("+")}`, 
+        c_ops, 
+        solve, 
+        ...expect,
+        ...print_outputs
+    ].filter(statement => statement !== '')
     console.log(JSON.stringify(returnArr, undefined, 4))
     return returnArr.join(";");
 }
