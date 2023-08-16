@@ -24,12 +24,14 @@ export default function TabHeaders({ tabs, activeTab, onTabClick }) {
           style={{
             display: "inline",
             borderRadius: 30,
-            border: "1px solid grey",
+            border: "2px solid grey",
             margin: "0 10px",
             padding: "6px 10px",
             cursor: 'pointer',
             background: 'none',
-            color: 'grey'
+            color: 'grey',
+            fontWeight: 'bold',
+            fontFamily: 'monospace'
           }}
           onClick={toggleDemo}
         >
