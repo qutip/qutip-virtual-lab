@@ -15,6 +15,17 @@ import TabHeaders, { Tab } from './Tabs';
 
 function App() {
   const fullScreenHandle = useFullScreenHandle()
+  const [fullScreen, setFullScreen] = useState(false)
+
+  const handleToggleFullScreen = () => {
+    if (fullScreen) {
+      fullScreenHandle.exit()
+      setFullScreen(false)
+    } else {
+      fullScreenHandle.enter()
+      setFullScreen(true)
+    }
+  }
 
   const tabs = ["laboratory", "details", "results"];
   const [activeTab, setActiveTab] = useState("laboratory");
@@ -40,7 +51,7 @@ function App() {
             tabs={tabs}
             activeTab={activeTab}
             onTabClick={handleTabClick}
-            onToggleFullScreen={fullScreenHandle.enter}
+            onToggleFullScreen={handleToggleFullScreen}
           />
         </div>
         <Demos />
