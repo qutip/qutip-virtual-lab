@@ -81,6 +81,8 @@ export interface SimulationConfigDetails {
     };
     collapseOperators: Array<CollapseOperator>;
     initialState: string;
+    totalTime: number;
+    timeSteps: number;
 }
 
 export interface SimulationConfig {
@@ -91,6 +93,8 @@ export interface SimulationConfig {
     initialStates: {
         [key in QubitId]: InitialState
     } | {};
+    totalTime: number;
+    timeSteps: number;
 }
 
 export const emptyConfig: SimulationConfig = {
@@ -98,12 +102,14 @@ export const emptyConfig: SimulationConfig = {
     interactions: [],
     baths: [],
     qubits: [],
-    initialStates: {}
+    initialStates: {},
+    totalTime: 10,
+    timeSteps: 100
 }
 
 
 export const getDetails = (config: SimulationConfig): SimulationConfigDetails => {
-    const { lasers, interactions, baths, initialStates } = config
+    const { lasers, interactions, baths, initialStates, totalTime, timeSteps } = config
     let interactionTerms: Array<string> = []
     let singleQubitTerms: Array<string> = []
     lasers.forEach(laser => {
@@ -135,14 +141,16 @@ export const getDetails = (config: SimulationConfig): SimulationConfigDetails =>
         Hamiltonian: H,
         parameters,
         collapseOperators: baths,
-        initialState
+        initialState,
+        totalTime,
+        timeSteps,
     };
 }
 
 export const getSrc = (config: SimulationConfig): string => {
-    const { lasers, interactions, baths, qubits, initialStates } = config;
+    const { lasers, interactions, baths, qubits, initialStates, totalTime, timeSteps } = config;
     let imports = "from qutip import *; import numpy as np; import json";
-    let tlist = "tlist = np.linspace(0, 10, 100)";
+    let tlist = `tlist = np.linspace(0, ${totalTime}, ${timeSteps})`;
     let qs = `qubits = ${qubits.length}`
     let psi0Arr = (Object.keys(initialStates) as Array<string>)
         .map(Number)
@@ -179,7 +187,7 @@ export const getSrc = (config: SimulationConfig): string => {
         H = [Array.from(qubits, () => 'qeye(2)').join("*")]
     }
     const bathsSrc = baths.map(bath => `[expand_operator(${bath.parameter.value}*${bath.operator.src}, ${qubits.length}, i) for i in range(${qubits.length})]`)
-    let c_ops = `c_ops = ${bathsSrc.join('+')}`
+    let c_ops = `c_ops = ${bathsSrc.join('+') || '[]'}`
     const solve =
         "result = mesolve(H, psi0, tlist, c_ops, [])";
 

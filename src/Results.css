@@ -5,8 +5,7 @@
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    flex-wrap: wrap;
-    max-height: 100%;
+    height: calc(100vh - 100px);
 }
 
 .result-container > * {

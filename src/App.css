@@ -1,5 +1,5 @@
 #root {
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
   }
@@ -13,23 +13,6 @@ h2 {
     color: #efefef;
 }
 
-
-#demos {
-  position: absolute;
-  top: 20px;
-  left: 450px;
-  border: 1px solid #efefef;
-  border-radius: 5px;
-}
-
-#demos > select {
-  font-size: 32px;
-  background: black;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 25px;
-
-}
 
 button#submit { 
   text-align: center;

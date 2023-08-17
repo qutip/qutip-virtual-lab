@@ -1,12 +1,8 @@
 import './Tabs.css';
 
-import { useContext } from 'react';
-
-import { SimulationContext } from './Simulation';
 import SubmitButton from './SubmitButton';
 
-export default function TabHeaders({ tabs, activeTab, onTabClick, onToggleFullScreen }) {
-  const { toggleDemo } = useContext(SimulationContext)
+export default function TabHeaders({ tabs, activeTab, onTabClick, onToggleFullScreen, onToggleDemos, onShowWalkThrough }) {
   return (
     <div className="tab-header-container">
       <div className="tab-headers">
@@ -20,10 +16,13 @@ export default function TabHeaders({ tabs, activeTab, onTabClick, onToggleFullSc
         ))}
       </div>
       <div style={{height: 40, display: 'flex', flexDirection: 'row'}}>
+        <button className="tab-button" onClick={onToggleDemos}>
+        ⚛
+        </button>
       <button className="tab-button" onClick={onToggleFullScreen}>
           ⤢
         </button>
-        <button className="tab-button" onClick={toggleDemo}>
+        <button className="tab-button" onClick={onShowWalkThrough}>
           ?
         </button>
         <SubmitButton />

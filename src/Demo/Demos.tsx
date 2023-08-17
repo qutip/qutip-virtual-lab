@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { SimulationContext } from './Simulation';
+import { SimulationContext } from '../Simulation';
 import {
   PauliMinus,
   PauliX,
@@ -8,13 +8,13 @@ import {
   PauliZ,
   type QubitId,
   type SimulationConfig,
-} from './simulationUtils';
+} from '../simulationUtils';
 
 const LARMOR = "LARMOR";
 const DEPHASING = "DEPHASING";
 const SPIN_CHAIN = "SPIN_CHAIN";
 
-export default function Demos() {
+export default function Demos({ onClose }) {
   const { setConfig, demoSelected, setDemoSelected } = useContext(SimulationContext);
 
   const handleChange = (e) => {
@@ -32,6 +32,7 @@ export default function Demos() {
         <option value={DEPHASING}>Qubit Dephasing</option>
         <option value={SPIN_CHAIN}>Spin chain</option>
       </select>
+      <button onClick={onClose}>X</button>
     </div>
   );
 }
@@ -51,7 +52,9 @@ const LarmorPrecessionConfig: SimulationConfig = {
   baths: [],
   initialStates: {
     0: '-z'
-  }
+  },
+  totalTime: 10,
+  timeSteps: 100
 };
 
 const QubitDephasingConfig: SimulationConfig = {
@@ -76,7 +79,9 @@ const QubitDephasingConfig: SimulationConfig = {
       value: 0.5
     }
   }],
-  initialStates: { 1: "x" }
+  initialStates: { 1: "x" },
+  totalTime: 10,
+  timeSteps: 100
 };
 
 const SpinChainConfig: SimulationConfig = {
@@ -122,7 +127,9 @@ const SpinChainConfig: SimulationConfig = {
     1: '-z',
     2: '-z',
     3: '-z',
-  }
+  },
+  totalTime: 10,
+  timeSteps: 100
 }
 
 const demos = {

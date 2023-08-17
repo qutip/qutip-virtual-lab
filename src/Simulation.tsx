@@ -56,7 +56,9 @@ export const SimulationContext = createContext<SimulationContext>({
       baths: []
     },
     collapseOperators: [],
-    initialState: ""
+    initialState: "",
+    totalTime: 10,
+    timeSteps: 100
   },
   src: "",
   setConfig: () => {},
