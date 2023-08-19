@@ -13,21 +13,16 @@ import {
 } from 'react-katex';
 
 import { SimulationContext } from './Simulation';
-import { InitialState } from './simulationUtils';
+import {
+  InitialStateKey,
+  InitialStates,
+} from './simulationUtils';
 
 export default function Details() {
   const { details, setConfig, config } =
     useContext(SimulationContext);
 
-  const initialStateOptions: Array<{ label: string; state: InitialState }> =
-    [
-      { label: "+", state: 'x' },
-      { label: "-", state: '-x' },
-      { label: 'i', state: "y" },
-      { label: '-i', state: "-y" },
-      { label: '1', state: "z" },
-      { label: '0', state: "-z" }
-    ]
+  const initialStateOptions = InitialStates
 
   const { Hamiltonian, initialState, collapseOperators, parameters, totalTime, timeSteps } = details
   const { initialStates } = config
@@ -48,7 +43,7 @@ export default function Details() {
     return uParams
   }, [parameters])
 
-  const handleChangeInitialState = (val: InitialState, qubit) => {
+  const handleChangeInitialState = (val: InitialStateKey, qubit) => {
     setConfig(config => {
       let newInitialStates = config.initialStates
       newInitialStates[qubit] = val
@@ -103,9 +98,9 @@ export default function Details() {
             {Object.entries(initialStates).map(([key, initialState]) => (
               <div style={{ paddingLeft: 12, margin: "1em 0" }} key={key}>
                 <InlineMath>{`|q_${key}\\rangle = |`}</InlineMath>
-                <select value={initialState} onChange={e => handleChangeInitialState(e.target.value as InitialState, key)}>
-                  {initialStateOptions.map(option => (
-                    <option key={option.state} value={option.state}>{option.label}</option>
+                <select value={initialState.key} onChange={e => handleChangeInitialState(e.target.value as InitialStateKey, key)}>
+                  {Object.values(initialStateOptions).map(option => (
+                    <option key={option.key} value={option.key}>{option.key}</option>
                   ))}
                 </select>
                 <InlineMath>{'\\rangle'}</InlineMath>

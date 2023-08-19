@@ -40,9 +40,61 @@ export const PauliOperators: Record<PauliOperatorKey, PauliOperator> = {
     Sz: PauliZ
 }
 
-export type InitialState = `${Axis}` | `-${Axis}`
-export const eigenStates: Array<InitialState> = [X, Y, Z, `-${X}`, `-${Y}`, `-${Z}`]
-export const isInitialState = (state): state is InitialState => eigenStates.includes(state)
+export type InitialStateKey = `${Axis}` | `-${Axis}`
+export const eigenStates: Array<InitialStateKey> = [X, Y, Z, `-${X}`, `-${Y}`, `-${Z}`]
+export const isInitialState = (state): state is InitialStateKey => eigenStates.includes(state)
+
+export const InitialZero = {
+    src: 'basis(2,0)',
+    label: '|0\\rangle',
+    key: '-z'
+} as const
+
+export const InitialOne = {
+    src: 'basis(2,1)',
+    label: '|1\\rangle',
+    key: 'z'
+} as const
+
+export const InitialPlus = {
+    src: '(basis(2,0) + basis(2,1))/np.sqrt(2)',
+    label: '|+\\rangle',
+    key: 'x'
+} as const
+
+export const InitialMinus = {
+    src: '(basis(2,0) - basis(2,1))/np.sqrt(2)',
+    label: '|-\\rangle',
+    key: '-x'
+} as const
+
+export const InitialI = {
+    src: '(basis(2,0) + j*basis(2,1))/np.sqrt(2)',
+    label: '|i\\rangle',
+    key: 'y'
+} as const
+
+export const InitialMinusI = {
+    src: '(basis(2,0) - j*basis(2,1))/np.sqrt(2)',
+    label: '|-i\\rangle',
+    key: '-y'
+} as const
+
+export type InitialState = typeof InitialZero 
+                        |  typeof InitialOne 
+                        |  typeof InitialPlus 
+                        |  typeof InitialMinus 
+                        |  typeof InitialI 
+                        |  typeof InitialMinusI
+
+export const InitialStates: Record<InitialStateKey, InitialState> = {
+    '-z': InitialZero,
+    z: InitialOne,
+    '-x': InitialMinus,
+    x: InitialPlus,
+    '-y': InitialMinusI,
+    y: InitialI
+}
 
 type SimulationParameter = {
     label: string;
@@ -129,14 +181,7 @@ export const getDetails = (config: SimulationConfig): SimulationConfigDetails =>
         interactions: interactions.map(getParameter),
         baths: baths.map(getParameter)
     }
-    const initialState = Object.values(initialStates).map((state) => {
-        if (state === '-z') return '|0\\rangle'
-        if (state === 'z') return '|1\\rangle'
-        if (state === 'x') return '|+\\rangle'
-        if (state === '-x') return '|-\\rangle'
-        if (state === 'y') return '|i\\rangle'
-        if (state === '-y') return '|-i\\rangle'
-    }).join('\\otimes')
+    const initialState = Object.values(initialStates).map((state) => state.label).join('\\otimes')
     return {
         Hamiltonian: H,
         parameters,
