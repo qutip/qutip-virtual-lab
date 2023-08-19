@@ -2,7 +2,7 @@ import './Tabs.css';
 
 import SubmitButton from './SubmitButton';
 
-export default function TabHeaders({ tabs, activeTab, onTabClick, onToggleFullScreen, onToggleDemos, onShowWalkThrough }) {
+export default function TabHeaders({ tabs, activeTab, onTabClick, onToggleFullScreen, onToggleDemos }) {
   return (
     <div className="tab-header-container">
       <div className="tab-headers">
@@ -22,9 +22,6 @@ export default function TabHeaders({ tabs, activeTab, onTabClick, onToggleFullSc
       <button className="tab-button" onClick={onToggleFullScreen}>
           ⤢
         </button>
-        <button className="tab-button" onClick={onShowWalkThrough}>
-          ?
-        </button>
         <SubmitButton />
       </div>
     </div>
@@ -32,5 +29,5 @@ export default function TabHeaders({ tabs, activeTab, onTabClick, onToggleFullSc
 }
 
 export const Tab = ({ active, children }) => (
-  <div style={{ display: active ? "unset" : "none" }}>{children}</div>
+  <div style={{ display: active ? "unset" : "none", width: '100%', height: '100%' }}>{children}</div>
 );

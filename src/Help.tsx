@@ -1,8 +1,8 @@
-import './Demo.css';
+import './Help.css';
 
 import React, { useState } from 'react';
 
-export default function DemoModal({ onExit, setTab }) {
+export default function Help() {
     const [step, setStep] = useState(0)
     const nextStep = () => setStep(step => step + 1)
     const prevStep = () => setStep(step => step - 1)
@@ -16,13 +16,12 @@ export default function DemoModal({ onExit, setTab }) {
     ]
     const StepComponent = steps[step]
 
-    return <div id="demo-modal">
+    return <div id="help">
         <StepComponent />
         <div className="step-counter">{`(${step + 1}/${steps.length})`}</div>
         <div className="button-group">
             {step > 0 && <button onClick={prevStep}>Back</button>}
-            {step < steps.length - 1 ? <button onClick={nextStep}>Next</button> : <button onClick={onExit}>Finish</button>}
-            <button onClick={onExit}>Exit</button>
+            {step < steps.length - 1 ? <button onClick={nextStep}>Next</button> : <button>Finish</button>}
         </div>
     </div>
 }
@@ -35,7 +34,7 @@ const Step1 = () => {
                 Welcome to the <b>QuTiP Virtual Lab</b>
             </p>
             <p>This application shows how QuTiP can simulate quantum systems</p>
-            <p>This modal will guide you through the application</p>
+            <p>This will guide you through the application</p>
             <p>Hit Next to continue</p>
         </>
     )
@@ -70,7 +69,7 @@ const DetailStep = () => {
             </p>
             <p>Once you have set up your system, click on the</p>
             <button id="submit">Simulate ▶️</button>
-            <p>to simulate the system using QuTiP</p>
+            <p>on the bottom of your screen to simulate the system using QuTiP</p>
         </>
     )
 }
@@ -92,9 +91,8 @@ const TabsStep = () => {
     return (
         <>
             <h1>Other Controls</h1>
-            <p>The <span className='tab-button'>⤢</span> will toggle fullscreen mode</p>
-            <p>The <span className='tab-button'>?</span> will toggle this modal</p>
-            <p>The <span className='tab-button'>⚛</span> will allow you to select an example system. Try it!</p>
+            <p>The ⤢ button will toggle fullscreen mode</p>
+            <p>The ⚛ button will allow you to select an example system. Try it!</p>
         </>
     )
 }
