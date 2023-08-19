@@ -1,61 +1,31 @@
-#demo-modal {
-    position: absolute;
-    top: 0;
-    width: 100vw;
-    height: calc(100vh - 40px);
-    background: #1d1d1d;
-    border: 1px solid white;
-    color: white;
-    font-family: monospace;
-    padding: 20px 20px 80px 20px;
-}
-
-.button-group {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-}
-
-.button-group > button {
-    width: 100px;
-    height: 35px;
-    cursor: pointer;
-}
-
-.button-group > button + button {
-    margin-left: 20px;
-}
-
-.step-counter {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-}
-
-p {
-    font-size: 16px;
-    margin: 10px 0;
-}
-
 #demos {
     position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translate(-50%);
+    bottom: 50px;
+    right: 5px;
     border-radius: 5px;
+    color: var(--white);
+
   }
   
 #demos > select {
     padding: 10px 20px;
     background: black;
-    border: 1px solid white;
+    border: none;
+    border-bottom: 3px solid grey;
     border-radius: 5px;
+    color: var(--white);
 }
 
 #demos > button {
     padding: 10px 15px;
     background: black;
-    border: 1px solid white;
-    border-radius: 100px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    color: var(--white);
+    border-bottom: 3px solid grey;
+}
+
+#demos > select + button {
+    margin-left: 10px;
 }

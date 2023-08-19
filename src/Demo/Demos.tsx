@@ -1,7 +1,12 @@
+import './Demo.css';
+
 import React, { useContext } from 'react';
 
 import { SimulationContext } from '../Simulation';
 import {
+  InitialOne,
+  InitialPlus,
+  InitialZero,
   PauliMinus,
   PauliX,
   PauliY,
@@ -24,15 +29,15 @@ export default function Demos({ onClose }) {
 
   return (
     <div id="demos">
-      <select value={demoSelected} onChange={handleChange}>
-        <option disabled>
-          Demo
+      <select value={demoSelected} defaultValue={'undefined'} onChange={handleChange}>
+        <option value={'undefined'} disabled>
+          Select a demo
         </option>
         <option value={LARMOR}>Larmor Precession</option>
         <option value={DEPHASING}>Qubit Dephasing</option>
         <option value={SPIN_CHAIN}>Spin chain</option>
       </select>
-      <button onClick={onClose}>X</button>
+      <button onClick={onClose}>&times;</button>
     </div>
   );
 }
@@ -51,7 +56,7 @@ const LarmorPrecessionConfig: SimulationConfig = {
   interactions: [],
   baths: [],
   initialStates: {
-    0: '-z'
+    0: InitialZero
   },
   totalTime: 10,
   timeSteps: 100
@@ -79,7 +84,7 @@ const QubitDephasingConfig: SimulationConfig = {
       value: 0.5
     }
   }],
-  initialStates: { 1: "x" },
+  initialStates: { 0: InitialPlus },
   totalTime: 10,
   timeSteps: 100
 };
@@ -123,10 +128,10 @@ const SpinChainConfig: SimulationConfig = {
      }
   ],
   initialStates: {
-    0: 'z',
-    1: '-z',
-    2: '-z',
-    3: '-z',
+    0: InitialOne,
+    1: InitialZero,
+    2: InitialZero,
+    3: InitialZero,
   },
   totalTime: 10,
   timeSteps: 100
