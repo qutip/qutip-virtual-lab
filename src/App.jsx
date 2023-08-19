@@ -7,9 +7,9 @@ import {
   useFullScreenHandle,
 } from 'react-full-screen';
 
-import DemoModal from './Demo/DemoModal';
 import Demos from './Demo/Demos';
 import Details from './Details';
+import Help from './Help';
 import Laboratory from './Laboratory';
 import Results from './Results';
 import TabHeaders, { Tab } from './Tabs';
@@ -30,7 +30,7 @@ function App() {
     }
   }
 
-  const tabs = ["laboratory", "details", "results"];
+  const tabs = ["laboratory", "details", "results", "help"];
   const [activeTab, setActiveTab] = useState("laboratory");
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -49,6 +49,9 @@ function App() {
             <Tab active={activeTab === "results"}>
               <Results />
             </Tab>
+            <Tab active={activeTab === 'help'}>
+              <Help />
+            </Tab>
           </div>
           <TabHeaders
             tabs={tabs}
@@ -59,7 +62,6 @@ function App() {
             onToggleFullScreen={handleToggleFullScreen}
           />
         </div>
-        {walkThroughVisible && <DemoModal setTab={setActiveTab} onExit={() => setWalkThroughVisible(false)}/>}
         {demosVisible && <Demos onClose={() => setDemosVisible(false)}/>}
     </FullScreen>
   );
