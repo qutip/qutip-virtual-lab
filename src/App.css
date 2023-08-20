@@ -2,6 +2,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: var(--darkgrey);
   }
 
 h2 {
@@ -30,4 +31,8 @@ button#submit:disabled {
   color: #575757;
   cursor: wait;
   border: 1px solid grey;
+}
+
+.fullscreen-class {
+  height: 100%;
 }

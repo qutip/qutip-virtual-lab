@@ -37,7 +37,7 @@ function App() {
   };
 
   return (
-    <FullScreen handle={fullScreenHandle}>
+    <FullScreen handle={fullScreenHandle} className="fullscreen-class">
         <div style={{height: '100%'}}>
           <div className="tab-body">
             <Tab active={activeTab === "laboratory"}>
