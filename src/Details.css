@@ -36,6 +36,7 @@
     letter-spacing: 1px;
     background-color: black;
     padding: 5px 10px;
+    display: inline-block;
 }
 
 #details .info {
