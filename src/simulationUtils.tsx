@@ -159,23 +159,20 @@ export const emptyConfig: SimulationConfig = {
     timeSteps: 100
 }
 
+const getParameter = v => v.parameter
 
 export const getDetails = (config: SimulationConfig): SimulationConfigDetails => {
     const { lasers, interactions, baths, initialStates, totalTime, timeSteps } = config
-    let interactionTerms: Array<string> = []
-    let singleQubitTerms: Array<string> = []
-    lasers.forEach(laser => {
-        const str = `${laser.parameter.label} ${laser.operator.label}^{(${laser.qubitId})}`
-        singleQubitTerms = [...singleQubitTerms, str]
+    let singleQubitTerms = lasers.map(laser => `${laser.parameter.label} ${laser.operator.label}^{(${laser.qubitId})}`)
+    let interactionTerms = interactions.map(({parameter, operator, qubitIds}) => {
+        return `${parameter.label} ${operator.label}^{(${qubitIds[0]})}`
+        + `${operator.label}^{(${qubitIds[1]})}`
     })
-    interactions.forEach(interaction => {
-        const str = `${interaction.parameter.label} ${interaction.operator.label}^{(${interaction.qubitIds[0]})}`
-            + `${interaction.operator.label}^{(${interaction.qubitIds[1]})}`
-        interactionTerms = [...interactionTerms, str]
-    })
-    let H = { singleQubitTerms: singleQubitTerms.join('+'), interactionTerms: interactionTerms.join('+') }
+    let H = { 
+        singleQubitTerms: singleQubitTerms.join('+'), 
+        interactionTerms: interactionTerms.join('+') 
+    }
 
-    const getParameter = v => v.parameter
     const parameters = {
         lasers: Object.values(lasers).map(getParameter),
         interactions: interactions.map(getParameter),
@@ -194,85 +191,87 @@ export const getDetails = (config: SimulationConfig): SimulationConfigDetails =>
 
 export const getSrc = (config: SimulationConfig): string => {
     const { lasers, interactions, baths, qubits, initialStates, totalTime, timeSteps } = config;
-    let imports = "from qutip import *; import numpy as np; import json";
-    let tlist = `tlist = np.linspace(0, ${totalTime}, ${timeSteps})`;
-    let qs = `qubits = ${qubits.length}`
-    let psi0Arr = (Object.keys(initialStates) as Array<string>)
-        .map(Number)
-        .sort((id1, id2) => id1 - id2)
-        .map((qubitId) => {
-            const initialState = initialStates[qubitId]
-            if (initialState === '-z') return "basis(2,0)"
-            if (initialState === 'z') return "basis(2,1)"
-            if (initialState === 'x') return "(basis(2,0) + basis(2,1))/np.sqrt(2)"
-            if (initialState === '-x') return "(basis(2,0) + basis(2,1))/np.sqrt(2)"
-            if (initialState === 'y') return "(basis(2,0) + j*basis(2,1))/np.sqrt(2)"
-            if (initialState === '-y') return "(basis(2,0) - j*basis(2,1))/np.sqrt(2)"
-        })
-    const psi0 = qubits.length === 1 ? `psi0 = ${psi0Arr[0]}` : `psi0 = tensor(${psi0Arr.join()})`
-    let H: Array<string> = [];
-    let params: Array<string> = [];
-    lasers.forEach((laser) => {
-        const { qubitId, operator, parameter } = laser;
-        const laserSrc = qubits.length > 1 
-            ? `expand_operator(${operator.src}, ${qubits.length}, ${qubitId})` 
-            : operator.src
-        H = [...H, `${parameter.src}*${laserSrc}`];
-        params = [...params, `${parameter.src} = ${parameter.value}`]
-    });
-    interactions.forEach((interaction) => {
-        const { qubitIds, operator, parameter } = interaction;
-        const interactionSrc = qubits.length > 2 
-            ? `expand_operator(tensor(${operator.src},${operator.src}), ${qubits.length}, [${qubitIds[0]},${qubitIds[1]}])` 
-            : `tensor(${operator.src},${operator.src})`
-        H = [...H, `${parameter.src}*${interactionSrc}`]
-        params = [...params, `${parameter.src} = ${parameter.value}`]
-    });
-    if(!H.length) {
-        H = [Array.from(qubits, () => 'qeye(2)').join("*")]
-    }
-    const bathsSrc = baths.map(bath => `[expand_operator(${bath.parameter.value}*${bath.operator.src}, ${qubits.length}, i) for i in range(${qubits.length})]`)
-    let c_ops = `c_ops = ${bathsSrc.join('+') || '[]'}`
-    const solve =
-        "result = mesolve(H, psi0, tlist, c_ops, [])";
-
-    const expect = [
-        "components = [sigmax(), sigmay(), sigmaz()]",
-        `bloch_vector = ${qubits.length === 1 ? '[components]' : '[[tensor([component if q == qubit else qeye(2) for q in range(qubits)]) for component in components] for qubit in range(qubits)]'}`,
-        "expectation_values = expect(bloch_vector, result.states)"
-    ]
-
-    const print_density_matrix = [
-        "rhos = [ket2dm(state) for state in result.states]",
-        "print(rhos)"
-    ]
+    const formatParameter = (p: SimulationParameter) => `${p.src} = ${p.value}`
+    const parameters = [
+        ...Object.values(lasers),
+        ...interactions,
+        ...baths
+    ].map(getParameter)
+    .map(formatParameter)
+    .join(';')
 
     const print_bloch_vectors = Array.from(qubits).flatMap((_, q) => (
         `print(json.dumps([e.tolist() for e in expect(bloch_vector, result.states)[${q}]]))`
     ))
 
-    const print_q_func = [
-        "print(json.dumps([qfunc(rho, np.linspace(), np.linspace()) for rho in rhos]))",
-    ]
+    const qutipImports = [
+        "basis", 
+        "tensor",
+        "mesolve", 
+        "qeye", 
+        "sigmax", 
+        "sigmay", 
+        "sigmaz", 
+        "sigmap", 
+        "sigmam", 
+        "expect",
+        "expand_operator"
+    ].join(', ')
 
-    const print_outputs = [
-        // ...print_density_matrix, 
-        ...print_bloch_vectors,
-        // ...print_q_func
-    ]
+    const getQubitIndexFromId = (qubitId: QubitId) => qubits.findIndex(qid => qid === qubitId)
 
-    let returnArr = [
-        imports, 
-        tlist, 
-        qs, 
-        psi0,
-        ...(params.length ? [params.join(";")] : []),
-        `H = ${H.join("+")}`, 
-        c_ops, 
-        solve, 
-        ...expect,
-        ...print_outputs
-    ].filter(statement => statement !== '')
-    console.log(JSON.stringify(returnArr, undefined, 4))
-    return returnArr.join(";");
+    if(qubits.length === 1) {
+        let H = [
+            ...lasers.map(({ operator, parameter }) => `${parameter.src}*${operator.src}`),
+            ...interactions.map(({ operator, parameter }) => `${parameter.src}*tensor(${operator.src},${operator.src})`)
+        ].join("+") || 'qeye(2)'
+         let returnArr: Array<string> = [
+            `from qutip import ${qutipImports}`, 
+            "import numpy as np; import json", 
+            `tlist = np.linspace(0, ${totalTime}, ${timeSteps})`,
+            `qubits = 1`,
+            `psi0 = ${Object.values(initialStates)[0].src}`,
+            parameters,
+            `H = ${H}`, 
+            `c_ops = ${baths.map(bath => `${bath.parameter.value}*${bath.operator.src}`).join('+') || '[]'}`, 
+            "result = mesolve(H, psi0, tlist, c_ops, [])", 
+            "components = [sigmax(), sigmay(), sigmaz()]",
+            `bloch_vector = [components]`,
+            "expectation_values = expect(bloch_vector, result.states)",
+            ...print_bloch_vectors
+        ].filter(statement => statement !== '')
+        console.log(JSON.stringify(returnArr, undefined, 4))
+        return returnArr.join(";");
+    } else {
+        let H = [
+            ...lasers.map(({qubitId, operator, parameter}) => `${parameter.src}*expand_operator(${operator.src}, ${qubits.length}, ${getQubitIndexFromId(qubitId)})`),
+            ...interactions.map(({operator, qubitIds, parameter}) => {
+                return `${parameter.src}*`
+                + `expand_operator(`
+                + `tensor(${operator.src},${operator.src}),`
+                + `${qubits.length},` 
+                + `[${getQubitIndexFromId(qubitIds[0])},${getQubitIndexFromId(qubitIds[1])}])`
+            })
+        ].join("+") || `qeye(${qubits.map(() => 2)})`
+        let returnArr: Array<string> = [
+            `from qutip import ${qutipImports}`, 
+            "import numpy as np; import json", 
+            `tlist = np.linspace(0, ${totalTime}, ${timeSteps})`,
+            `qubits = ${qubits.length}`,
+            `psi0 = tensor(${(Object.keys(initialStates) as Array<string>)
+                    .map(Number)
+                    .sort((id1, id2) => id1 - id2)
+                    .map((qubitId) =>  initialStates[qubitId].src).join(',')})`,
+            parameters,
+            `H = ${H}`,
+            `c_ops = ${baths.map(bath => `[expand_operator(${bath.parameter.value}*${bath.operator.src}, qubits, i) for i in range(qubits)]`).join('+') || '[]'}`, 
+            "result = mesolve(H, psi0, tlist, c_ops, [])", 
+            "components = [sigmax(), sigmay(), sigmaz()]",
+            'bloch_vector = [[tensor([component if q == qubit else qeye(2) for q in range(qubits)]) for component in components] for qubit in range(qubits)]',
+            "expectation_values = expect(bloch_vector, result.states)",
+            ...print_bloch_vectors
+        ]
+        console.log(JSON.stringify(returnArr, undefined, 4))
+        return returnArr.join(";");
+    }
 }
