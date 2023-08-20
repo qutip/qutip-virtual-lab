@@ -1,15 +1,15 @@
 .label-container {
     display: inline-block;
     line-height: 0.9em;
-    color: rgba(0,0,0, 0.8);
-    background: #efefef;
+    color: var(--white);
+    background: var(--darkgrey);
     font-size: 18px;
     font-family: arial;
     padding: 10px 10px;
     border: 1px solid rgba(0,0,0, 0.8);
     border-radius: 0px;
-    margin: 5px 5px;
     vertical-align: bottom;
+    width: 65px;
 }
 
 .label-container .katex {

@@ -9,7 +9,6 @@ import {
   AxisLeft,
 } from '@visx/axis';
 import { curveMonotoneX } from '@visx/curve';
-import { localPoint } from '@visx/event';
 import {
   LegendItem,
   LegendLabel,
@@ -21,7 +20,6 @@ import {
   scaleOrdinal,
 } from '@visx/scale';
 import {
-  Bar,
   Line,
   LinePath,
 } from '@visx/shape';
@@ -32,7 +30,7 @@ function zip(...arrays) {
   });
 }
 
-const width = 360;
+const defaultWidth = 360;
 const height = 80;
 const margin = {
   top: 10,
@@ -58,7 +56,6 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
 
   const xScale = scaleLinear({
     domain: [0, Math.max(...dataSeq.map(getTime))],
-    range: [margin.left + axisLeft, axisLeft + margin.left + width],
     nice: true,
   });
   const yScale = scaleLinear({
@@ -76,19 +73,17 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
     range: colors,
   });
 
-  const lineX = xScale(time);
-
-  const handleHover = (e) => {
-    const { x } = localPoint(e);
-    const time = xScale.invert(x);
-    onHover(Number.isFinite(time) ? time : 0);
-  };
+  const legendWidth = 70
 
   return (
-    <ParentSize>
-      {({ width }) => (
+    <ParentSize style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+      {({ width }) => {
+        const chartWidth = width - legendWidth
+        xScale.range([margin.left + axisLeft, chartWidth])
+        const lineX = xScale(time);
+        return (
         <>
-          <svg width={width} height={100}>
+          <svg width={chartWidth} height={100}>
             <LinePath
               curve={curveMonotoneX}
               data={dataSeq}
@@ -137,20 +132,10 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
                     strokeWidth={2}
                   />
                 )}
-                <Bar
-                  x={margin.left + axisLeft}
-                  y={margin.right}
-                  width={width}
-                  height={height}
-                  fill="transparent"
-                  onMouseEnter={handleHover}
-                  onMouseMove={handleHover}
-                  onMouseLeave={onBlur}
-                />
               </>
             )}
           </svg>
-          <div className="label-container">
+          <div className="label-container" style={{ width: legendWidth, flex: 'none'}}>
             <LegendOrdinal scale={colorScale}>
               {(labels) => (
                 <div>
@@ -169,7 +154,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
             </LegendOrdinal>
           </div>
         </>
-      )}
+      )}}
     </ParentSize>
   );
 }
