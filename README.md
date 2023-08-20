@@ -63,15 +63,12 @@ Plots of results:
 - Hinton plots of results
 - Wigner function of results
 
-Introduction:
-- Demos
-- Walk-through
-
 Testing:
 - E2E testing
 
 Performance:
 - Load QuTiP in background using Web Workers
 
-Lab:
-- Multiple bath operators
+
+Styling:
+- Responsiveness
