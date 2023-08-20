@@ -36,12 +36,13 @@
   }
   
   .tab-header.active {
-    background-color: grey;
+    background-color: var(--darkgrey);
   }
   
   .tab-body {
-    height: 100%;
+    height: calc(100% - 40px);
     background-color: #1d1d1d;
+    overflow-y: hidden;
   }
 
   .tab-button {
