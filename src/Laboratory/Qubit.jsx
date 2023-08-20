@@ -12,7 +12,7 @@ import ClickTarget from './ClickTarget';
 
 export const qubitRadius = 30;
 
-const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled }) => {
+const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled, id }) => {
   const selectedProps = {
     stroke: "orange",
     opacity: 0.5,
@@ -60,12 +60,12 @@ const Qubit = ({ x, y, selected, active, onActivate, onSelect, disabled }) => {
         )}
       </Group>
     );
-  return <QubitPlaceholder x={x} y={y} onActivate={onActivate} />;
+  return <QubitPlaceholder x={x} y={y} onActivate={onActivate} id={id} />;
 };
 
 export default Qubit;
 
-export const QubitPlaceholder = ({ x, y, onActivate }) => {
+export const QubitPlaceholder = ({ x, y, onActivate, id }) => {
   const [hover, setHover] = useState(false);
   return (
     <>
@@ -78,11 +78,11 @@ export const QubitPlaceholder = ({ x, y, onActivate }) => {
           cornerRadius={15}
         />
         <Text
-          text={"ADD QUBIT"}
+          text={`ADD QUBIT ${id}`}
           x={10}
           y={2 * qubitRadius}
           fill="white"
-          fontSize={18}
+          fontSize={14}
           fontFamily="monospace"
         />
       <ClickTarget
@@ -108,6 +108,7 @@ export const QubitMenu = ({
   onRemoveBath,
   onAddLaser,
   onRemoveQubit,
+  direction
 }) => {
   const size = 40;
   const width = 150;
@@ -128,7 +129,7 @@ export const QubitMenu = ({
   const textPadding = { y: size / 2 - 5, x: 5 };
   return (
     <>
-      <Group visible={visible} x={x} y={y}>
+      <Group visible={visible} x={x} y={direction === 'up' ? y-size : y}>
         <Rect fill="black" width={width} height={size} stroke="black" />
         <Text text="×" x={7} fill="white" fontSize={40} y={0} />
         <ClickTarget
@@ -138,7 +139,7 @@ export const QubitMenu = ({
           height={size - 2}
         />
         {menuItems.map(({ label, onClick }, i) => (
-          <Group y={(i + 1) * size} key={`menuitem-${i}-${x}-${y}`}>
+          <Group y={direction =='up' ? -(i + 1) * size : (i + 1) * size} key={`menuitem-${i}-${x}-${y}`}>
             <Rect fill="#252525" width={width} height={size} />
             <Text
               text={label}
@@ -152,7 +153,7 @@ export const QubitMenu = ({
               width={width}
               height={size}
               onClick={onClick}
-              cornerRadius={i == menuItems.length - 1 ? [0, 0, 10, 10] : 0}
+              cornerRadius={i == menuItems.length - 1 ? direction === 'up' ? [10,10,0,0] : [0, 0, 10, 10] : 0}
             />
           </Group>
         ))}

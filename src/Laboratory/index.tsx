@@ -192,12 +192,14 @@ export default function Laboratory() {
       [position]: false
     }));
     setInteractions(interactions => interactions.filter(({ qubits }) => !qubits.includes(position)))
+    setLasers(lasers => ({...lasers, [position]: {on: false, orientation: undefined}}))
     setConfig((config) => {
       const newInitialStates = config.initialStates
       delete newInitialStates[qubitIds[position]]
       return {
         ...config,
         qubits: config.qubits.filter(qubitId => qubitId !== qubitIds[position]),
+        lasers: config.lasers.filter(({qubitId}) => qubitId !== qubitIds[position]),
         initialStates: newInitialStates,
         interactions: config.interactions.filter(({ qubitIds: qubits }) => !qubits.includes(qubitIds[position]))
       }
@@ -396,6 +398,7 @@ export default function Laboratory() {
               orientation={orientation}
               onTogglePower={() => handleToggleLaser(key)}
               label={orientation}
+              position={key.includes('TOP') ? 'bottom' : 'top'}
             />
           ))}
           <Group>
@@ -416,6 +419,7 @@ export default function Laboratory() {
                   <>
                     <Qubit
                       key={key}
+                      id={qubitIds[key]}
                       selected={qubitSelected === key}
                       active={active}
                       onActivate={() => handleAddQubit(key)}
@@ -434,6 +438,7 @@ export default function Laboratory() {
               ([key, active]) => (
                 <QubitMenu
                   key={key + 'menu'}
+                  direction={key.includes('BOTTOM') ? 'up' : 'down'}
                   visible={qubitSelected === key}
                   onClose={() => setQubitSelected(undefined)}
                   onRemoveQubit={() => handleRemoveQubit(key)}

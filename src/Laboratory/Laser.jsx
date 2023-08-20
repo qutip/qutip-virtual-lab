@@ -8,6 +8,7 @@ import {
 
 import ClickTarget from './ClickTarget';
 import { qubitRadius } from './Qubit';
+import useResize from './useResize';
 
 export default function Laser({
   at,
@@ -16,12 +17,14 @@ export default function Laser({
   orientation,
   onTogglePower,
   onSelectOrientation,
+  position
 }) {
+  const { height: stageHeight } = useResize()
   const width = 100;
   const height = 80;
   const { x, y } = at;
-  const baseline = 20;
-  const pathLength = baseline - y + height + qubitRadius;
+  const baseline = position === 'top' ? 20 : stageHeight - 40 - height -20;
+  const pathLength =  baseline - y + (position === 'top' ? height + qubitRadius : -qubitRadius);
   const fillColors = {
     Sx: "red",
     Sy: "orange",
@@ -114,7 +117,7 @@ export default function Laser({
         </Group>
       </Group>
       {on && (
-        <Group y={height}>
+        <Group y={position === 'top' ? height : 0}>
           <Line
             x={width / 2}
             y={0}
