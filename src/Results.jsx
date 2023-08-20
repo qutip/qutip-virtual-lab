@@ -10,7 +10,7 @@ import LineGraph from './LineGraph';
 import { SimulationContext } from './Simulation';
 
 export default function Results() {
-  const { results } = useContext(SimulationContext);
+  const { results, config } = useContext(SimulationContext);
 
   const [time, setTime] = useState(0);
 
@@ -26,12 +26,14 @@ export default function Results() {
 
   return (
     <div id="results">
+      <div className="results-container">
       {results.map((data, i) => (
-        <div style={{ border: "1px solid black", width: 400 }} key={i}>
+        <div className="qubit-result" key={i}>
           <h2 style={{ alignSelf: "start", background: "black", padding: 5 }}>
-            Qubit {i + 1}
+            Qubit {config.qubits[i]}
           </h2>
           <BlochSphere time={time} data={data} key={"b" + i} />
+          <div>
           <LineGraph
             key={"lg" + i}
             data={data}
@@ -39,14 +41,16 @@ export default function Results() {
             time={time}
             onBlur={() => setTime(null)}
           />
+          </div>
         </div>
       ))}
-      <div style={{width: '100%'}}>
+      </div>
+      <div className="time-slider" style={{width: '100%'}}>
         <h2>Time:</h2>
         <input
           type="range"
           min={0}
-          max={results.data?.[0].length}
+          max={results?.[0]?.[0].length-1}
           value={time}
           onChange={(e) => setTime(e.target.value)}
           style={{width: '100%'}}

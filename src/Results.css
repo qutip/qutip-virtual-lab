@@ -1,11 +1,28 @@
 #results {
-    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 40px);
+}
+
+#results .results-container {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+#results .qubit-result {
+    display: inline-block;
+    border: 1px solid black;
+    width: 50%; 
+    height: 50%;
+}
+
+#results .time-slider {
+    height: 60px;
+    flex-shrink: 0;
+    padding: 0 20px;
 }
 
 .result-container > * {
