@@ -145,15 +145,31 @@ export default function Details() {
               <div>
                 Total simulation time: {' '}
                 <InlineMath>{"t ="}</InlineMath>
-                <input type="number" width="2" step={1} min={10} max={20} value={totalTime} onChange={e => handleChangeTotalTime(Number(e.target.value) as number)} />
+                <input 
+                  type="number" 
+                  width="2" 
+                  step={1} 
+                  min={10} 
+                  max={20} 
+                  value={totalTime} 
+                  onChange={e => handleChangeTotalTime(Number(e.target.value) as number)}
+                />
               </div>
               <div>
                 Time steps: {' '}
                 <InlineMath>{"n = "}</InlineMath>
-                <input type="range" width="2" step={1} min={5 * totalTime} max={10 * totalTime} value={timeSteps} onChange={e => handleChangeTimeSteps(Number(e.target.value) as number)} />
+                <input 
+                  type="range" 
+                  width="2" 
+                  step={1} 
+                  min={100} 
+                  max={10000} 
+                  value={timeSteps} 
+                  onChange={e => handleChangeTimeSteps(Number(e.target.value) as number)}
+                />
               </div>
               <div>
-                Step size: {' '} 
+                Step size: {' '}
                 <InlineMath>
                   {`\\Delta t = t / n = ${(totalTime / timeSteps).toFixed(4)}`}
                 </InlineMath>
