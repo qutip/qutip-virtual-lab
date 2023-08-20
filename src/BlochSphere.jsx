@@ -35,7 +35,7 @@ const negZAxis = new Vector3(0, 0, -SPHERE_RADIUS);
 
 export default function ({ data = [[], [], []], time }) {
   return (
-    <div style={{ width, height }}>
+    <div style={{ width, height, margin: 'auto' }}>
       <Canvas
         orthographic
         camera={{
