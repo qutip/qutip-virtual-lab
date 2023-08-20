@@ -14,6 +14,7 @@ import {
 
 import { SimulationContext } from '../Simulation';
 import {
+  InitialZero,
   type PauliOperator,
   type PauliOperatorKey,
   PauliOperators,
@@ -179,7 +180,7 @@ export default function Laboratory() {
       qubits: newConfigQubits,
       initialStates: {
         ...config.initialStates,
-        [qubitIds[position]]: '-z'
+        [qubitIds[position]]: InitialZero
       }
     }));
   };
