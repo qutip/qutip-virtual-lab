@@ -2,7 +2,9 @@ name: build
 channels:
   - conda-forge
   - https://repo.mamba.pm/emscripten-forge
+  - pypi
 dependencies:
   - python
-  - empack == 3.1.2
   - emscripten 
+  - pip:
+    - empack == 3.1.2
