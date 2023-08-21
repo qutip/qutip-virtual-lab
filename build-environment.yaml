@@ -4,5 +4,5 @@ channels:
   - https://repo.mamba.pm/emscripten-forge
 dependencies:
   - python
-  - empack == 3.1.0
+  - empack == 3.1.2
   - emscripten 
