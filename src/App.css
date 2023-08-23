@@ -16,11 +16,13 @@ h2 {
 
 
 button#submit { 
+  display: inline-block;
+  cursor: pointer;
+  background-color: black;
+  color: #efefff;
+  height: 40px;
   text-align: center;
   padding: 10px 25px; 
-  cursor: pointer;
-  color: #efefff;
-  background-color: black;
   font-family: monospace;
   text-transform: uppercase;
   border: 1px solid white;
