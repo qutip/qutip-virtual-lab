@@ -2,6 +2,15 @@ import './Help.css';
 
 import React, { useState } from 'react';
 
+import addInteraction from './assets/add_interaction.webm';
+import addQubit from './assets/add_qubit.webm';
+import addRemoveBath from './assets/add_remove_bath.webm';
+import changeInitialStates from './assets/change_initial_state.webm';
+import changeParameters from './assets/change_parameters.webm';
+import changeTimeSteps from './assets/change_time_steps.webm';
+import showResults from './assets/show_results.webm';
+import toggleLaser from './assets/toggle_laser.webm';
+
 export default function Help() {
     const [step, setStep] = useState(0)
     const nextStep = () => setStep(step => step + 1)
@@ -44,13 +53,33 @@ const LabStep = () => {
     return (
         <>
             <h1>Laboratory</h1>
-            <img src="" />
             <p>
                 Tapping on any 'Add Qubit' will get you started.
                 Once added, you can tap the qubit to toggle the menu.
             </p>
-            <img />
+            <div style={{ display: 'flex' }}>
+                <video controls width={300}>
+                    <source src={addQubit} type='video/webm' />
+                </video>
+            </div>
             <p>You can add control lasers, interactions between qubits, and model heat baths from this menu</p>
+            <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                <div style={{ flex: '0 1 auto' }}>
+                    <video controls height={300}>
+                        <source src={toggleLaser} />
+                    </video>
+                </div>
+                <div style={{ flex: '0 1 auto' }}>
+                    <video controls width={300}>
+                        <source src={addInteraction} />
+                    </video>
+                </div>
+                <div style={{ flex: '0 1 auto' }}>
+                    <video controls width={300}>
+                        <source src={addRemoveBath} />
+                    </video>
+                </div>
+            </div>
         </>
     )
 }
@@ -59,14 +88,26 @@ const DetailStep = () => {
     return (
         <>
             <h1>Details</h1>
-            <img src="" />
             <p>
                 Here you can see the equations describing the Laboratory model.
                 You can tune the parameters that govern the lasers, interactions, and heat baths.
             </p>
+            <video controls>
+                <source src={changeParameters} />
+            </video>
+            <p>
+                You can change the initial state of each qubit to one of the eigenstates
+            </p>
+            <video controls>
+                <source src={changeInitialStates} />
+            </video>
             <p>
                 You can also tweak the simulation parameters for the time step and total time.
             </p>
+            <video controls>
+                <source src={changeTimeSteps}/>
+            </video>
+            
             <p>Once you have set up your system, click on the</p>
             <button id="submit">Simulate ▶️</button>
             <p>on the bottom of your screen to simulate the system using QuTiP</p>
@@ -83,6 +124,9 @@ const ResultsStep = () => {
             <p>The evolution is plotted on the Bloch sphere</p>
             <p>You can also rotate the Bloch sphere</p>
             <p>Drag the slider at the bottom to view the system at a specific point in time</p>
+            <video controls>
+                <source src={showResults}/>
+            </video>
         </>
     )
 }
