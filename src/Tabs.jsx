@@ -29,5 +29,5 @@ export default function TabHeaders({ tabs, activeTab, onTabClick, onToggleFullSc
 }
 
 export const Tab = ({ active, children }) => (
-  <div style={{ display: active ? "unset" : "none", width: '100%', height: '100%' }}>{children}</div>
+  <div style={{ display: active ? "block" : "none", width: '100%', height: '100%' }}>{children}</div>
 );
