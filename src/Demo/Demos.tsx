@@ -45,7 +45,7 @@ export default function Demos({ onClose }) {
 const LarmorPrecessionConfig: SimulationConfig = {
   qubits: [1],
   lasers: [{
-    qubitId: 0,
+    qubitId: 1,
     operator: PauliX,
     parameter: {
       label: "\\lambda^{(0)}",
@@ -56,7 +56,7 @@ const LarmorPrecessionConfig: SimulationConfig = {
   interactions: [],
   baths: [],
   initialStates: {
-    0: InitialZero
+    1: InitialZero
   },
   totalTime: 10,
   timeSteps: 100
@@ -65,7 +65,7 @@ const LarmorPrecessionConfig: SimulationConfig = {
 const QubitDephasingConfig: SimulationConfig = {
   qubits: [1],
   lasers: [{
-    qubitId: 0,
+    qubitId: 1,
     operator: PauliZ,
     parameter: {
       label: "\\lambda^{(0)}",
@@ -84,7 +84,7 @@ const QubitDephasingConfig: SimulationConfig = {
       value: 0.5
     }
   }],
-  initialStates: { 0: InitialPlus },
+  initialStates: { 1: InitialPlus },
   totalTime: 10,
   timeSteps: 100
 };

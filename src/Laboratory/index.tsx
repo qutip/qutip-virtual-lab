@@ -138,8 +138,8 @@ export default function Laboratory() {
     if (demoSelected) {
       setActiveQubits(() => {
         let newActiveQubits = { ...initQubitState }
-        const keys = Object.keys(initQubitState)
-        for (const qubit in config.qubits) {
+        const keys = Object.keys(initQubitState) as Array<QubitPosition>
+        for (const qubit of config.qubits) {
           newActiveQubits[keys[qubit]] = true
         }
         return newActiveQubits
@@ -167,7 +167,7 @@ export default function Laboratory() {
     }
   }, [demoSelected])
 
-  const handleAddQubit = (position) => {
+  const handleAddQubit = (position: QubitPosition) => {
     setActiveQubits((positions) => ({
       ...positions,
       [position]: true
@@ -175,6 +175,7 @@ export default function Laboratory() {
     setQubitSelected(undefined)
 
     let newConfigQubits = [...new Set([...config.qubits, qubitIds[position]])]
+    console.log(newConfigQubits)
     setConfig((config) => ({
       ...config,
       qubits: newConfigQubits,
@@ -185,7 +186,7 @@ export default function Laboratory() {
     }));
   };
 
-  const handleRemoveQubit = (position) => {
+  const handleRemoveQubit = (position: QubitPosition) => {
     setQubitSelected(undefined)
     setActiveQubits((positions) => ({
       ...positions,
@@ -363,7 +364,7 @@ export default function Laboratory() {
     setIsRemovingBath(true)
   }
 
-  const handleFinishRemoveBath = ({ operatorKey }) => {
+  const handleFinishRemoveBath = ({ operatorKey }: {operatorKey: 'Sp' | 'Sm'}) => {
     setQubitSelected(undefined)
     setBaths(baths => baths.filter(bath => (bath !== operatorKey)))
     setConfig(config => ({
