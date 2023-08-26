@@ -69,13 +69,13 @@ export const InitialMinus = {
 } as const
 
 export const InitialI = {
-    src: '(basis(2,0) + j*basis(2,1))/np.sqrt(2)',
+    src: '(basis(2,0) + 1j*basis(2,1))/np.sqrt(2)',
     label: '|i\\rangle',
     key: 'y'
 } as const
 
 export const InitialMinusI = {
-    src: '(basis(2,0) - j*basis(2,1))/np.sqrt(2)',
+    src: '(basis(2,0) - 1j*basis(2,1))/np.sqrt(2)',
     label: '|-i\\rangle',
     key: '-y'
 } as const
