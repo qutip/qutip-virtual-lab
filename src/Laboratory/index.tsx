@@ -175,7 +175,6 @@ export default function Laboratory() {
     setQubitSelected(undefined)
 
     let newConfigQubits = [...new Set([...config.qubits, qubitIds[position]])]
-    console.log(newConfigQubits)
     setConfig((config) => ({
       ...config,
       qubits: newConfigQubits,
@@ -334,6 +333,7 @@ export default function Laboratory() {
   const handleAddBath = () => {
     setIsAddingBath(true)
     setBathModalVisible(true)
+    setQubitSelected(undefined)
   }
 
   const handleCancelAddBath = () => {
