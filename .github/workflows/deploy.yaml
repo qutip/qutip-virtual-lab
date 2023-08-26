@@ -19,6 +19,8 @@ jobs:
         curl -fsSL https://deb.nodesource.com/setup_current.x | bash -
         apt-get install -y nodejs
     - uses: actions/checkout@master
+      # allow micromamba to activate env
+      # See https://micromamba-docker.readthedocs.io/en/latest/faq.html#how-can-i-use-a-mambaorg-micromamba-based-image-in-a-github-action
     - shell: _entrypoint.sh /bin/bash --noprofile --norc -eo pipefail {0}
       run: micromamba info
     - name: Check out code
