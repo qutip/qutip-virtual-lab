@@ -133,7 +133,6 @@ export const QubitMenu = ({
         <Rect fill="black" width={width} height={size} stroke="black" />
         <Text text="×" x={7} fill="white" fontSize={40} y={0} />
         <ClickTarget
-          stroke="white"
           onClick={onClose}
           width={size}
           height={size - 2}
