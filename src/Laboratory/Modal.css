@@ -1,0 +1,41 @@
+.modal {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-family: monospace;
+    font-size: 20;
+    background: #252525;
+    padding: 10px 12px;
+    border: 1px solid white;
+}
+
+.modal .button-group {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    margin: 20px 0 10px 0;
+}
+
+.modal button {
+    background-color: black;
+    border: 1px solid var(--white);
+    padding: 10px 10px;
+    color: var(--white);
+    font-family: monospace;
+    cursor: pointer;
+}
+
+.modal button:disabled {
+    background-color: var(--darkgrey);
+    color: lightgrey;
+    cursor: initial;
+}
+
+.modal input {
+    background-color: var(--darkgrey);
+    color: var(--white);
+    border: 1px solid var(--white);
+}

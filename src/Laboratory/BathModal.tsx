@@ -16,20 +16,7 @@ export default function BathModal({ onCancel, onSubmit, disabledOptions }) {
   const [operatorSelected, setOperatorSelected] = useState<'Sp' | 'Sm' | undefined>();
   const [scalar, setScalar] = useState<number>(0);
   return (
-    <div
-      style={{
-        position: "absolute",
-        color: "white",
-        fontFamily: "monospace",
-        fontSize: 20,
-        bottom: 40,
-        left: "50%",
-        transform: "translateX(-50%)",
-        background: "#252525",
-        padding: "10px 12px",
-        border: "1px solid white",
-      }}
-    >
+    <div className="modal">
       Operator:{" "}
       {Object.entries(operatorSelectOptions).map(([key, operator]) => (
         <label key={key}>
@@ -52,17 +39,9 @@ export default function BathModal({ onCancel, onSubmit, disabledOptions }) {
         onChange={(e) => setScalar(Number.parseFloat(e.target.value))}
       />
       <br />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          width: "100%",
-          justifyContent: "space-around",
-          margin: "20px 0 10px 0",
-        }}
-      >
+      <div className="button-group">
         <button
-          style={{ padding: "10px 30px" }}
+          
           disabled={operatorSelected === undefined || scalar === 0}
           onClick={() => onSubmit({
             operatorKey: operatorSelected,
@@ -72,7 +51,7 @@ export default function BathModal({ onCancel, onSubmit, disabledOptions }) {
         >
           OK
         </button>
-        <button style={{ padding: "10px 30px" }} onClick={onCancel}>
+        <button  onClick={onCancel}>
           Cancel
         </button>
       </div>
