@@ -20,8 +20,8 @@ export default function Laser({
   position
 }) {
   const { height: stageHeight } = useResize()
-  const width = 100;
-  const height = 80;
+  const width = 120;
+  const height = 90;
   const { x, y } = at;
   const baseline = position === 'top' ? 20 : stageHeight - 40 - height -20;
   const pathLength =  baseline - y + (position === 'top' ? height + qubitRadius : -qubitRadius);
@@ -43,11 +43,11 @@ export default function Laser({
         strokeWidth={2}
         fill={"black"}
       />
-      <Group>
+      <Group y={10} x={width / 3 / 2}>
         {["Sx", "Sy", "Sz"].map((orientationOption, i) => (
-          <Group y={15} x={width / 3 / 2} key={orientationOption}>
+          <Group key={orientationOption}>
             <Rect
-              x={(width / 3) * i - 5}
+              x={(i * width / 3)-20/2}
               fill={
                 orientation === orientationOption
                   ? fillColors[orientation]
@@ -55,25 +55,25 @@ export default function Laser({
               }
               stroke="white"
               strokeWidth={1}
-              height={10}
-              width={10}
+              height={20}
+              width={20}
             />
             <Text
               fill="white"
               text={orientationOption.at(-1).toUpperCase()}
-              x={(width / 3) * i - 5}
-              y={15}
+              x={(i * width / 3) - 5}
+              y={25}
             />
             <ClickTarget
-              x={(width / 3) * i - 5}
+              x={(i * width / 3)-20/2}
               fill={
                 orientation === orientationOption
                   ? fillColors[orientation]
                   : "none"
               }
               onClick={() => onSelectOrientation(orientationOption)}
-              height={10}
-              width={10}
+              height={20}
+              width={20}
             />
           </Group>
         ))}
