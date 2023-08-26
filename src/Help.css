@@ -8,6 +8,9 @@
     width: 100px;
     height: 35px;
     cursor: pointer;
+    background: black;
+    color: var(--white);
+    font-family: monospace;
 }
 
 .button-group > button + button {
