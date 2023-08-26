@@ -47,37 +47,43 @@ export const isInitialState = (state): state is InitialStateKey => eigenStates.i
 export const InitialZero = {
     src: 'basis(2,0)',
     label: '|0\\rangle',
-    key: '-z'
+    key: '-z',
+    display: '0'
 } as const
 
 export const InitialOne = {
     src: 'basis(2,1)',
     label: '|1\\rangle',
-    key: 'z'
+    key: 'z',
+    display: '1'
 } as const
 
 export const InitialPlus = {
     src: '(basis(2,0) + basis(2,1))/np.sqrt(2)',
     label: '|+\\rangle',
-    key: 'x'
+    key: 'x',
+    display: '+'
 } as const
 
 export const InitialMinus = {
     src: '(basis(2,0) - basis(2,1))/np.sqrt(2)',
     label: '|-\\rangle',
-    key: '-x'
+    key: '-x',
+    display: '-'
 } as const
 
 export const InitialI = {
     src: '(basis(2,0) + 1j*basis(2,1))/np.sqrt(2)',
     label: '|i\\rangle',
-    key: 'y'
+    key: 'y',
+    display: 'i'
 } as const
 
 export const InitialMinusI = {
     src: '(basis(2,0) - 1j*basis(2,1))/np.sqrt(2)',
     label: '|-i\\rangle',
-    key: '-y'
+    key: '-y',
+    display: '-i'
 } as const
 
 export type InitialState = typeof InitialZero 

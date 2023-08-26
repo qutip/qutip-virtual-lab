@@ -41,7 +41,8 @@
 
 #details .info {
     display: inline-block;
-    position: relative;
+    position: absolute;
+    font-size: 18px;
 }
 
 #details .info >.info--body:not(.visible) {
@@ -50,6 +51,7 @@
 
 #details .info > .info--body.visible {
     position: absolute;
+    display: block;
     background: grey;
     color: #efefef;
     border: 1px solid #efefef;
@@ -58,5 +60,24 @@
     left: calc(100% + 10px);
     padding: 5px 10px;
     font-size: 12px;
-    width: 200px
+    width: 200px;
+    z-index: 2;
+}
+
+#details select {
+    width: 40px;
+    background-color: var(--darkgrey);
+    color: var(--white);
+    border: 1px solid lightgrey;
+    border-radius: 0;
+}
+
+#details input[type="number"] {
+    background-color: var(--darkgrey);
+    color: var(--white);
+    font-size: 18px;
+}
+
+#details input[type="range"] {
+    margin: 10px 0;
 }

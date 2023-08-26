@@ -13,7 +13,7 @@ export default function CollapseOperators() {
         <div className="details-field">
             <label>Collapse Operators
             </label>
-            <Info text="Collapse operators parameterize the system-bath interaction" />
+            <Info>{"Collapse operators parameterize the system-bath interaction"}</Info>
             {collapseOperators.map((C, i) => (
                 <BlockMath key={i}>{`C^{(n)} = ${C.parameter.label}${C.operator.label}^{(n)}`}</BlockMath>
             ))}
