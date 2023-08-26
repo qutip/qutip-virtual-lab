@@ -15,20 +15,19 @@ import Results from './Results';
 import TabHeaders, { Tab } from './Tabs';
 
 function App() {
-  const fullScreenHandle = useFullScreenHandle()
-  const [fullScreen, setFullScreen] = useState(false)
-  const [walkThroughVisible, setWalkThroughVisible] = useState(false)
-  const [demosVisible, setDemosVisible] = useState(false)
+  const fullScreenHandle = useFullScreenHandle();
+  const [fullScreen, setFullScreen] = useState(false);
+  const [demosVisible, setDemosVisible] = useState(false);
 
   const handleToggleFullScreen = () => {
     if (fullScreen) {
-      fullScreenHandle.exit()
-      setFullScreen(false)
+      fullScreenHandle.exit();
+      setFullScreen(false);
     } else {
-      fullScreenHandle.enter()
-      setFullScreen(true)
+      fullScreenHandle.enter();
+      setFullScreen(true);
     }
-  }
+  };
 
   const tabs = ["laboratory", "details", "results", "help"];
   const [activeTab, setActiveTab] = useState("laboratory");
@@ -38,31 +37,38 @@ function App() {
 
   return (
     <FullScreen handle={fullScreenHandle} className="fullscreen-class">
-        <div style={{height: '100%'}}>
-          <div className="tab-body">
-            <Tab active={activeTab === "laboratory"}>
-              <Laboratory />
-            </Tab>
-            <Tab active={activeTab === "details"}>
-              <Details />
-            </Tab>
-            <Tab active={activeTab === "results"}>
-              <Results />
-            </Tab>
-            <Tab active={activeTab === 'help'}>
-              <Help />
-            </Tab>
-          </div>
-          <TabHeaders
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabClick={handleTabClick}
-            onShowWalkThrough={() => setWalkThroughVisible(true)}
-            onToggleDemos={() => setDemosVisible(v => !v)}
-            onToggleFullScreen={handleToggleFullScreen}
-          />
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          justifyContent: 'space-between'
+        }}
+      >
+        <div className="tab-body">
+          <Tab active={activeTab === "laboratory"}>
+            <Laboratory />
+          </Tab>
+          <Tab active={activeTab === "details"}>
+            <Details />
+          </Tab>
+          <Tab active={activeTab === "results"}>
+            <Results />
+          </Tab>
+          <Tab active={activeTab === "help"}>
+            <Help />
+          </Tab>
         </div>
-        {demosVisible && <Demos onClose={() => setDemosVisible(false)}/>}
+        <TabHeaders
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabClick={handleTabClick}
+          onToggleDemos={() => setDemosVisible((v) => !v)}
+          onToggleFullScreen={handleToggleFullScreen}
+        />
+      </div>
+      {demosVisible && <Demos onClose={() => setDemosVisible(false)} />}
     </FullScreen>
   );
 }
