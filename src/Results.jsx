@@ -45,7 +45,7 @@ export default function Results() {
         </div>
       ))}
       </div>
-      <div className="time-slider" style={{width: '100%'}}>
+      <div className="time-slider">
         <h2>Time:</h2>
         <input
           type="range"

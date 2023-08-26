@@ -1,6 +1,6 @@
 import './LineGraph.css';
 
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { InlineMath } from 'react-katex';
 
@@ -24,6 +24,8 @@ import {
   LinePath,
 } from '@visx/shape';
 
+import { SimulationContext } from './Simulation';
+
 function zip(...arrays) {
   return arrays?.[0].map((_, i) => {
     return arrays.map((array) => array[i]);
@@ -42,6 +44,7 @@ const margin = {
 const axisLeft = 15;
 
 export default function LineGraph({ data = [], time, onHover, onBlur }) {
+  const { config: { totalTime, timeSteps }} = useContext(SimulationContext)
   let dataSeq = data.length
     ? zip(
         ...data,
@@ -52,7 +55,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
   const getSx = (d) => d[0];
   const getSy = (d) => d[1];
   const getSz = (d) => d[2];
-  const getTime = (d) => d[3];
+  const getTime = (d) => (d[3]/timeSteps)*totalTime;
 
   const xScale = scaleLinear({
     domain: [0, Math.max(...dataSeq.map(getTime))],
@@ -63,7 +66,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
     range: [margin.top, margin.top + height],
     nice: true,
   });
-  const colors = ["hotpink", "orange", "red"];
+  const colors = ["red", "orange", "hotpink"];
   const colorScale = scaleOrdinal({
     domain: [
       "\\langle S_x \\rangle",
@@ -80,7 +83,7 @@ export default function LineGraph({ data = [], time, onHover, onBlur }) {
       {({ width }) => {
         const chartWidth = width - legendWidth
         xScale.range([margin.left + axisLeft, chartWidth])
-        const lineX = xScale(time);
+        const lineX = xScale((time/timeSteps)*totalTime);
         return (
         <>
           <svg width={chartWidth} height={100}>

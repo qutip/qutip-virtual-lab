@@ -1,28 +1,30 @@
 #results {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
     width: 100%;
-    height: calc(100vh - 40px);
+    display: flex;
+    height: calc(100vh - 110px);
 }
 
 #results .results-container {
-    flex: 1 0 auto;
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
 }
 
 #results .qubit-result {
     display: inline-block;
     border: 1px solid black;
-    width: 50%; 
-    height: 50%;
+    min-width: 50%; 
+    min-height: 50%;
+    flex-grow: 1;
 }
 
 #results .time-slider {
     height: 60px;
-    flex-shrink: 0;
     padding: 0 20px;
+    width: 100%;
+    position: absolute;
+    bottom: 40px;
 }
 
 .result-container > * {
@@ -37,7 +39,7 @@
     font-size: 15px;
     color: grey;
     padding: 20px 40px;
-    margin-top: 20px;
+    margin: auto;
     background-color: lightgray;
     border-radius: 5px;
 }
