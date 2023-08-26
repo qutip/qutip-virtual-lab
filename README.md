@@ -1,7 +1,11 @@
 # qutip-virtual-lab
+![example workflow](https://github.com/qutip/qutip-virtual-lab/actions/workflows/deploy.yml/badge.svg)
+
 A virtual laboratory interface to QuTiP for learning and exploring quantum mechanics on tablets, phones and in the browser.
 
-## Quick Start
+<a href="https://qutip.org/qutip-virtual-lab"><b>⚛ Go to QuTiP Virtual Lab ⚛</b></a>
+
+## Building for Development
 
 You will need to have installed:
 
@@ -57,7 +61,7 @@ The UI is implemented in React and Typescript.
 For drawing the qubits, lasers, baths, and interactions, the application uses the `react-konva` library.
 The Bloch spheres in the Results tab are implemented use the `react-three-fiber` library.
 
-## In Development
+## Future Ideas
 
 Plots of results:
 - Hinton plots of results
@@ -72,3 +76,9 @@ Performance:
 
 Styling:
 - Responsiveness
+
+-----
+
+Credits: 
+
+- Made by [Trent Fridey](https://github.com/trentfridey) with help from [Alex Pitchford](https://github.com/ajgpitch) and [Simon Cross](https://github.com/hodgestar)
