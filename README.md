@@ -1,5 +1,5 @@
 # qutip-virtual-lab
-![example workflow](https://github.com/qutip/qutip-virtual-lab/actions/workflows/deploy.yml/badge.svg)
+[![ci](https://github.com/qutip/qutip-virtual-lab/actions/workflows/deploy.yaml/badge.svg)](https://github.com/qutip/qutip-virtual-lab/actions/workflows/deploy.yaml)
 
 A virtual laboratory interface to QuTiP for learning and exploring quantum mechanics on tablets, phones and in the browser.
 
